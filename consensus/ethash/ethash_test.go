@@ -173,8 +173,10 @@ func TestClosedRemoteSealer(t *testing.T) {
 // DAG and cache sizes in human-readable form.
 func TestPrintDAGandCacheSizes(t *testing.T) {
 	logSizes := func(blockN uint64) {
-		datasetS := datasetSize(blockN)
-		cacheS := cacheSize(blockN)
+		epoch := blockN / epochLength
+
+		datasetS := datasetSize(epoch*epochLength + 1)
+		cacheS := cacheSize(epoch*epochLength + 1)
 		t.Logf("block=%d / epoch=%d -> data=%d (bin=%s dec=%s) cache=%d (bin=%s dec=%s)", blockN, blockN/epochLength,
 			datasetS,
 			byteCountBinary(datasetS),
@@ -184,9 +186,14 @@ func TestPrintDAGandCacheSizes(t *testing.T) {
 			byteCountDecimal(cacheS),
 		)
 	}
-	for _, n := range []uint64{0,1,2,3} {
-		logSizes(n*epochLength)
+	for _, n := range []uint64{0, 1, 2, 3} {
+		logSizes(n * epochLength)
 	}
+	t.Log("---------------------------")
+	for n := uint64(9_870_000); n <= 10_510_839; n += uint64(epochLength) {
+		logSizes(n)
+	}
+	t.Log("---------------------------")
 	for n := uint64(500_000); n < 16_000_000; n += uint64(500_000) {
 		logSizes(n)
 	}
