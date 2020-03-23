@@ -140,6 +140,15 @@ func TestCreation(t *testing.T) {
 			}
 		}
 	}
+	cs := []uint64{}
+	for _, f := range gatherForks(params.ClassicChainConfig) {
+		cs = append(cs, f-1, f, f+1)
+	}
+	for _, head := range cs {
+		id := newID(params.ClassicChainConfig, params.MainnetGenesisHash, head)
+		fmt.Printf("{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },\n", head, id.Hash, id.Next)
+	}
+
 }
 
 // TestValidation tests that a local peer correctly validates and accepts a remote
@@ -223,11 +232,11 @@ func TestValidation(t *testing.T) {
 func TestGenerateCases(t *testing.T) {
 	type testCaseJSON struct {
 		ChainConfig *multigethv0.ChainConfig `json:"geth_chain_config"`
-		GenesisHash common.Hash `json:"genesis_hash"`
-		Head uint64 `json:"head"`
-		ForkHash common.Hash `json:"fork_hash"`
-		ForkNext uint64 `json:"fork_next"`
-		ForkIDRLP common.Hash `json:"fork_id_rlp"`
+		GenesisHash common.Hash              `json:"genesis_hash"`
+		Head        uint64                   `json:"head"`
+		ForkHash    common.Hash              `json:"fork_hash"`
+		ForkNext    uint64                   `json:"fork_next"`
+		ForkIDRLP   common.Hash              `json:"fork_id_rlp"`
 	}
 
 	outputDir := filepath.Join(".", "testdata")
@@ -255,15 +264,15 @@ func TestGenerateCases(t *testing.T) {
 		{
 			"Morden",
 			&multigeth.MultiGethChainConfig{
-				Ethash: &ctypes.EthashConfig{},
-				EIP2FBlock: big.NewInt(494000),
-				EIP150Block: big.NewInt(1783000),
-				EIP155Block: big.NewInt(1915000),
-				ECIP1017FBlock: big.NewInt(2000000),
+				Ethash:            &ctypes.EthashConfig{},
+				EIP2FBlock:        big.NewInt(494000),
+				EIP150Block:       big.NewInt(1783000),
+				EIP155Block:       big.NewInt(1915000),
+				ECIP1017FBlock:    big.NewInt(2000000),
 				ECIP1017EraRounds: big.NewInt(2000000),
-				DisposalBlock: big.NewInt(2300000),
-				EIP198FBlock: big.NewInt(4729274), // Atlantis
-				EIP1052FBlock: big.NewInt(5000381), // Agharta
+				DisposalBlock:     big.NewInt(2300000),
+				EIP198FBlock:      big.NewInt(4729274), // Atlantis
+				EIP1052FBlock:     big.NewInt(5000381), // Agharta
 			},
 			common.HexToHash("0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303"),
 		},
