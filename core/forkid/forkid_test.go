@@ -77,6 +77,37 @@ func TestCreation(t *testing.T) {
 				{10000000, ID{Hash: checksumToBytes(0xe029e991), Next: 0}},      // Future Muir Glacier block
 			},
 		},
+		{
+			"mainnet2",
+			params.MainnetChainConfig,
+			params.MainnetGenesisHash,
+			[]testcase{
+				{ 1149999, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 1150000, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
+				{ 1150001, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
+				{ 1919999, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
+				{ 1920000, ID{Hash: checksumToBytes(0x91d1f948), Next: 2463000} },
+				{ 1920001, ID{Hash: checksumToBytes(0x91d1f948), Next: 2463000} },
+				{ 2462999, ID{Hash: checksumToBytes(0x91d1f948), Next: 2463000} },
+				{ 2463000, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
+				{ 2463001, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
+				{ 2674999, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
+				{ 2675000, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
+				{ 2675001, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
+				{ 4369999, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
+				{ 4370000, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 4370001, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 7279999, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 7280000, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
+				{ 7280001, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
+				{ 9068999, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
+				{ 9069000, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
+				{ 9069001, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
+				{ 9199999, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
+				{ 9200000, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+				{ 9200001, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+			},
+		},
 		// Ropsten test cases
 		{
 			"ropsten",
@@ -146,6 +177,14 @@ func TestCreation(t *testing.T) {
 	}
 	for _, head := range cs {
 		id := newID(params.ClassicChainConfig, params.MainnetGenesisHash, head)
+		fmt.Printf("{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },\n", head, id.Hash, id.Next)
+	}
+	cs = []uint64{}
+	for _, f := range gatherForks(params.MainnetChainConfig) {
+		cs = append(cs, f-1, f, f+1)
+	}
+	for _, head := range cs {
+		id := newID(params.MainnetChainConfig, params.MainnetGenesisHash, head)
 		fmt.Printf("{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },\n", head, id.Hash, id.Next)
 	}
 
