@@ -81,7 +81,12 @@ func TestCreation(t *testing.T) {
 			"mainnet2",
 			params.MainnetChainConfig,
 			params.MainnetGenesisHash,
-			[]testcase{
+			[]testcase{{ 0, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 1, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 2, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 3, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 9, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 10, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
 				{ 1149999, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
 				{ 1150000, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
 				{ 1150001, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
@@ -105,8 +110,7 @@ func TestCreation(t *testing.T) {
 				{ 9069001, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
 				{ 9199999, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
 				{ 9200000, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
-				{ 9200001, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
-			},
+				{ 9200001, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },},
 		},
 		// Ropsten test cases
 		{
@@ -171,7 +175,7 @@ func TestCreation(t *testing.T) {
 			}
 		}
 	}
-	cs := []uint64{}
+	cs := []uint64{0,1,2,3,9,10}
 	for _, f := range gatherForks(params.ClassicChainConfig) {
 		cs = append(cs, f-1, f, f+1)
 	}
@@ -179,7 +183,7 @@ func TestCreation(t *testing.T) {
 		id := newID(params.ClassicChainConfig, params.MainnetGenesisHash, head)
 		fmt.Printf("{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },\n", head, id.Hash, id.Next)
 	}
-	cs = []uint64{}
+	cs = []uint64{0,1,2,3,9,10}
 	for _, f := range gatherForks(params.MainnetChainConfig) {
 		cs = append(cs, f-1, f, f+1)
 	}
