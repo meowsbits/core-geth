@@ -18,18 +18,23 @@ package forkid
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
 	"math/big"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/params"
+	"github.com/ethereum/go-ethereum/params/confp"
 	"github.com/ethereum/go-ethereum/params/types/ctypes"
-	"github.com/ethereum/go-ethereum/params/types/goethereum"
 	"github.com/ethereum/go-ethereum/params/types/multigeth"
+	"github.com/ethereum/go-ethereum/params/types/multigethv0"
 	"github.com/ethereum/go-ethereum/rlp"
 )
 
@@ -217,16 +222,21 @@ func TestValidation(t *testing.T) {
 
 func TestGenerateCases(t *testing.T) {
 	type testCaseJSON struct {
-		ChainConfig *goethereum.ChainConfig `json:"chain_config"`
+		ChainConfig *multigethv0.ChainConfig `json:"geth_chain_config"`
+		GenesisHash common.Hash `json:"genesis_hash"`
 		Head uint64 `json:"head"`
 		ForkHash common.Hash `json:"fork_hash"`
 		ForkNext uint64 `json:"fork_next"`
 		ForkIDRLP common.Hash `json:"fork_id_rlp"`
 	}
+
+	outputDir := filepath.Join(".", "testdata")
+	generatedCases := []*testCaseJSON{}
+
 	tests := []struct {
-		name    string
-		config  ctypes.ChainConfigurator
-		genesis common.Hash
+		name        string
+		config      ctypes.ChainConfigurator
+		genesisHash common.Hash
 	}{
 		{"Ethereum Classic Mainnet (ETC)",
 			params.ClassicChainConfig,
@@ -245,6 +255,7 @@ func TestGenerateCases(t *testing.T) {
 		{
 			"Morden",
 			&multigeth.MultiGethChainConfig{
+				Ethash: &ctypes.EthashConfig{},
 				EIP2FBlock: big.NewInt(494000),
 				EIP150Block: big.NewInt(1783000),
 				EIP155Block: big.NewInt(1915000),
@@ -264,7 +275,7 @@ func TestGenerateCases(t *testing.T) {
 		}
 		fmt.Printf("##### %s\n", tt.name)
 		fmt.Println()
-		fmt.Printf("- Genesis Hash: `0x%x`\n", tt.genesis)
+		fmt.Printf("- Genesis Hash: `0x%x`\n", tt.genesisHash)
 		forks := gatherForks(tt.config)
 		forksS := []string{}
 		for _, fi := range forks {
@@ -275,7 +286,7 @@ func TestGenerateCases(t *testing.T) {
 		fmt.Println("| Head Block Number | `FORK_HASH` | `FORK_NEXT` | RLP Encoded (Hex) |")
 		fmt.Println("| --- | --- | --- | --- |")
 		for _, c := range cs {
-			id := newID(tt.config, tt.genesis, c)
+			id := newID(tt.config, tt.genesisHash, c)
 			isCanonical := false
 			for _, fi := range forks {
 				if c == fi {
@@ -289,9 +300,32 @@ func TestGenerateCases(t *testing.T) {
 			} else {
 				fmt.Printf("| head=%d | FORK_HASH=%x | FORK_NEXT=%d | %x |\n", c, id.Hash, id.Next, r)
 			}
+
+			gethConfig := &multigethv0.ChainConfig{}
+			err := confp.Convert(tt.config, gethConfig)
+			if err != nil {
+				t.Fatal(err)
+			}
+			generatedCases = append(generatedCases, &testCaseJSON{
+				ChainConfig: gethConfig,
+				GenesisHash: tt.genesisHash,
+				Head:        c,
+				ForkHash:    common.BytesToHash(id.Hash[:]),
+				ForkNext:    id.Next,
+				ForkIDRLP:   common.BytesToHash(r),
+			})
 		}
 		fmt.Println()
 		fmt.Println()
+	}
+
+	genOutput, err := json.MarshalIndent(generatedCases, "", "    ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = ioutil.WriteFile(filepath.Join(outputDir, "tests.json"), genOutput, os.ModePerm)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
