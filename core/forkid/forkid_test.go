@@ -81,7 +81,8 @@ func TestCreation(t *testing.T) {
 			"mainnet2",
 			params.MainnetChainConfig,
 			params.MainnetGenesisHash,
-			[]testcase{{ 0, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+			[]testcase{
+				{ 0, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
 				{ 1, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
 				{ 2, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
 				{ 3, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
@@ -90,27 +91,143 @@ func TestCreation(t *testing.T) {
 				{ 1149999, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
 				{ 1150000, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
 				{ 1150001, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
-				{ 1919999, ID{Hash: checksumToBytes(0x97c2c34c), Next: 1920000} },
-				{ 1920000, ID{Hash: checksumToBytes(0x91d1f948), Next: 2463000} },
-				{ 1920001, ID{Hash: checksumToBytes(0x91d1f948), Next: 2463000} },
-				{ 2462999, ID{Hash: checksumToBytes(0x91d1f948), Next: 2463000} },
-				{ 2463000, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
-				{ 2463001, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
-				{ 2674999, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
-				{ 2675000, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
-				{ 2675001, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
-				{ 4369999, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
-				{ 4370000, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
-				{ 4370001, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
-				{ 7279999, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
-				{ 7280000, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
-				{ 7280001, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
-				{ 9068999, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
-				{ 9069000, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
-				{ 9069001, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
-				{ 9199999, ID{Hash: checksumToBytes(0x879d6e30), Next: 9200000} },
-				{ 9200000, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
-				{ 9200001, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },},
+				{ 2499999, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
+				{ 2500000, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
+				{ 2500001, ID{Hash: checksumToBytes(0x7a64da13), Next: 2675000} },
+				{ 2999999, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
+				{ 3000000, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
+				{ 3000001, ID{Hash: checksumToBytes(0x3edd5b10), Next: 4370000} },
+				{ 4999999, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 5000000, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 5000001, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 5899999, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 5900000, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 5900001, ID{Hash: checksumToBytes(0xa00bc324), Next: 7280000} },
+				{ 8771999, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
+				{ 8772000, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
+				{ 8772001, ID{Hash: checksumToBytes(0x668db0af), Next: 9069000} },
+				{ 9572999, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+				{ 9573000, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+				{ 9573001, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+				{ 10500838, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+				{ 10500839, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+				{ 10500840, ID{Hash: checksumToBytes(0xe029e991), Next: 0} },
+
+			},
+		},
+		{
+			"classic",
+			params.ClassicChainConfig,
+			params.MainnetGenesisHash,
+			[]testcase{
+				{ 0, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 1, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 2, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 3, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 9, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 10, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 1149999, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000} },
+				{ 1150000, ID{Hash: checksumToBytes(0x97c2c34c), Next: 2500000} },
+				{ 1150001, ID{Hash: checksumToBytes(0x97c2c34c), Next: 2500000} },
+				{ 2499999, ID{Hash: checksumToBytes(0x97c2c34c), Next: 2500000} },
+				{ 2500000, ID{Hash: checksumToBytes(0xdb06803f), Next: 3000000} },
+				{ 2500001, ID{Hash: checksumToBytes(0xdb06803f), Next: 3000000} },
+				{ 2999999, ID{Hash: checksumToBytes(0xdb06803f), Next: 3000000} },
+				{ 3000000, ID{Hash: checksumToBytes(0xaff4bed4), Next: 5000000} },
+				{ 3000001, ID{Hash: checksumToBytes(0xaff4bed4), Next: 5000000} },
+				{ 4999999, ID{Hash: checksumToBytes(0xaff4bed4), Next: 5000000} },
+				{ 5000000, ID{Hash: checksumToBytes(0xf79a63c0), Next: 5900000} },
+				{ 5000001, ID{Hash: checksumToBytes(0xf79a63c0), Next: 5900000} },
+				{ 5899999, ID{Hash: checksumToBytes(0xf79a63c0), Next: 5900000} },
+				{ 5900000, ID{Hash: checksumToBytes(0x744899d6), Next: 8772000} },
+				{ 5900001, ID{Hash: checksumToBytes(0x744899d6), Next: 8772000} },
+				{ 8771999, ID{Hash: checksumToBytes(0x744899d6), Next: 8772000} },
+				{ 8772000, ID{Hash: checksumToBytes(0x518b59c6), Next: 9573000} },
+				{ 8772001, ID{Hash: checksumToBytes(0x518b59c6), Next: 9573000} },
+				{ 9572999, ID{Hash: checksumToBytes(0x518b59c6), Next: 9573000} },
+				{ 9573000, ID{Hash: checksumToBytes(0x7ba22882), Next: 10500839} },
+				{ 9573001, ID{Hash: checksumToBytes(0x7ba22882), Next: 10500839} },
+				{ 10500838, ID{Hash: checksumToBytes(0x7ba22882), Next: 10500839} },
+				{ 10500839, ID{Hash: checksumToBytes(0x9007bfcc), Next: 0} },
+				{ 10500840, ID{Hash: checksumToBytes(0x9007bfcc), Next: 0} },
+
+			},
+		},
+		{
+			"kotti",
+			params.KottiChainConfig,
+			params.KottiGenesisHash,
+			[]testcase{
+				{ 0, ID{Hash: checksumToBytes(0x0550152e), Next: 716617} },
+				{ 1, ID{Hash: checksumToBytes(0x0550152e), Next: 716617} },
+				{ 2, ID{Hash: checksumToBytes(0x0550152e), Next: 716617} },
+				{ 3, ID{Hash: checksumToBytes(0x0550152e), Next: 716617} },
+				{ 9, ID{Hash: checksumToBytes(0x0550152e), Next: 716617} },
+				{ 10, ID{Hash: checksumToBytes(0x0550152e), Next: 716617} },
+				{ 1149999, ID{Hash: checksumToBytes(0xa3270822), Next: 1705549} },
+				{ 1150000, ID{Hash: checksumToBytes(0xa3270822), Next: 1705549} },
+				{ 1150001, ID{Hash: checksumToBytes(0xa3270822), Next: 1705549} },
+				{ 2499999, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 2500000, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 2500001, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 2999999, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 3000000, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 3000001, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 4999999, ID{Hash: checksumToBytes(0x595e180d), Next: 5000000} },
+				{ 5000000, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 5000001, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 5899999, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 5900000, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 5900001, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 8771999, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 8772000, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 8772001, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 9572999, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 9573000, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 9573001, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 10500838, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 10500839, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+				{ 10500840, ID{Hash: checksumToBytes(0xb5407fd6), Next: 0} },
+
+			},
+		},
+		{
+			"mordor",
+			params.MordorChainConfig,
+			params.MordorGenesisHash,
+			[]testcase{
+				{ 0, ID{Hash: checksumToBytes(0x175782aa), Next: 301243} },
+				{ 1, ID{Hash: checksumToBytes(0x175782aa), Next: 301243} },
+				{ 2, ID{Hash: checksumToBytes(0x175782aa), Next: 301243} },
+				{ 3, ID{Hash: checksumToBytes(0x175782aa), Next: 301243} },
+				{ 9, ID{Hash: checksumToBytes(0x175782aa), Next: 301243} },
+				{ 10, ID{Hash: checksumToBytes(0x175782aa), Next: 301243} },
+				{ 1149999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 1150000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 1150001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 2499999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 2500000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 2500001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 2999999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 3000000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 3000001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 4999999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 5000000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 5000001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 5899999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 5900000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 5900001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 8771999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 8772000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 8772001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 9572999, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 9573000, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 9573001, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 10500838, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 10500839, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+				{ 10500840, ID{Hash: checksumToBytes(0xf42f5539), Next: 0} },
+
+			},
 		},
 		// Ropsten test cases
 		{
@@ -175,23 +292,43 @@ func TestCreation(t *testing.T) {
 			}
 		}
 	}
-	cs := []uint64{0,1,2,3,9,10}
-	for _, f := range gatherForks(params.ClassicChainConfig) {
-		cs = append(cs, f-1, f, f+1)
+	casesString := func(heads []uint64, config ctypes.ChainConfigurator, h common.Hash) string {
+		output := ""
+		for _, head := range heads {
+			id := newID(config, h, head)
+			output += fmt.Sprintf(`{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },
+`, head, id.Hash, id.Next)
+		}
+		return output
 	}
-	for _, head := range cs {
-		id := newID(params.ClassicChainConfig, params.MainnetGenesisHash, head)
-		fmt.Printf("{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },\n", head, id.Hash, id.Next)
-	}
-	cs = []uint64{0,1,2,3,9,10}
-	for _, f := range gatherForks(params.MainnetChainConfig) {
-		cs = append(cs, f-1, f, f+1)
-	}
-	for _, head := range cs {
-		id := newID(params.MainnetChainConfig, params.MainnetGenesisHash, head)
-		fmt.Printf("{ %d, ID{Hash: checksumToBytes(0x%x), Next: %d} },\n", head, id.Hash, id.Next)
+	printCase := func(heads []uint64, name, configName, genesisHashName string, config ctypes.ChainConfigurator, h common.Hash) {
+		fmt.Printf(`{
+	"%s",
+	%s,
+	%s,
+	[]testcase{
+		%s
+	},
+},
+`, name, configName, genesisHashName, casesString(heads, config, h))
 	}
 
+	for _, c := range []struct{
+		name, configName, genesisHashName string
+		config ctypes.ChainConfigurator
+		h common.Hash
+	}{
+		{"mainnet2", "params.MainnetChainConfig", "params.MainnetGenesisHash", params.MainnetChainConfig, params.MainnetGenesisHash},
+		{"classic", "params.ClassicChainConfig", "params.MainnetGenesisHash", params.ClassicChainConfig, params.MainnetGenesisHash},
+		{"kotti", "params.KottiChainConfig", "params.KottiGenesisHash", params.KottiChainConfig, params.KottiGenesisHash},
+		{"mordor", "params.MordorChainConfig", "params.MordorGenesisHash", params.MordorChainConfig, params.MordorGenesisHash},
+	} {
+	heads := []uint64{0,1,2,3,9,10}
+		for _, f := range gatherForks(params.ClassicChainConfig) {
+			heads = append(heads, f-1, f, f+1)
+		}
+		printCase(heads, c.name, c.configName, c.genesisHashName, c.config, c.h)
+	}
 }
 
 // TestValidation tests that a local peer correctly validates and accepts a remote
