@@ -28,6 +28,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/params/types/ctypes"
+	"github.com/ethereum/go-ethereum/params/types/goethereum"
 	"github.com/ethereum/go-ethereum/params/types/multigeth"
 	"github.com/ethereum/go-ethereum/rlp"
 )
@@ -215,9 +216,12 @@ func TestValidation(t *testing.T) {
 }
 
 func TestGenerateCases(t *testing.T) {
-	type testcase struct {
-		head uint64
-		want ID
+	type testCaseJSON struct {
+		ChainConfig *goethereum.ChainConfig `json:"chain_config"`
+		Head uint64 `json:"head"`
+		ForkHash common.Hash `json:"fork_hash"`
+		ForkNext uint64 `json:"fork_next"`
+		ForkIDRLP common.Hash `json:"fork_id_rlp"`
 	}
 	tests := []struct {
 		name    string
