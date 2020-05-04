@@ -35,4 +35,5 @@ jobs:
     - name: Test
       run: |
         go run build/ci.go test
+        make test-evmc
         make test-multigeth
