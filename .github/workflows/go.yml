@@ -32,8 +32,14 @@ jobs:
         go generate -v ./evmc/bindings/go/evmc
         go run build/ci.go install
 
-    - name: Test
+    - name: Test Main
       run: |
         go run build/ci.go test
+
+    - name: Test EVMC
+      run: |
         make test-evmc
+
+    - name: Test Multigeth
+      run: |
         make test-multigeth
