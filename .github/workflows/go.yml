@@ -27,6 +27,7 @@ jobs:
         go get -v -t -d ./...
         git submodule update --init --recursive
         go get golang.org/x/mobile/cmd/gomobile
+        gomobile init
 
     - name: Build
       run: |
