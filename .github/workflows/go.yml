@@ -34,9 +34,9 @@ jobs:
         go generate -v ./evmc/bindings/go/evmc
         go run build/ci.go install
 
-    - name: Test Main
-      run: |
-        go run build/ci.go test
+#    - name: Test Main
+#      run: |
+#        go run build/ci.go test
 
     - name: Test EVMC
       run: |
