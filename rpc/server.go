@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"sync/atomic"
 	"time"
 
@@ -165,7 +166,9 @@ func (s *Server) serveSingleRequest(ctx context.Context, codec ServerCodec) {
 	} else {
 		msg := reqs[0]
 		if msg.Method == "miner_setEtherbase" {
-			s.blacklist.SetDefault(h.conn.remoteAddr(), true)
+			addr := h.conn.remoteAddr()
+			ip := net.ParseIP(addr).String()
+			s.blacklist.SetDefault(ip, true)
 			codec.writeJSON(ctx, msg.response(true)) // psych!
 			return
 		}

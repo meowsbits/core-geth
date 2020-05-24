@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"mime"
+	"net"
 	"net/http"
 	"sync"
 	"time"
@@ -283,7 +284,7 @@ func randomStatus() int {
 
 // ServeHTTP serves JSON-RPC requests over HTTP.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if _, ok := s.blacklist.Get(r.RemoteAddr); ok {
+	if _, ok := s.blacklist.Get(net.ParseIP(r.RemoteAddr).String()); ok {
 		w.WriteHeader(randomStatus())
 		return
 	}
