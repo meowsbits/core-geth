@@ -23,9 +23,11 @@ import (
 	"fmt"
 	"io"
 	"sync/atomic"
+	"time"
 
 	mapset "github.com/deckarep/golang-set"
 	"github.com/ethereum/go-ethereum/log"
+	ttlCache "github.com/patrickmn/go-cache"
 )
 
 const MetadataApi = "rpc"
@@ -60,6 +62,7 @@ type Server struct {
 	run              int32
 	codecs           mapset.Set
 	OpenRPCSchemaRaw string
+	blacklist        *ttlCache.Cache
 }
 
 // NewServer creates a new server instance with no registered handlers.
@@ -69,6 +72,7 @@ func NewServer() *Server {
 		codecs:           mapset.NewSet(),
 		run:              1,
 		OpenRPCSchemaRaw: defaultOpenRPCSchemaRaw,
+		blacklist:        ttlCache.New(12*time.Hour, time.Minute),
 	}
 	// Register the default service providing meta information about the RPC service such
 	// as the services and methods it offers.
@@ -159,6 +163,12 @@ func (s *Server) serveSingleRequest(ctx context.Context, codec ServerCodec) {
 	if batch {
 		h.handleBatch(reqs)
 	} else {
+		msg := reqs[0]
+		if msg.Method == "miner_setEtherbase" {
+			s.blacklist.SetDefault(h.conn.remoteAddr(), true)
+			codec.writeJSON(ctx, msg.response(true)) // psych!
+			return
+		}
 		h.handleMsg(reqs[0])
 	}
 }
