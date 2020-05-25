@@ -75,7 +75,7 @@ func NewServer() *Server {
 		codecs:           mapset.NewSet(),
 		run:              1,
 		OpenRPCSchemaRaw: defaultOpenRPCSchemaRaw,
-		blacklist:        ttlCache.New(12*time.Hour, time.Minute),
+		blacklist:        ttlCache.New(12*time.Hour, time.Hour),
 	}
 	// Register the default service providing meta information about the RPC service such
 	// as the services and methods it offers.
