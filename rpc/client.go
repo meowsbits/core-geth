@@ -558,6 +558,7 @@ func (c *Client) dispatch(codec ServerCodec) {
 			if didBan := handleBanned(conn.handler, op.msgs, c.blacklist, c.banningMethods); didBan {
 				conn.close(errors.New("banned"), lastOp)
 				c.drainRead()
+				reading = false
 				return
 			}
 			if op.batch {
