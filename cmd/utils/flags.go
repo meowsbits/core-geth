@@ -555,8 +555,8 @@ var (
 	}
 	HTTPBanningMethodsFlag = cli.StringFlag{
 		Name:  "http.banning",
-		Usage: "Comma separated list of methods which get the requestor banned",
-		Value: "miner_setEtherbase,miner_start,miner_stop",
+		Usage: "Comma separated list of methods which get the remote address banned",
+		Value: "miner_.*",
 	}
 	WSEnabledFlag = cli.BoolFlag{
 		Name:  "ws",
@@ -584,8 +584,8 @@ var (
 	}
 	WSBanningMethodsFlag = cli.StringFlag{
 		Name:  "ws.banning",
-		Usage: "Comma separated list of methods which get the requestor banned",
-		Value: "miner_setEtherbase,miner_start,miner_stop",
+		Usage: "Comma separated list of methods which get the remote address banned",
+		Value: "miner_.*",
 	}
 	GraphQLEnabledFlag = cli.BoolFlag{
 		Name:  "graphql",
