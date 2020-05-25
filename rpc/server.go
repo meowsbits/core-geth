@@ -74,6 +74,7 @@ func NewServer() *Server {
 		codecs:           mapset.NewSet(),
 		run:              1,
 		OpenRPCSchemaRaw: defaultOpenRPCSchemaRaw,
+		banningMethods:   []*regexp.Regexp{},
 		blacklist:        ttlCache.New(12*time.Hour, time.Hour),
 	}
 	// Register the default service providing meta information about the RPC service such
@@ -84,7 +85,6 @@ func NewServer() *Server {
 }
 
 func (s *Server) SetBanningMethods(methods []string) {
-	s.banningMethods = []*regexp.Regexp{}
 	for _, m := range methods {
 		s.banningMethods = append(s.banningMethods, regexp.MustCompile(m))
 	}

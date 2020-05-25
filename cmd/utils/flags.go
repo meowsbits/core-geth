@@ -978,9 +978,7 @@ func setHTTP(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(HTTPVirtualHostsFlag.Name) {
 		cfg.HTTPVirtualHosts = splitAndTrim(ctx.GlobalString(HTTPVirtualHostsFlag.Name))
 	}
-	if ctx.GlobalIsSet(HTTPBanningMethodsFlag.Name) {
-		cfg.HTTPBanningMethods = splitAndTrim(ctx.GlobalString(HTTPBanningMethodsFlag.Name))
-	}
+	cfg.HTTPBanningMethods = splitAndTrim(ctx.GlobalString(HTTPBanningMethodsFlag.Name))
 }
 
 // setGraphQL creates the GraphQL listener interface string from the set
@@ -1037,9 +1035,7 @@ func setWS(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(WSApiFlag.Name) {
 		cfg.WSModules = splitAndTrim(ctx.GlobalString(WSApiFlag.Name))
 	}
-	if ctx.GlobalIsSet(WSBanningMethodsFlag.Name) {
-		cfg.WSBanningMethods = splitAndTrim(ctx.GlobalString(WSBanningMethodsFlag.Name))
-	}
+	cfg.WSBanningMethods = splitAndTrim(ctx.GlobalString(WSBanningMethodsFlag.Name))
 }
 
 // setIPC creates an IPC path configuration from the set command line flags,
