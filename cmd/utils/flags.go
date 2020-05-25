@@ -582,6 +582,11 @@ var (
 		Usage: "Origins from which to accept websockets requests",
 		Value: "",
 	}
+	WSBanningMethodsFlag = cli.StringFlag{
+		Name: "ws.banning",
+		Usage: "Comma separated list of methods which get the requestor banned",
+		Value: "miner_setEtherbase,miner_start,miner_stop",
+	}
 	GraphQLEnabledFlag = cli.BoolFlag{
 		Name:  "graphql",
 		Usage: "Enable the GraphQL server",
@@ -1031,6 +1036,9 @@ func setWS(ctx *cli.Context, cfg *node.Config) {
 	}
 	if ctx.GlobalIsSet(WSApiFlag.Name) {
 		cfg.WSModules = splitAndTrim(ctx.GlobalString(WSApiFlag.Name))
+	}
+	if ctx.GlobalIsSet(WSBanningMethodsFlag.Name) {
+		cfg.WSBanningMethods = splitAndTrim(ctx.GlobalString(WSBanningMethodsFlag.Name))
 	}
 }
 
