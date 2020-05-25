@@ -424,6 +424,7 @@ func (n *Node) startWS(endpoint string, apis []rpc.API, modules []string, wsOrig
 	}
 
 	srv := rpc.NewServer()
+	srv.SetBanningMethods(n.config.WSBanningMethods)
 	handler := srv.WebsocketHandler(wsOrigins)
 	err := RegisterApisFromWhitelist(apis, modules, srv, exposeAll)
 	if err != nil {

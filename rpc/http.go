@@ -207,7 +207,7 @@ func (t *httpServerConn) SetWriteDeadline(time.Time) error { return nil }
 // ServeHTTP serves JSON-RPC requests over HTTP.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Handle banned requests first and fast.
-	if isBanned := s.httpHandleIfBanned(w, r); isBanned{
+	if isBanned := s.handleIfBanned(w, r); isBanned {
 		return
 	}
 

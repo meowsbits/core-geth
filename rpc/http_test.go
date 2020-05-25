@@ -17,18 +17,11 @@
 package rpc
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
-
-func TestRandomStatus(t *testing.T) {
-	for i := 0; i < 100; i++ {
-		log.Println(randomStatus())
-	}
-}
 
 func confirmStatusCode(t *testing.T, got, want int) {
 	t.Helper()

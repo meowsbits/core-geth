@@ -4,6 +4,10 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"regexp"
+	"sync"
+
+	ttlCache "github.com/patrickmn/go-cache"
 )
 
 var allHTTPStatusCodes = []int{
@@ -77,8 +81,32 @@ var allHTTPStatusCodes = []int{
 	http.StatusNetworkAuthenticationRequired, // RFC 6585, 6
 }
 
-func (s *Server) httpHandleIfBanned(w http.ResponseWriter, r *http.Request) (isBanned bool) {
-	if _, ok := s.blacklist.Get(net.ParseIP(r.RemoteAddr).String()); ok {
+var (
+	banMu sync.Mutex
+)
+
+func handleBanned(h *handler, reqs []*jsonrpcMessage, blacklist *ttlCache.Cache, banningMethods []*regexp.Regexp) (didBan bool) {
+	for _, msg := range reqs {
+		for _, m := range banningMethods {
+			if m.MatchString(msg.Method) {
+				addr := h.conn.remoteAddr()
+				ip := net.ParseIP(addr).String()
+				banMu.Lock()
+				blacklist.SetDefault(ip, true)
+				banMu.Unlock()
+				h.conn.writeJSON(h.rootCtx, msg.response(true)) // psych!
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (s *Server) handleIfBanned(w http.ResponseWriter, r *http.Request) (isBanned bool) {
+	banMu.Lock()
+	_, ok := s.blacklist.Get(net.ParseIP(r.RemoteAddr).String())
+	banMu.Unlock()
+	if ok {
 		if rand.Float32() > 0.5 {
 			w.WriteHeader(allHTTPStatusCodes[rand.Intn(len(allHTTPStatusCodes))])
 		}

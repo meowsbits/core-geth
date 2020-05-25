@@ -554,7 +554,7 @@ var (
 		Value: "",
 	}
 	HTTPBanningMethodsFlag = cli.StringFlag{
-		Name: "http.banning",
+		Name:  "http.banning",
 		Usage: "Comma separated list of methods which get the requestor banned",
 		Value: "miner_setEtherbase,miner_start,miner_stop",
 	}
@@ -583,7 +583,7 @@ var (
 		Value: "",
 	}
 	WSBanningMethodsFlag = cli.StringFlag{
-		Name: "ws.banning",
+		Name:  "ws.banning",
 		Usage: "Comma separated list of methods which get the requestor banned",
 		Value: "miner_setEtherbase,miner_start,miner_stop",
 	}

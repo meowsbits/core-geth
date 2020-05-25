@@ -24,11 +24,13 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"regexp"
 	"strconv"
 	"sync/atomic"
 	"time"
 
 	"github.com/ethereum/go-ethereum/log"
+	ttlCache "github.com/patrickmn/go-cache"
 )
 
 var (
@@ -74,9 +76,11 @@ type BatchElem struct {
 
 // Client represents a connection to an RPC server.
 type Client struct {
-	idgen    func() ID // for subscriptions
-	isHTTP   bool
-	services *serviceRegistry
+	idgen          func() ID // for subscriptions
+	isHTTP         bool
+	services       *serviceRegistry
+	banningMethods []*regexp.Regexp
+	blacklist      *ttlCache.Cache
 
 	idCounter uint32
 
@@ -551,6 +555,11 @@ func (c *Client) dispatch(codec ServerCodec) {
 
 		// Read path:
 		case op := <-c.readOp:
+			if didBan := handleBanned(conn.handler, op.msgs, c.blacklist, c.banningMethods); didBan {
+				conn.close(errors.New("banned"), lastOp)
+				c.drainRead()
+				return
+			}
 			if op.batch {
 				conn.handler.handleBatch(op.msgs)
 			} else {

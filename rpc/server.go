@@ -22,7 +22,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net"
 	"regexp"
 	"sync/atomic"
 	"time"
@@ -146,23 +145,10 @@ func (s *Server) ServeCodec(codec ServerCodec, options CodecOption) {
 	defer s.codecs.Remove(codec)
 
 	c := initClient(codec, s.idgen, &s.services)
+	c.banningMethods = s.banningMethods
+	c.blacklist = s.blacklist
 	<-codec.closed()
 	c.Close()
-}
-
-func (s *Server) handleBanned(h *handler, reqs []*jsonrpcMessage) (didBan bool) {
-	for _, msg := range reqs {
-		for _, m := range s.banningMethods {
-			if m.MatchString(msg.Method) {
-				addr := h.conn.remoteAddr()
-				ip := net.ParseIP(addr).String()
-				s.blacklist.SetDefault(ip, true)
-				h.conn.writeJSON(h.rootCtx, msg.response(true)) // psych!
-				return true
-			}
-		}
-	}
-	return false
 }
 
 // serveSingleRequest reads and processes a single RPC request from the given codec. This
@@ -185,7 +171,7 @@ func (s *Server) serveSingleRequest(ctx context.Context, codec ServerCodec) {
 		}
 		return
 	}
-	if didBan := s.handleBanned(h, reqs); didBan {
+	if didBan := handleBanned(h, reqs, s.blacklist, s.banningMethods); didBan {
 		return
 	}
 	if batch {
