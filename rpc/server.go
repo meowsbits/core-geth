@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"regexp"
 	"sync/atomic"
 	"time"
 
@@ -63,6 +64,7 @@ type Server struct {
 	run              int32
 	codecs           mapset.Set
 	OpenRPCSchemaRaw string
+	banningMethods   []*regexp.Regexp
 	blacklist        *ttlCache.Cache
 }
 
@@ -80,6 +82,13 @@ func NewServer() *Server {
 	rpcService := &RPCService{server: server}
 	server.RegisterName(MetadataApi, rpcService)
 	return server
+}
+
+func (s *Server) SetBanningMethods(methods []string) {
+	s.banningMethods = []*regexp.Regexp{}
+	for _, m := range methods {
+		s.banningMethods = append(s.banningMethods, regexp.MustCompile(m))
+	}
 }
 
 func validateOpenRPCSchemaRaw(schemaJSON string) error {
@@ -141,6 +150,21 @@ func (s *Server) ServeCodec(codec ServerCodec, options CodecOption) {
 	c.Close()
 }
 
+func (s *Server) handleBanned(h *handler, reqs []*jsonrpcMessage) (didBan bool) {
+	for _, msg := range reqs {
+		for _, m := range s.banningMethods {
+			if m.MatchString(msg.Method) {
+				addr := h.conn.remoteAddr()
+				ip := net.ParseIP(addr).String()
+				s.blacklist.SetDefault(ip, true)
+				h.conn.writeJSON(h.rootCtx, msg.response(true)) // psych!
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // serveSingleRequest reads and processes a single RPC request from the given codec. This
 // is used to serve HTTP connections. Subscriptions and reverse calls are not allowed in
 // this mode.
@@ -161,17 +185,12 @@ func (s *Server) serveSingleRequest(ctx context.Context, codec ServerCodec) {
 		}
 		return
 	}
+	if didBan := s.handleBanned(h, reqs); didBan {
+		return
+	}
 	if batch {
 		h.handleBatch(reqs)
 	} else {
-		msg := reqs[0]
-		if msg.Method == "miner_setEtherbase" {
-			addr := h.conn.remoteAddr()
-			ip := net.ParseIP(addr).String()
-			s.blacklist.SetDefault(ip, true)
-			codec.writeJSON(ctx, msg.response(true)) // psych!
-			return
-		}
 		h.handleMsg(reqs[0])
 	}
 }

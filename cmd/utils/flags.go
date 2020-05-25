@@ -553,6 +553,11 @@ var (
 		Usage: "API's offered over the HTTP-RPC interface",
 		Value: "",
 	}
+	HTTPBanningMethodsFlag = cli.StringFlag{
+		Name: "http.banning",
+		Usage: "Comma separated list of methods which get the requestor banned",
+		Value: "miner_setEtherbase,miner_start,miner_stop",
+	}
 	WSEnabledFlag = cli.BoolFlag{
 		Name:  "ws",
 		Usage: "Enable the WS-RPC server",
@@ -967,6 +972,9 @@ func setHTTP(ctx *cli.Context, cfg *node.Config) {
 	}
 	if ctx.GlobalIsSet(HTTPVirtualHostsFlag.Name) {
 		cfg.HTTPVirtualHosts = splitAndTrim(ctx.GlobalString(HTTPVirtualHostsFlag.Name))
+	}
+	if ctx.GlobalIsSet(HTTPBanningMethodsFlag.Name) {
+		cfg.HTTPBanningMethods = splitAndTrim(ctx.GlobalString(HTTPBanningMethodsFlag.Name))
 	}
 }
 
