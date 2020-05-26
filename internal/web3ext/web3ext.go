@@ -685,17 +685,17 @@ web3._extend({
 			call: 'rpc.discover',
 			params: 0
 		}),
-	],
-	properties: [
-		new web3._extend.Property({
-			name: 'modules',
-			getter: 'rpc_modules'
-		}),
 		new web3._extend.Method({
 			name: 'banned',
 			call: 'rpc_banned',
 			params: 0
 		}),
+	],
+	properties: [
+		new web3._extend.Property({
+			name: 'modules',
+			getter: 'rpc_modules'
+		})
 	]
 });
 `
