@@ -689,7 +689,7 @@ web3._extend({
 			name: 'banned',
 			call: 'rpc_banned',
 			params: 0
-		}),
+		})
 	],
 	properties: [
 		new web3._extend.Property({
