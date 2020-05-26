@@ -691,9 +691,10 @@ web3._extend({
 			name: 'modules',
 			getter: 'rpc_modules'
 		}),
-		new web3._extend.Property({
+		new web3._extend.Method({
 			name: 'banned',
-			getter: 'rpc_banned'
+			call: 'rpc_banned',
+			params: 0
 		}),
 	]
 });
