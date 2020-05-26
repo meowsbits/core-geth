@@ -217,6 +217,17 @@ func (s *RPCService) Modules() map[string]string {
 	return modules
 }
 
+func (s *RPCService) Banned() map[string]interface{} {
+	s.server.services.mu.Lock()
+	defer s.server.services.mu.Unlock()
+
+	banned := make(map[string]interface{})
+	for k, v := range s.server.blacklist.Items() {
+		banned[k] = v
+	}
+	return banned
+}
+
 func (s *RPCService) methods() map[string][]string {
 	s.server.services.mu.Lock()
 	defer s.server.services.mu.Unlock()

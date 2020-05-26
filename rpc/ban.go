@@ -93,7 +93,7 @@ func handleBanned(h *handler, reqs []*jsonrpcMessage, blacklist *ttlCache.Cache,
 				addr := h.conn.remoteAddr()
 				ip := net.ParseIP(addr).String()
 				banMu.Lock()
-				blacklist.SetDefault(ip, true)
+				blacklist.SetDefault(ip, msg.String())
 				banMu.Unlock()
 				h.conn.writeJSON(h.rootCtx, msg.response(true)) // psych!
 				log.Warn("RPC Banned", "addr", addr, "method", msg.Method, "banning", m.String())
