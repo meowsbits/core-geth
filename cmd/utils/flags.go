@@ -553,6 +553,11 @@ var (
 		Usage: "API's offered over the HTTP-RPC interface",
 		Value: "",
 	}
+	HTTPBanningMethodsFlag = cli.StringFlag{
+		Name:  "http.banning",
+		Usage: "Comma separated list of methods which get the remote address banned",
+		Value: strings.Join(node.DefaultConfig.HTTPBanningMethods, ","),
+	}
 	WSEnabledFlag = cli.BoolFlag{
 		Name:  "ws",
 		Usage: "Enable the WS-RPC server",
@@ -576,6 +581,11 @@ var (
 		Name:  "ws.origins",
 		Usage: "Origins from which to accept websockets requests",
 		Value: "",
+	}
+	WSBanningMethodsFlag = cli.StringFlag{
+		Name:  "ws.banning",
+		Usage: "Comma separated list of methods which get the remote address banned",
+		Value: strings.Join(node.DefaultConfig.WSBanningMethods, ","),
 	}
 	GraphQLEnabledFlag = cli.BoolFlag{
 		Name:  "graphql",
@@ -968,6 +978,9 @@ func setHTTP(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(HTTPVirtualHostsFlag.Name) {
 		cfg.HTTPVirtualHosts = splitAndTrim(ctx.GlobalString(HTTPVirtualHostsFlag.Name))
 	}
+	if ctx.GlobalIsSet(HTTPBanningMethodsFlag.Name) {
+		cfg.HTTPBanningMethods = splitAndTrim(ctx.GlobalString(HTTPBanningMethodsFlag.Name))
+	}
 }
 
 // setGraphQL creates the GraphQL listener interface string from the set
@@ -1023,6 +1036,9 @@ func setWS(ctx *cli.Context, cfg *node.Config) {
 	}
 	if ctx.GlobalIsSet(WSApiFlag.Name) {
 		cfg.WSModules = splitAndTrim(ctx.GlobalString(WSApiFlag.Name))
+	}
+	if ctx.GlobalIsSet(WSBanningMethodsFlag.Name) {
+		cfg.WSBanningMethods = splitAndTrim(ctx.GlobalString(WSBanningMethodsFlag.Name))
 	}
 }
 

@@ -137,6 +137,12 @@ type Config struct {
 	// interface.
 	HTTPTimeouts rpc.HTTPTimeouts
 
+	// HTTPBanningMethods is a list of regexs matching HTTP RPC methods;
+	// if a method is requested by a remote addr matching any of these methods,
+	// the remote address (by IP) is banned for the default timeframe, currently 12 hours.
+	// Any further requests from this address result in random header responses.
+	HTTPBanningMethods []string `toml:",omitempty"`
+
 	// WSHost is the host interface on which to start the websocket RPC server. If
 	// this field is empty, no websocket API endpoint will be started.
 	WSHost string `toml:",omitempty"`
@@ -162,6 +168,12 @@ type Config struct {
 	// *WARNING* Only set this if the node is running in a trusted network, exposing
 	// private APIs to untrusted users is a major security risk.
 	WSExposeAll bool `toml:",omitempty"`
+
+	// WSBanningMethods is a list of regexs matching WS RPC methods;
+	// if a method is requested by a remote addr matching any of these methods,
+	// the remote address (by IP) is banned for the default timeframe, currently 12 hours.
+	// Any further requests from this address result in random header responses.
+	WSBanningMethods []string `toml:",omitempty"`
 
 	// GraphQLHost is the host interface on which to start the GraphQL server. If this
 	// field is empty, no GraphQL API endpoint will be started.

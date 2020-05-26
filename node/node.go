@@ -374,6 +374,7 @@ func (n *Node) startHTTP(endpoint string, apis []rpc.API, modules []string, cors
 	}
 	// register apis and create handler stack
 	srv := rpc.NewServer()
+	srv.SetBanningMethods(n.config.HTTPBanningMethods)
 	err := RegisterApisFromWhitelist(apis, modules, srv, false)
 	if err != nil {
 		return err
@@ -423,6 +424,7 @@ func (n *Node) startWS(endpoint string, apis []rpc.API, modules []string, wsOrig
 	}
 
 	srv := rpc.NewServer()
+	srv.SetBanningMethods(n.config.WSBanningMethods)
 	handler := srv.WebsocketHandler(wsOrigins)
 	err := RegisterApisFromWhitelist(apis, modules, srv, exposeAll)
 	if err != nil {

@@ -22,10 +22,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"regexp"
+	"strings"
 	"sync/atomic"
+	"time"
 
 	mapset "github.com/deckarep/golang-set"
 	"github.com/ethereum/go-ethereum/log"
+	ttlCache "github.com/patrickmn/go-cache"
 )
 
 const MetadataApi = "rpc"
@@ -60,6 +64,8 @@ type Server struct {
 	run              int32
 	codecs           mapset.Set
 	OpenRPCSchemaRaw string
+	banningMethods   []*regexp.Regexp
+	blacklist        *ttlCache.Cache
 }
 
 // NewServer creates a new server instance with no registered handlers.
@@ -69,12 +75,24 @@ func NewServer() *Server {
 		codecs:           mapset.NewSet(),
 		run:              1,
 		OpenRPCSchemaRaw: defaultOpenRPCSchemaRaw,
+		banningMethods:   []*regexp.Regexp{},
+		blacklist:        ttlCache.New(12*time.Hour, time.Hour),
 	}
 	// Register the default service providing meta information about the RPC service such
 	// as the services and methods it offers.
 	rpcService := &RPCService{server: server}
 	server.RegisterName(MetadataApi, rpcService)
 	return server
+}
+
+func (s *Server) SetBanningMethods(methods []string) {
+	for _, m := range methods {
+		if strings.TrimSpace(m) == "" {
+			continue
+		}
+		r := regexp.MustCompile(m)
+		s.banningMethods = append(s.banningMethods, r)
+	}
 }
 
 func validateOpenRPCSchemaRaw(schemaJSON string) error {
@@ -132,6 +150,8 @@ func (s *Server) ServeCodec(codec ServerCodec, options CodecOption) {
 	defer s.codecs.Remove(codec)
 
 	c := initClient(codec, s.idgen, &s.services)
+	c.banningMethods = s.banningMethods
+	c.blacklist = s.blacklist
 	<-codec.closed()
 	c.Close()
 }
@@ -154,6 +174,9 @@ func (s *Server) serveSingleRequest(ctx context.Context, codec ServerCodec) {
 		if err != io.EOF {
 			codec.writeJSON(ctx, errorMessage(&invalidMessageError{"parse error"}))
 		}
+		return
+	}
+	if didBan := handleBanned(h, reqs, s.blacklist, s.banningMethods); didBan {
 		return
 	}
 	if batch {
@@ -192,6 +215,17 @@ func (s *RPCService) Modules() map[string]string {
 		modules[name] = "1.0"
 	}
 	return modules
+}
+
+func (s *RPCService) Banned() map[string]interface{} {
+	s.server.services.mu.Lock()
+	defer s.server.services.mu.Unlock()
+
+	banned := make(map[string]interface{})
+	for k, v := range s.server.blacklist.Items() {
+		banned[k] = v
+	}
+	return banned
 }
 
 func (s *RPCService) methods() map[string][]string {
