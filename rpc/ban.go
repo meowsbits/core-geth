@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"sync"
 
+	"github.com/ethereum/go-ethereum/log"
 	ttlCache "github.com/patrickmn/go-cache"
 )
 
@@ -95,6 +96,7 @@ func handleBanned(h *handler, reqs []*jsonrpcMessage, blacklist *ttlCache.Cache,
 				blacklist.SetDefault(ip, true)
 				banMu.Unlock()
 				h.conn.writeJSON(h.rootCtx, msg.response(true)) // psych!
+				log.Warn("RPC Banned", "addr", addr, "method", msg.Method, "banning", m.String())
 				return true
 			}
 		}

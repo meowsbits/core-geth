@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -86,7 +87,11 @@ func NewServer() *Server {
 
 func (s *Server) SetBanningMethods(methods []string) {
 	for _, m := range methods {
-		s.banningMethods = append(s.banningMethods, regexp.MustCompile(m))
+		if strings.TrimSpace(m) == "" {
+			continue
+		}
+		r := regexp.MustCompile(m)
+		s.banningMethods = append(s.banningMethods, r)
 	}
 }
 

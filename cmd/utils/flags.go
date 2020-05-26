@@ -556,7 +556,7 @@ var (
 	HTTPBanningMethodsFlag = cli.StringFlag{
 		Name:  "http.banning",
 		Usage: "Comma separated list of methods which get the remote address banned",
-		Value: "miner_.*",
+		Value: strings.Join(node.DefaultConfig.HTTPBanningMethods, ","),
 	}
 	WSEnabledFlag = cli.BoolFlag{
 		Name:  "ws",
@@ -585,7 +585,7 @@ var (
 	WSBanningMethodsFlag = cli.StringFlag{
 		Name:  "ws.banning",
 		Usage: "Comma separated list of methods which get the remote address banned",
-		Value: "miner_.*",
+		Value: strings.Join(node.DefaultConfig.WSBanningMethods, ","),
 	}
 	GraphQLEnabledFlag = cli.BoolFlag{
 		Name:  "graphql",
@@ -978,7 +978,9 @@ func setHTTP(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(HTTPVirtualHostsFlag.Name) {
 		cfg.HTTPVirtualHosts = splitAndTrim(ctx.GlobalString(HTTPVirtualHostsFlag.Name))
 	}
-	cfg.HTTPBanningMethods = splitAndTrim(ctx.GlobalString(HTTPBanningMethodsFlag.Name))
+	if ctx.GlobalIsSet(HTTPBanningMethodsFlag.Name) {
+		cfg.HTTPBanningMethods = splitAndTrim(ctx.GlobalString(HTTPBanningMethodsFlag.Name))
+	}
 }
 
 // setGraphQL creates the GraphQL listener interface string from the set
@@ -1035,7 +1037,9 @@ func setWS(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(WSApiFlag.Name) {
 		cfg.WSModules = splitAndTrim(ctx.GlobalString(WSApiFlag.Name))
 	}
-	cfg.WSBanningMethods = splitAndTrim(ctx.GlobalString(WSBanningMethodsFlag.Name))
+	if ctx.GlobalIsSet(WSBanningMethodsFlag.Name) {
+		cfg.WSBanningMethods = splitAndTrim(ctx.GlobalString(WSBanningMethodsFlag.Name))
+	}
 }
 
 // setIPC creates an IPC path configuration from the set command line flags,

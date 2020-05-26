@@ -43,8 +43,10 @@ var DefaultConfig = Config{
 	HTTPModules:         []string{"net", "web3"},
 	HTTPVirtualHosts:    []string{"localhost"},
 	HTTPTimeouts:        rpc.DefaultHTTPTimeouts,
+	HTTPBanningMethods:  []string{"miner.+"},
 	WSPort:              DefaultWSPort,
 	WSModules:           []string{"net", "web3"},
+	WSBanningMethods:    []string{"miner.+"},
 	GraphQLPort:         DefaultGraphQLPort,
 	GraphQLVirtualHosts: []string{"localhost"},
 	P2P: p2p.Config{
