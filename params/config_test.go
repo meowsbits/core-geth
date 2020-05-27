@@ -104,51 +104,51 @@ func TestCheckCompatible(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			stored: MainnetChainConfig,
+			stored: MainnetChainConfigOriginal,
 			new: func() ctypes.ChainConfigurator {
 				c := &goethereum.ChainConfig{}
-				confp.Convert(MainnetChainConfig, c)
+				confp.Convert(MainnetChainConfigOriginal, c)
 				c.SetEthashEIP779Transition(uint64P(1900000))
 				return c
 			}(),
-			head: MainnetChainConfig.DAOForkBlock.Uint64(),
+			head: MainnetChainConfigOriginal.DAOForkBlock.Uint64(),
 			wantErr: &confp.ConfigCompatError{
 				What:         "DAO fork support flag",
-				StoredConfig: uint64P(MainnetChainConfig.DAOForkBlock.Uint64()),
+				StoredConfig: uint64P(MainnetChainConfigOriginal.DAOForkBlock.Uint64()),
 				NewConfig:    uint64P(1900000),
 				RewindTo:     1900000 - 1,
 			},
 		},
 		{
-			stored: MainnetChainConfig,
+			stored: MainnetChainConfigOriginal,
 			new: func() ctypes.ChainConfigurator {
 				c := &goethereum.ChainConfig{}
-				confp.Convert(MainnetChainConfig, c)
+				confp.Convert(MainnetChainConfigOriginal, c)
 				c.SetEthashEIP779Transition(nil)
 				return c
 			}(),
-			head: MainnetChainConfig.DAOForkBlock.Uint64(),
+			head: MainnetChainConfigOriginal.DAOForkBlock.Uint64(),
 			wantErr: &confp.ConfigCompatError{
 				What:         "DAO fork support flag",
-				StoredConfig: uint64P(MainnetChainConfig.DAOForkBlock.Uint64()),
+				StoredConfig: uint64P(MainnetChainConfigOriginal.DAOForkBlock.Uint64()),
 				NewConfig:    nil,
 				RewindTo:     1920000 - 1,
 			},
 		},
 		{
-			stored: MainnetChainConfig,
+			stored: MainnetChainConfigOriginal,
 			new: func() ctypes.ChainConfigurator {
 				c := &goethereum.ChainConfig{}
-				*c = *MainnetChainConfig
-				c.SetChainID(new(big.Int).Sub(MainnetChainConfig.EIP155Block, common.Big1))
+				*c = *MainnetChainConfigOriginal
+				c.SetChainID(new(big.Int).Sub(MainnetChainConfigOriginal.EIP155Block, common.Big1))
 				return c
 			}(),
-			head: MainnetChainConfig.EIP158Block.Uint64(),
+			head: MainnetChainConfigOriginal.EIP158Block.Uint64(),
 			wantErr: &confp.ConfigCompatError{
 				What:         "EIP155 chain ID",
-				StoredConfig: uint64P(MainnetChainConfig.EIP155Block.Uint64()),
-				NewConfig:    uint64P(MainnetChainConfig.EIP155Block.Uint64()),
-				RewindTo:     new(big.Int).Sub(MainnetChainConfig.EIP158Block, common.Big1).Uint64(),
+				StoredConfig: uint64P(MainnetChainConfigOriginal.EIP155Block.Uint64()),
+				NewConfig:    uint64P(MainnetChainConfigOriginal.EIP155Block.Uint64()),
+				RewindTo:     new(big.Int).Sub(MainnetChainConfigOriginal.EIP158Block, common.Big1).Uint64(),
 			},
 		},
 		{
@@ -206,10 +206,10 @@ func TestCheckCompatible(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			stored: MainnetChainConfig,
+			stored: MainnetChainConfigOriginal,
 			new: func() ctypes.ChainConfigurator {
 				c := &multigeth.MultiGethChainConfig{}
-				err := confp.Convert(MainnetChainConfig, c)
+				err := confp.Convert(MainnetChainConfigOriginal, c)
 				if err != nil {
 					panic(err)
 				}
@@ -295,7 +295,7 @@ func TestCheckCompatible(t *testing.T) {
 }
 
 func TestFoundationIsForked(t *testing.T) {
-	c := MainnetChainConfig
+	c := MainnetChainConfigOriginal
 	if !c.IsEnabled(c.GetEthashEIP2384Transition, big.NewInt(9200001)) {
 		t.Fatal("nofork muir bad")
 	}

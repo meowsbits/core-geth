@@ -43,7 +43,7 @@ func TestCreation(t *testing.T) {
 		// Mainnet test cases
 		{
 			"mainnet",
-			params.MainnetChainConfig,
+			params.MainnetChainConfigOriginal,
 			params.MainnetGenesisHash,
 			[]testcase{
 				{0, ID{Hash: checksumToBytes(0xfc64ec04), Next: 1150000}},       // Unsynced
@@ -202,7 +202,7 @@ func TestValidation(t *testing.T) {
 		{7279999, ID{Hash: checksumToBytes(0xa00bc324), Next: 7279999}, ErrLocalIncompatibleOrStale},
 	}
 	for i, tt := range tests {
-		filter := newFilter(params.MainnetChainConfig, params.MainnetGenesisHash, func() uint64 { return tt.head })
+		filter := newFilter(params.MainnetChainConfigOriginal, params.MainnetGenesisHash, func() uint64 { return tt.head })
 		if err := filter(tt.id); err != tt.err {
 			t.Errorf("test %d, head: %d: validation error mismatch: have %v, want %v", i, tt.head, err, tt.err)
 		}
@@ -242,7 +242,7 @@ func TestGatherForks(t *testing.T) {
 			[]uint64{1150000, 2500000, 3000000, 5000000, 5900000, 8772000, 9573000, 10500839},
 		},
 		{
-			params.MainnetChainConfig,
+			params.MainnetChainConfigOriginal,
 			[]uint64{1150000, 1920000, 2463000, 2675000, 4370000, 7280000, 9069000, 9200000},
 		},
 	}

@@ -493,24 +493,24 @@ func TestIsPrecompiledContractEnabled(t *testing.T) {
 	}
 	for _, a := range homeCts {
 		addCaseWhere(params.AllEthashProtocolChanges, a, big.NewInt(0), true)
-		addCaseWhere(params.MainnetChainConfig, a, big.NewInt(0), true)
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Sub(params.MainnetChainConfig.ByzantiumBlock, common.Big1), true)
-		addCaseWhere(params.MainnetChainConfig, a, params.MainnetChainConfig.ByzantiumBlock, true)
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Add(params.MainnetChainConfig.ByzantiumBlock, common.Big1), true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, big.NewInt(0), true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Sub(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, params.MainnetChainConfigOriginal.ByzantiumBlock, true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Add(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), true)
 	}
 	for _, a := range byzUniqCts {
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Sub(params.MainnetChainConfig.ByzantiumBlock, common.Big1), false)
-		addCaseWhere(params.MainnetChainConfig, a, params.MainnetChainConfig.ByzantiumBlock, true)
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Add(params.MainnetChainConfig.ByzantiumBlock, common.Big1), true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Sub(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), false)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, params.MainnetChainConfigOriginal.ByzantiumBlock, true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Add(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), true)
 	}
 	for _, a := range byzCts {
 		addCaseWhere(params.AllEthashProtocolChanges, a, big.NewInt(0), true)
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Add(params.MainnetChainConfig.ByzantiumBlock, common.Big1), true)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Add(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), true)
 	}
 	for _, a := range nonCts {
 		addCaseWhere(params.AllEthashProtocolChanges, a, big.NewInt(0), false)
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Sub(params.MainnetChainConfig.ByzantiumBlock, common.Big1), false)
-		addCaseWhere(params.MainnetChainConfig, a, new(big.Int).Add(params.MainnetChainConfig.ByzantiumBlock, common.Big1), false)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Sub(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), false)
+		addCaseWhere(params.MainnetChainConfigOriginal, a, new(big.Int).Add(params.MainnetChainConfigOriginal.ByzantiumBlock, common.Big1), false)
 	}
 
 	for i, c := range cases {

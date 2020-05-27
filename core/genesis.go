@@ -137,7 +137,7 @@ func configOrDefault(g *genesisT.Genesis, ghash common.Hash) ctypes.ChainConfigu
 	case g != nil:
 		return g.Config
 	case ghash == params.MainnetGenesisHash:
-		return params.MainnetChainConfig
+		return params.MainnetChainConfigOriginal
 	case ghash == params.SocialGenesisHash:
 		return params.SocialChainConfig
 	case ghash == params.MixGenesisHash:

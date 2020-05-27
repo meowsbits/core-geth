@@ -74,7 +74,7 @@ func TestDAOForkBlockNewChain(t *testing.T) {
 		expectVote  bool
 	}{
 		// Test DAO Default Mainnet
-		{"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
+		{"", params.MainnetChainConfigOriginal.GetEthashEIP779Transition(), true},
 		// test DAO Init Old Privnet
 		//{daoOldGenesis, nil, false},
 		// test DAO Default No Fork Privnet

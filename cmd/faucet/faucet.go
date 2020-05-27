@@ -109,16 +109,16 @@ var (
 func faucetDirFromConfig(chainConfig ctypes.ChainConfigurator) string {
 	datadir := filepath.Join(os.Getenv("HOME"), ".faucet")
 	for conf, suff := range map[ctypes.ChainConfigurator]string{
-		params.MainnetChainConfig:     "",
-		params.ClassicChainConfig:     "classic",
-		params.SocialChainConfig:      "social",
-		params.EthersocialChainConfig: "ethersocial",
-		params.MixChainConfig:         "mix",
-		params.RopstenChainConfig:     "ropsten",
-		params.RinkebyChainConfig:     "rinkeby",
-		params.GoerliChainConfig:      "goerli",
-		params.KottiChainConfig:       "kotti",
-		params.MordorChainConfig:      "mordor",
+		params.MainnetChainConfigOriginal: "",
+		params.ClassicChainConfig:         "classic",
+		params.SocialChainConfig:          "social",
+		params.EthersocialChainConfig:     "ethersocial",
+		params.MixChainConfig:             "mix",
+		params.RopstenChainConfig:         "ropsten",
+		params.RinkebyChainConfig:         "rinkeby",
+		params.GoerliChainConfig:          "goerli",
+		params.KottiChainConfig:           "kotti",
+		params.MordorChainConfig:          "mordor",
 	} {
 		if reflect.DeepEqual(chainConfig, conf) && suff != "" {
 			datadir = filepath.Join(datadir, suff)
