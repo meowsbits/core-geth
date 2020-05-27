@@ -28,7 +28,7 @@ var (
 	ClassicChainConfig = &multigeth.MultiGethChainConfig{
 		NetworkID: 1,
 		Ethash:    new(ctypes.EthashConfig),
-		ChainID:   big.NewInt(61),
+		ChainID:   big.NewInt(1),
 
 		EIP2FBlock: big.NewInt(1150000),
 		EIP7FBlock: big.NewInt(1150000),
