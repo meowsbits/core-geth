@@ -44,11 +44,12 @@ jobs:
           git checkout upstream/master
           git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
           go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/go-ethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          git checkout bench
 
       - name: Benchstat
         run: |
           go get golang.org/x/perf/cmd/benchstat
-          benchstat ./build/bench-results/go-ethereum*.out ./build/bench-results/core-geth*.out | tee ./build/bench-results/stat-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
+          benchstat ./build/bench-results/go-ethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/core-geth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out | tee ./build/bench-results/stat-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
           ./build/filter-stat.sh ./build/bench-results/stat-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
 
       - name: Commit results
