@@ -32,7 +32,7 @@ jobs:
           go get -v -t -d ./...
           date --iso-8601=hours | sed 's/:/_/g' > DATEFILE
           mkdir bench-results
-          apt-get -y install bc
+          sudo apt-get -y install bc
 
       - name: Bench core-geth
         run: |
