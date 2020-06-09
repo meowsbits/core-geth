@@ -1,0 +1,50 @@
+name: Go
+
+on:
+  push:
+    branches: [ bench ]
+  pull_request:
+    branches: [ bench ]
+
+jobs:
+
+  build:
+    name: Bench
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Git remotes
+        run: |
+          git remote add upstream https://github.com/ethereum/go-ethereum.git
+          git fetch upstream
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          go get golang.org/x/perf/cmd/benchstat
+          mkdir bench-results
+
+      - name: Bench core-geth
+        run: go test -bench=. -run='^$' -count=5 ./... | tee ./bench-results/core-geth.out
+
+      - name: Bench go-ethereum
+        run: |
+          git checkout upstream/master
+          go test -bench=. -run='^$' -count=5 ./... | tee ./bench-results/go-ethereum.out
+
+      - name: Benchstat
+        run: benchstat ./bench-results/go-ethereum.out ./bench-results/core-geth.out | tee ./bench-results/stat.txt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: bench-results
+          path: ./bench-results/
