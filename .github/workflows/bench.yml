@@ -31,22 +31,25 @@ jobs:
         run: |
           go get -v -t -d ./...
           mkdir bench-results
+          date --iso-8601=hours | sed 's/:/_/g' > DATEFILE
 
       - name: Bench core-geth
         run: |
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./bench-results/core-geth.out
+          git rev-parse HEAD | cut -c1-10 > COREGETH_HEAD
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./bench-results/core-geth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
 
       - name: Bench go-ethereum
         run: |
           git checkout upstream/master
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./bench-results/go-ethereum.out
+          git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./bench-results/go-ethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
 
       - name: Benchstat
         run: |
           go get golang.org/x/perf/cmd/benchstat
-          benchstat ./bench-results/go-ethereum.out ./bench-results/core-geth.out | tee ./bench-results/stat.txt
+          benchstat ./bench-results/go-ethereum*.out ./bench-results/core-geth*.out | tee ./bench-results/stat-$(cat DATEFILE)-$(GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
 
       - uses: actions/upload-artifact@v2
         with:
-          name: bench-results
+          name: bench-results-$(cat DATEFILE)-$(GOETHEREUM_HEAD)-$(cat COREGETH_HEAD)
           path: ./bench-results/
