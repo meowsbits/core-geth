@@ -1,4 +1,4 @@
-name: Go
+name: Benchmark
 
 on:
   push:
@@ -34,12 +34,12 @@ jobs:
           mkdir bench-results
 
       - name: Bench core-geth
-        run: go test -bench=. -run='^$' -count=5 ./... | tee ./bench-results/core-geth.out
+        run: go test -timeout=60s -bench=. -run='^$' -count=5 ./... | tee ./bench-results/core-geth.out
 
       - name: Bench go-ethereum
         run: |
           git checkout upstream/master
-          go test -bench=. -run='^$' -count=5 ./... | tee ./bench-results/go-ethereum.out
+          go test -timeout=60s -bench=. -run='^$' -count=5 ./... | tee ./bench-results/go-ethereum.out
 
       - name: Benchstat
         run: benchstat ./bench-results/go-ethereum.out ./bench-results/core-geth.out | tee ./bench-results/stat.txt
