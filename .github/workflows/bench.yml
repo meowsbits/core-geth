@@ -30,8 +30,9 @@ jobs:
       - name: Get dependencies
         run: |
           go get -v -t -d ./...
-          mkdir bench-results
           date --iso-8601=hours | sed 's/:/_/g' > DATEFILE
+          mkdir bench-results
+          apt-get install bc
 
       - name: Bench core-geth
         run: |
@@ -48,6 +49,7 @@ jobs:
         run: |
           go get golang.org/x/perf/cmd/benchstat
           benchstat ./bench-results/go-ethereum*.out ./bench-results/core-geth*.out | tee ./bench-results/stat-$(cat DATEFILE)-$(GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
+          ./build/filter-stat.sh ./bench-results/stat-$(cat DATEFILE)-$(GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
 
       - uses: actions/upload-artifact@v2
         with:
