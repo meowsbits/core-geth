@@ -809,6 +809,9 @@ func benchmarkHashimotoFullMmap(b *testing.B, name string, lock bool) {
 
 // Benchmarks the full verification performance for mmap
 func BenchmarkHashimotoFullMmap(b *testing.B) {
+	if os.Getenv("CI") == "true" && os.Getenv("GITHUB_RUN_ID") != "" {
+		b.Skip("Skipped on Github CI. Long running.")
+	}
 	benchmarkHashimotoFullMmap(b, "WithLock", true)
 	benchmarkHashimotoFullMmap(b, "WithoutLock", false)
 }
