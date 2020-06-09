@@ -30,7 +30,6 @@ jobs:
       - name: Get dependencies
         run: |
           go get -v -t -d ./...
-          go get golang.org/x/perf/cmd/benchstat
           mkdir bench-results
 
       - name: Bench core-geth
@@ -43,7 +42,9 @@ jobs:
           go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./bench-results/go-ethereum.out
 
       - name: Benchstat
-        run: benchstat ./bench-results/go-ethereum.out ./bench-results/core-geth.out | tee ./bench-results/stat.txt
+        run: |
+          go get golang.org/x/perf/cmd/benchstat
+          benchstat ./bench-results/go-ethereum.out ./bench-results/core-geth.out | tee ./bench-results/stat.txt
 
       - uses: actions/upload-artifact@v2
         with:
