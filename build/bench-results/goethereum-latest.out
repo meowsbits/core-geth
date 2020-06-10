@@ -1,0 +1,2378 @@
+?   	github.com/ethereum/go-ethereum	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/accounts	0.033s
+PASS
+ok  	github.com/ethereum/go-ethereum/accounts/abi	0.044s
+PASS
+ok  	github.com/ethereum/go-ethereum/accounts/abi/bind	0.054s
+PASS
+ok  	github.com/ethereum/go-ethereum/accounts/abi/bind/backends	0.055s
+?   	github.com/ethereum/go-ethereum/accounts/external	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/accounts/keystore	0.030s
+?   	github.com/ethereum/go-ethereum/accounts/scwallet	[no test files]
+?   	github.com/ethereum/go-ethereum/accounts/usbwallet	[no test files]
+?   	github.com/ethereum/go-ethereum/accounts/usbwallet/trezor	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/abidump	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/abigen	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/bootnode	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/checkpoint-admin	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/clef	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/cmd/devp2p	0.055s
+PASS
+ok  	github.com/ethereum/go-ethereum/cmd/ethkey	0.054s
+?   	github.com/ethereum/go-ethereum/cmd/evm	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/evm/internal/compiler	[no test files]
+?   	github.com/ethereum/go-ethereum/cmd/faucet	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/cmd/geth	0.052s
+?   	github.com/ethereum/go-ethereum/cmd/p2psim	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/cmd/puppeth	0.039s
+?   	github.com/ethereum/go-ethereum/cmd/rlpdump	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/cmd/utils	0.054s
+?   	github.com/ethereum/go-ethereum/cmd/wnode	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/common
+BenchmarkAddressHex-2   	  554779	      2257 ns/op
+BenchmarkAddressHex-2   	  714748	      2230 ns/op
+BenchmarkAddressHex-2   	  583753	      2196 ns/op
+BenchmarkAddressHex-2   	  777688	      2305 ns/op
+BenchmarkAddressHex-2   	  689845	      2245 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/common	9.282s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/common/bitutil
+BenchmarkFastXOR1KB-2              	 6658530	       157 ns/op
+BenchmarkFastXOR1KB-2              	 8045241	       151 ns/op
+BenchmarkFastXOR1KB-2              	 7828488	       148 ns/op
+BenchmarkFastXOR1KB-2              	 8059821	       149 ns/op
+BenchmarkFastXOR1KB-2              	 7927081	       149 ns/op
+BenchmarkFastXOR2KB-2              	 4271925	       281 ns/op
+BenchmarkFastXOR2KB-2              	 4225665	       281 ns/op
+BenchmarkFastXOR2KB-2              	 4281727	       282 ns/op
+BenchmarkFastXOR2KB-2              	 4231224	       280 ns/op
+BenchmarkFastXOR2KB-2              	 4221973	       278 ns/op
+BenchmarkFastXOR4KB-2              	 2214358	       541 ns/op
+BenchmarkFastXOR4KB-2              	 2209868	       551 ns/op
+BenchmarkFastXOR4KB-2              	 2213205	       543 ns/op
+BenchmarkFastXOR4KB-2              	 2206659	       542 ns/op
+BenchmarkFastXOR4KB-2              	 2219737	       541 ns/op
+BenchmarkBaseXOR1KB-2              	 1000000	      1037 ns/op
+BenchmarkBaseXOR1KB-2              	 1000000	      1031 ns/op
+BenchmarkBaseXOR1KB-2              	 1000000	      1037 ns/op
+BenchmarkBaseXOR1KB-2              	  995458	      1031 ns/op
+BenchmarkBaseXOR1KB-2              	 1000000	      1025 ns/op
+BenchmarkBaseXOR2KB-2              	  547960	      2047 ns/op
+BenchmarkBaseXOR2KB-2              	  495906	      2048 ns/op
+BenchmarkBaseXOR2KB-2              	  530043	      2038 ns/op
+BenchmarkBaseXOR2KB-2              	  581847	      2036 ns/op
+BenchmarkBaseXOR2KB-2              	  594816	      2030 ns/op
+BenchmarkBaseXOR4KB-2              	  293097	      4061 ns/op
+BenchmarkBaseXOR4KB-2              	  286927	      4044 ns/op
+BenchmarkBaseXOR4KB-2              	  288135	      4060 ns/op
+BenchmarkBaseXOR4KB-2              	  254373	      4095 ns/op
+BenchmarkBaseXOR4KB-2              	  293688	      4032 ns/op
+BenchmarkFastAND1KB-2              	 8150959	       149 ns/op
+BenchmarkFastAND1KB-2              	 7920481	       148 ns/op
+BenchmarkFastAND1KB-2              	 8146173	       151 ns/op
+BenchmarkFastAND1KB-2              	 8081630	       149 ns/op
+BenchmarkFastAND1KB-2              	 7811565	       149 ns/op
+BenchmarkFastAND2KB-2              	 4235370	       282 ns/op
+BenchmarkFastAND2KB-2              	 4299224	       289 ns/op
+BenchmarkFastAND2KB-2              	 4149541	       293 ns/op
+BenchmarkFastAND2KB-2              	 4190398	       294 ns/op
+BenchmarkFastAND2KB-2              	 3916530	       285 ns/op
+BenchmarkFastAND4KB-2              	 2218128	       566 ns/op
+BenchmarkFastAND4KB-2              	 2109850	       540 ns/op
+BenchmarkFastAND4KB-2              	 2215448	       542 ns/op
+BenchmarkFastAND4KB-2              	 2220837	       536 ns/op
+BenchmarkFastAND4KB-2              	 2198595	       545 ns/op
+BenchmarkBaseAND1KB-2              	 1000000	      1072 ns/op
+BenchmarkBaseAND1KB-2              	 1000000	      1050 ns/op
+BenchmarkBaseAND1KB-2              	 1141957	      1129 ns/op
+BenchmarkBaseAND1KB-2              	 1092854	      1036 ns/op
+BenchmarkBaseAND1KB-2              	 1148206	      1044 ns/op
+BenchmarkBaseAND2KB-2              	  576925	      2059 ns/op
+BenchmarkBaseAND2KB-2              	  577402	      2054 ns/op
+BenchmarkBaseAND2KB-2              	  607894	      2075 ns/op
+BenchmarkBaseAND2KB-2              	  555034	      2077 ns/op
+BenchmarkBaseAND2KB-2              	  587127	      2061 ns/op
+BenchmarkBaseAND4KB-2              	  271851	      4108 ns/op
+BenchmarkBaseAND4KB-2              	  297804	      4196 ns/op
+BenchmarkBaseAND4KB-2              	  280060	      4077 ns/op
+BenchmarkBaseAND4KB-2              	  265632	      4141 ns/op
+BenchmarkBaseAND4KB-2              	  290307	      4049 ns/op
+BenchmarkFastOR1KB-2               	 7702640	       157 ns/op
+BenchmarkFastOR1KB-2               	 7141935	       153 ns/op
+BenchmarkFastOR1KB-2               	 8125726	       149 ns/op
+BenchmarkFastOR1KB-2               	 7941168	       151 ns/op
+BenchmarkFastOR1KB-2               	 8267186	       147 ns/op
+BenchmarkFastOR2KB-2               	 4315725	       280 ns/op
+BenchmarkFastOR2KB-2               	 4335391	       279 ns/op
+BenchmarkFastOR2KB-2               	 4313384	       284 ns/op
+BenchmarkFastOR2KB-2               	 4321249	       283 ns/op
+BenchmarkFastOR2KB-2               	 4288226	       280 ns/op
+BenchmarkFastOR4KB-2               	 2233971	       548 ns/op
+BenchmarkFastOR4KB-2               	 2200615	       539 ns/op
+BenchmarkFastOR4KB-2               	 2187156	       544 ns/op
+BenchmarkFastOR4KB-2               	 2207991	       542 ns/op
+BenchmarkFastOR4KB-2               	 2213673	       545 ns/op
+BenchmarkBaseOR1KB-2               	 1000000	      1042 ns/op
+BenchmarkBaseOR1KB-2               	 1000000	      1049 ns/op
+BenchmarkBaseOR1KB-2               	 1145517	      1050 ns/op
+BenchmarkBaseOR1KB-2               	 1000000	      1042 ns/op
+BenchmarkBaseOR1KB-2               	 1000000	      1048 ns/op
+BenchmarkBaseOR2KB-2               	  584827	      2036 ns/op
+BenchmarkBaseOR2KB-2               	  576969	      2039 ns/op
+BenchmarkBaseOR2KB-2               	  585900	      2052 ns/op
+BenchmarkBaseOR2KB-2               	  589652	      2064 ns/op
+BenchmarkBaseOR2KB-2               	  544668	      2071 ns/op
+BenchmarkBaseOR4KB-2               	  290899	      4057 ns/op
+BenchmarkBaseOR4KB-2               	  292630	      4090 ns/op
+BenchmarkBaseOR4KB-2               	  305635	      4060 ns/op
+BenchmarkBaseOR4KB-2               	  287425	      4069 ns/op
+BenchmarkBaseOR4KB-2               	  296808	      4059 ns/op
+BenchmarkFastTest1KB-2             	 9920089	       122 ns/op
+BenchmarkFastTest1KB-2             	 9923576	       122 ns/op
+BenchmarkFastTest1KB-2             	 9944539	       121 ns/op
+BenchmarkFastTest1KB-2             	 9486666	       121 ns/op
+BenchmarkFastTest1KB-2             	10066467	       122 ns/op
+BenchmarkFastTest2KB-2             	 5344371	       223 ns/op
+BenchmarkFastTest2KB-2             	 5340882	       225 ns/op
+BenchmarkFastTest2KB-2             	 5432485	       224 ns/op
+BenchmarkFastTest2KB-2             	 5361450	       224 ns/op
+BenchmarkFastTest2KB-2             	 5330738	       227 ns/op
+BenchmarkFastTest4KB-2             	 2793840	       433 ns/op
+BenchmarkFastTest4KB-2             	 2808135	       436 ns/op
+BenchmarkFastTest4KB-2             	 2789029	       433 ns/op
+BenchmarkFastTest4KB-2             	 2768047	       434 ns/op
+BenchmarkFastTest4KB-2             	 2762910	       434 ns/op
+BenchmarkBaseTest1KB-2             	 1399477	       834 ns/op
+BenchmarkBaseTest1KB-2             	 1437369	       841 ns/op
+BenchmarkBaseTest1KB-2             	 1399916	       845 ns/op
+BenchmarkBaseTest1KB-2             	 1422693	       847 ns/op
+BenchmarkBaseTest1KB-2             	 1435996	       848 ns/op
+BenchmarkBaseTest2KB-2             	  663824	      1686 ns/op
+BenchmarkBaseTest2KB-2             	  624927	      1646 ns/op
+BenchmarkBaseTest2KB-2             	  719092	      1653 ns/op
+BenchmarkBaseTest2KB-2             	  615734	      1666 ns/op
+BenchmarkBaseTest2KB-2             	  712518	      1687 ns/op
+BenchmarkBaseTest4KB-2             	  353031	      3374 ns/op
+BenchmarkBaseTest4KB-2             	  357974	      3399 ns/op
+BenchmarkBaseTest4KB-2             	  355802	      3342 ns/op
+BenchmarkBaseTest4KB-2             	  359870	      3318 ns/op
+BenchmarkBaseTest4KB-2             	  352756	      3360 ns/op
+BenchmarkEncoding1KBVerySparse-2   	  639100	      1744 ns/op	    2176 B/op	       3 allocs/op
+BenchmarkEncoding1KBVerySparse-2   	  677138	      1737 ns/op	    2176 B/op	       3 allocs/op
+BenchmarkEncoding1KBVerySparse-2   	  688786	      1844 ns/op	    2176 B/op	       3 allocs/op
+BenchmarkEncoding1KBVerySparse-2   	  703515	      1706 ns/op	    2176 B/op	       3 allocs/op
+BenchmarkEncoding1KBVerySparse-2   	  707559	      1747 ns/op	    2176 B/op	       3 allocs/op
+BenchmarkEncoding2KBVerySparse-2   	   95511	     12367 ns/op	    4992 B/op	      14 allocs/op
+BenchmarkEncoding2KBVerySparse-2   	   96526	     12029 ns/op	    4992 B/op	      14 allocs/op
+BenchmarkEncoding2KBVerySparse-2   	   89164	     12369 ns/op	    4992 B/op	      14 allocs/op
+BenchmarkEncoding2KBVerySparse-2   	   96423	     12709 ns/op	    4992 B/op	      14 allocs/op
+BenchmarkEncoding2KBVerySparse-2   	   98875	     12091 ns/op	    4992 B/op	      14 allocs/op
+BenchmarkEncoding4KBVerySparse-2   	   50280	     23894 ns/op	    9984 B/op	      15 allocs/op
+BenchmarkEncoding4KBVerySparse-2   	   50581	     23749 ns/op	    9984 B/op	      15 allocs/op
+BenchmarkEncoding4KBVerySparse-2   	   49912	     23981 ns/op	    9984 B/op	      15 allocs/op
+BenchmarkEncoding4KBVerySparse-2   	   49873	     23831 ns/op	    9984 B/op	      15 allocs/op
+BenchmarkEncoding4KBVerySparse-2   	   50065	     23783 ns/op	    9984 B/op	      15 allocs/op
+BenchmarkEncoding1KBSparse-2       	  185650	      6592 ns/op	    2552 B/op	      16 allocs/op
+BenchmarkEncoding1KBSparse-2       	  176190	      6528 ns/op	    2552 B/op	      16 allocs/op
+BenchmarkEncoding1KBSparse-2       	  182817	      6578 ns/op	    2552 B/op	      16 allocs/op
+BenchmarkEncoding1KBSparse-2       	  181443	      6514 ns/op	    2552 B/op	      16 allocs/op
+BenchmarkEncoding1KBSparse-2       	  182694	      6470 ns/op	    2552 B/op	      16 allocs/op
+BenchmarkEncoding2KBSparse-2       	   95938	     12852 ns/op	    5088 B/op	      16 allocs/op
+BenchmarkEncoding2KBSparse-2       	   95058	     12722 ns/op	    5088 B/op	      16 allocs/op
+BenchmarkEncoding2KBSparse-2       	   94423	     12857 ns/op	    5088 B/op	      16 allocs/op
+BenchmarkEncoding2KBSparse-2       	   92838	     12942 ns/op	    5088 B/op	      16 allocs/op
+BenchmarkEncoding2KBSparse-2       	   97003	     13145 ns/op	    5088 B/op	      16 allocs/op
+BenchmarkEncoding4KBSparse-2       	   46540	     25317 ns/op	   10312 B/op	      17 allocs/op
+BenchmarkEncoding4KBSparse-2       	   45112	     25706 ns/op	   10312 B/op	      17 allocs/op
+BenchmarkEncoding4KBSparse-2       	   46666	     25702 ns/op	   10312 B/op	      17 allocs/op
+BenchmarkEncoding4KBSparse-2       	   46292	     25565 ns/op	   10312 B/op	      17 allocs/op
+BenchmarkEncoding4KBSparse-2       	   46868	     25882 ns/op	   10312 B/op	      17 allocs/op
+BenchmarkEncoding1KBDense-2        	   94837	     12832 ns/op	    3464 B/op	      17 allocs/op
+BenchmarkEncoding1KBDense-2        	   91663	     12683 ns/op	    3464 B/op	      17 allocs/op
+BenchmarkEncoding1KBDense-2        	   96145	     12678 ns/op	    3464 B/op	      17 allocs/op
+BenchmarkEncoding1KBDense-2        	   95083	     12755 ns/op	    3464 B/op	      17 allocs/op
+BenchmarkEncoding1KBDense-2        	   95890	     12688 ns/op	    3464 B/op	      17 allocs/op
+BenchmarkEncoding2KBDense-2        	   45082	     27469 ns/op	    6896 B/op	      17 allocs/op
+BenchmarkEncoding2KBDense-2        	   43765	     27471 ns/op	    6896 B/op	      17 allocs/op
+BenchmarkEncoding2KBDense-2        	   44578	     27282 ns/op	    6896 B/op	      17 allocs/op
+BenchmarkEncoding2KBDense-2        	   41865	     27813 ns/op	    6896 B/op	      17 allocs/op
+BenchmarkEncoding2KBDense-2        	   44134	     27177 ns/op	    6896 B/op	      17 allocs/op
+BenchmarkEncoding4KBDense-2        	   18392	     64820 ns/op	   13768 B/op	      17 allocs/op
+BenchmarkEncoding4KBDense-2        	   18252	     65418 ns/op	   13768 B/op	      17 allocs/op
+BenchmarkEncoding4KBDense-2        	   18531	     65060 ns/op	   13768 B/op	      17 allocs/op
+BenchmarkEncoding4KBDense-2        	   18340	     64838 ns/op	   13768 B/op	      17 allocs/op
+BenchmarkEncoding4KBDense-2        	   18426	     64389 ns/op	   13768 B/op	      17 allocs/op
+BenchmarkEncoding1KBSaturated-2    	  109590	     10870 ns/op	    3848 B/op	      17 allocs/op
+BenchmarkEncoding1KBSaturated-2    	  110978	     10931 ns/op	    3848 B/op	      17 allocs/op
+BenchmarkEncoding1KBSaturated-2    	  112077	     11009 ns/op	    3848 B/op	      17 allocs/op
+BenchmarkEncoding1KBSaturated-2    	  102626	     10873 ns/op	    3848 B/op	      17 allocs/op
+BenchmarkEncoding1KBSaturated-2    	  109982	     10894 ns/op	    3848 B/op	      17 allocs/op
+BenchmarkEncoding2KBSaturated-2    	   55856	     21835 ns/op	    7664 B/op	      17 allocs/op
+BenchmarkEncoding2KBSaturated-2    	   56845	     21071 ns/op	    7664 B/op	      17 allocs/op
+BenchmarkEncoding2KBSaturated-2    	   57506	     20922 ns/op	    7664 B/op	      17 allocs/op
+BenchmarkEncoding2KBSaturated-2    	   58597	     21122 ns/op	    7664 B/op	      17 allocs/op
+BenchmarkEncoding2KBSaturated-2    	   53467	     21018 ns/op	    7664 B/op	      17 allocs/op
+BenchmarkEncoding4KBSaturated-2    	   29233	     41694 ns/op	   15560 B/op	      17 allocs/op
+BenchmarkEncoding4KBSaturated-2    	   29652	     40184 ns/op	   15560 B/op	      17 allocs/op
+BenchmarkEncoding4KBSaturated-2    	   28585	     41277 ns/op	   15560 B/op	      17 allocs/op
+BenchmarkEncoding4KBSaturated-2    	   29172	     40812 ns/op	   15560 B/op	      17 allocs/op
+BenchmarkEncoding4KBSaturated-2    	   29132	     41194 ns/op	   15560 B/op	      17 allocs/op
+PASS
+ok  	github.com/ethereum/go-ethereum/common/bitutil	255.040s
+PASS
+ok  	github.com/ethereum/go-ethereum/common/compiler	0.003s
+PASS
+ok  	github.com/ethereum/go-ethereum/common/fdlimit	0.003s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/common/hexutil
+BenchmarkUnmarshalBytes-2    	13769457	        86.7 ns/op
+BenchmarkUnmarshalBytes-2    	14065124	        87.6 ns/op
+BenchmarkUnmarshalBytes-2    	14042804	        87.5 ns/op
+BenchmarkUnmarshalBytes-2    	13748821	        87.1 ns/op
+BenchmarkUnmarshalBytes-2    	13524253	        88.3 ns/op
+BenchmarkUnmarshalBig-2      	 9856449	       124 ns/op
+BenchmarkUnmarshalBig-2      	 9551137	       125 ns/op
+BenchmarkUnmarshalBig-2      	 9772190	       125 ns/op
+BenchmarkUnmarshalBig-2      	 9609466	       128 ns/op
+BenchmarkUnmarshalBig-2      	 9647960	       124 ns/op
+BenchmarkUnmarshalUint64-2   	37065900	        32.6 ns/op
+BenchmarkUnmarshalUint64-2   	35684406	        32.3 ns/op
+BenchmarkUnmarshalUint64-2   	37230124	        32.9 ns/op
+BenchmarkUnmarshalUint64-2   	35489787	        33.0 ns/op
+BenchmarkUnmarshalUint64-2   	36873974	        32.2 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/common/hexutil	19.331s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/common/math
+BenchmarkPaddedBigBytesLargePadding-2      	15054268	        79.5 ns/op
+BenchmarkPaddedBigBytesLargePadding-2      	13135022	        80.4 ns/op
+BenchmarkPaddedBigBytesLargePadding-2      	14823878	        81.6 ns/op
+BenchmarkPaddedBigBytesLargePadding-2      	14819558	        80.8 ns/op
+BenchmarkPaddedBigBytesLargePadding-2      	14737724	        81.0 ns/op
+BenchmarkPaddedBigBytesSmallPadding-2      	17493799	        68.1 ns/op
+BenchmarkPaddedBigBytesSmallPadding-2      	17878518	        68.5 ns/op
+BenchmarkPaddedBigBytesSmallPadding-2      	17439111	        68.4 ns/op
+BenchmarkPaddedBigBytesSmallPadding-2      	16582251	        70.0 ns/op
+BenchmarkPaddedBigBytesSmallPadding-2      	17913001	        69.4 ns/op
+BenchmarkPaddedBigBytesSmallOnePadding-2   	18540884	        66.6 ns/op
+BenchmarkPaddedBigBytesSmallOnePadding-2   	18817218	        66.4 ns/op
+BenchmarkPaddedBigBytesSmallOnePadding-2   	18017172	        65.9 ns/op
+BenchmarkPaddedBigBytesSmallOnePadding-2   	18371528	        68.2 ns/op
+BenchmarkPaddedBigBytesSmallOnePadding-2   	17892595	        69.1 ns/op
+BenchmarkByteAtBrandNew-2                  	1000000000	         0.510 ns/op
+BenchmarkByteAtBrandNew-2                  	1000000000	         0.505 ns/op
+BenchmarkByteAtBrandNew-2                  	1000000000	         0.517 ns/op
+BenchmarkByteAtBrandNew-2                  	1000000000	         0.518 ns/op
+BenchmarkByteAtBrandNew-2                  	1000000000	         0.510 ns/op
+BenchmarkByteAt-2                          	1000000000	         0.509 ns/op
+BenchmarkByteAt-2                          	1000000000	         0.520 ns/op
+BenchmarkByteAt-2                          	1000000000	         0.505 ns/op
+BenchmarkByteAt-2                          	1000000000	         0.515 ns/op
+BenchmarkByteAt-2                          	1000000000	         0.505 ns/op
+BenchmarkByteAtOld-2                       	18017091	        66.5 ns/op
+BenchmarkByteAtOld-2                       	18173062	        67.1 ns/op
+BenchmarkByteAtOld-2                       	18406840	        67.0 ns/op
+BenchmarkByteAtOld-2                       	18149890	        67.0 ns/op
+BenchmarkByteAtOld-2                       	18446144	        66.5 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/common/math	31.269s
+PASS
+ok  	github.com/ethereum/go-ethereum/common/mclock	0.004s
+PASS
+ok  	github.com/ethereum/go-ethereum/common/prque	0.003s
+?   	github.com/ethereum/go-ethereum/consensus	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/consensus/clique	0.029s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/consensus/ethash
+BenchmarkCacheGeneration-2          	       2	 783123428 ns/op
+BenchmarkCacheGeneration-2          	       2	 785853559 ns/op
+BenchmarkCacheGeneration-2          	       2	 786611788 ns/op
+BenchmarkCacheGeneration-2          	       2	 783753283 ns/op
+BenchmarkCacheGeneration-2          	       2	 785022689 ns/op
+BenchmarkSmallDatasetGeneration-2   	       7	 159374821 ns/op
+BenchmarkSmallDatasetGeneration-2   	       7	 157408305 ns/op
+BenchmarkSmallDatasetGeneration-2   	       7	 154974236 ns/op
+BenchmarkSmallDatasetGeneration-2   	       7	 155693715 ns/op
+BenchmarkSmallDatasetGeneration-2   	       7	 158161626 ns/op
+BenchmarkHashimotoLight-2           	     651	   1822966 ns/op
+BenchmarkHashimotoLight-2           	     681	   1746958 ns/op
+BenchmarkHashimotoLight-2           	     662	   1760696 ns/op
+BenchmarkHashimotoLight-2           	     663	   1797065 ns/op
+BenchmarkHashimotoLight-2           	     681	   1808399 ns/op
+BenchmarkHashimotoFullSmall-2       	  165974	      7084 ns/op
+BenchmarkHashimotoFullSmall-2       	  166617	      7130 ns/op
+BenchmarkHashimotoFullSmall-2       	  168414	      7175 ns/op
+BenchmarkHashimotoFullSmall-2       	  167396	      7157 ns/op
+BenchmarkHashimotoFullSmall-2       	  169279	      7246 ns/op
+SIGQUIT: quit
+PC=0x835241 m=0 sigcode=0
+
+goroutine 230 [running]:
+github.com/ethereum/go-ethereum/consensus/ethash.fnvHash(0xc000055e50, 0x10, 0x10, 0xc000896900, 0x33a570, 0x33a570)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:228 +0x31 fp=0xc000055e10 sp=0xc000055df0 pc=0x835241
+github.com/ethereum/go-ethereum/consensus/ethash.generateDatasetItem(0xc000580000, 0x3fffb0, 0x3fffb0, 0xc0018ea79f, 0xc00000e060, 0xc09492d4c0, 0x40, 0x40)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:255 +0x217 fp=0xc000055ea8 sp=0xc000055e10 pc=0x835487
+github.com/ethereum/go-ethereum/consensus/ethash.generateDataset.func2(0xc00002a0f0, 0x7ffff100, 0x2, 0xc000580000, 0x3fffb0, 0x3fffb0, 0x0, 0xc002180000, 0x7ffff100, 0x7ffff100, ...)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:316 +0x181 fp=0xc000055f58 sp=0xc000055ea8 pc=0x849721
+runtime.goexit()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/asm_amd64.s:1373 +0x1 fp=0xc000055f60 sp=0xc000055f58 pc=0x469311
+created by github.com/ethereum/go-ethereum/consensus/ethash.generateDataset
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:300 +0x351
+
+goroutine 1 [chan receive, 5 minutes]:
+testing.(*B).run1(0xc0003b7a40, 0xc0003b7a40)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:233 +0x9e
+testing.(*B).Run(0xc000119500, 0x963dc6, 0x1a, 0x98f068, 0x4ff800)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:651 +0x341
+testing.runBenchmarks.func1(0xc000119500)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:533 +0x78
+testing.(*B).runN(0xc000119500, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.runBenchmarks(0x970e1c, 0x30, 0xc00000fa80, 0xf2a680, 0x5, 0x5, 0xc0000d3ec0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:539 +0x390
+testing.(*M).Run(0xc00011e180, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/testing.go:1205 +0x42d
+main.main()
+	_testmain.go:80 +0x135
+
+goroutine 5 [chan receive]:
+github.com/ethereum/go-ethereum/metrics.(*meterArbiter).tick(0xf77e80)
+	/home/runner/work/core-geth/core-geth/metrics/meter.go:289 +0x78
+created by github.com/ethereum/go-ethereum/metrics.NewMeterForced
+	/home/runner/work/core-geth/core-geth/metrics/meter.go:70 +0x105
+
+goroutine 6 [select]:
+github.com/ethereum/go-ethereum/consensus/ethash.(*remoteSealer).loop(0xc000158000)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/sealer.go:278 +0x258
+created by github.com/ethereum/go-ethereum/consensus/ethash.startRemoteSealer
+	/home/runner/work/core-geth/core-geth/consensus/ethash/sealer.go:262 +0x2ae
+
+goroutine 228 [chan receive, 5 minutes]:
+testing.(*B).run1(0xc000118000, 0xc000118000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:233 +0x9e
+testing.(*B).Run(0xc0003b7a40, 0x95b753, 0x8, 0xc00009e000, 0x7c9c400)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:651 +0x341
+github.com/ethereum/go-ethereum/consensus/ethash.benchmarkHashimotoFullMmap(0xc0003b7a40, 0x95b753, 0x8, 0xf78201)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm_test.go:792 +0x6b
+github.com/ethereum/go-ethereum/consensus/ethash.BenchmarkHashimotoFullMmap(0xc0003b7a40)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm_test.go:812 +0x45
+testing.(*B).runN(0xc0003b7a40, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.(*B).run1.func1(0xc0003b7a40)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:231 +0x57
+created by testing.(*B).run1
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:224 +0x7d
+
+goroutine 229 [runnable]:
+github.com/ethereum/go-ethereum/consensus/ethash.makeHasher.func1(0xc0948e3780, 0x40, 0x40, 0xc0948e3780, 0x40, 0x40)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:112 +0xca
+github.com/ethereum/go-ethereum/consensus/ethash.generateDatasetItem(0xc000580000, 0x3fffb0, 0x3fffb0, 0xc0008ef986, 0xc00000e020, 0xc0948e3740, 0x40, 0x40)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:261 +0x31d
+github.com/ethereum/go-ethereum/consensus/ethash.generateDataset.func2(0xc00002a0f0, 0x7ffff100, 0x2, 0xc000580000, 0x3fffb0, 0x3fffb0, 0x0, 0xc002180000, 0x7ffff100, 0x7ffff100, ...)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:316 +0x181
+created by github.com/ethereum/go-ethereum/consensus/ethash.generateDataset
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:300 +0x351
+
+goroutine 252 [semacquire, 2 minutes]:
+sync.runtime_Semacquire(0xc00002a0f8)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/sema.go:56 +0x42
+sync.(*WaitGroup).Wait(0xc00002a0f0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/sync/waitgroup.go:130 +0x64
+github.com/ethereum/go-ethereum/consensus/ethash.generateDataset(0xc002180000, 0x1ffffc40, 0x1ffffc40, 0x0, 0xc000580000, 0x3fffb0, 0x3fffb0)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm.go:329 +0x387
+github.com/ethereum/go-ethereum/consensus/ethash.(*dataset).generate.func1()
+	/home/runner/work/core-geth/core-geth/consensus/ethash/ethash.go:352 +0x902
+sync.(*Once).doSlow(0xc000078130, 0xc00004fe00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/sync/once.go:66 +0xec
+sync.(*Once).Do(...)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/sync/once.go:57
+github.com/ethereum/go-ethereum/consensus/ethash.(*dataset).generate(0xc0000780f0, 0xc0000c8040, 0x19, 0x1, 0xc0000c0001)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/ethash.go:301 +0xac
+github.com/ethereum/go-ethereum/consensus/ethash.benchmarkHashimotoFullMmap.func1(0xc000118000)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/algorithm_test.go:800 +0x16e
+testing.(*B).runN(0xc000118000, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.(*B).run1.func1(0xc000118000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:231 +0x57
+created by testing.(*B).run1
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:224 +0x7d
+
+rax    0x0
+rbx    0xc000055e50
+rcx    0x18ea77b
+rdx    0x10
+rdi    0x33a570
+rsi    0xc000896900
+rbp    0xc000055e00
+rsp    0xc000055df0
+r8     0x18a9beed
+r9     0x360c167e
+r10    0xe4
+r11    0x1a90a470
+r12    0xa1cfd0f3c3cbf14
+r13    0x355bf940dae7db4c
+r14    0x80b592dcdc273495
+r15    0x13ba9d21bf20f34f
+rip    0x835241
+rflags 0xa07
+cs     0x33
+fs     0x0
+gs     0x0
+*** Test killed with quit: ran too long (6m0s).
+exit status 2
+FAIL	github.com/ethereum/go-ethereum/consensus/ethash	360.017s
+?   	github.com/ethereum/go-ethereum/consensus/misc	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/console	0.040s
+?   	github.com/ethereum/go-ethereum/console/prompt	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/contracts/checkpointoracle	0.032s
+?   	github.com/ethereum/go-ethereum/contracts/checkpointoracle/contract	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/core
+BenchmarkInsertChain_empty_memdb-2                       	    4917	    262895 ns/op	  185548 B/op	     607 allocs/op
+BenchmarkInsertChain_empty_memdb-2                       	    5066	    257929 ns/op	  185451 B/op	     607 allocs/op
+BenchmarkInsertChain_empty_memdb-2                       	    5560	    260157 ns/op	  185197 B/op	     607 allocs/op
+BenchmarkInsertChain_empty_memdb-2                       	    5331	    253987 ns/op	  185293 B/op	     607 allocs/op
+BenchmarkInsertChain_empty_memdb-2                       	    5750	    258260 ns/op	  185116 B/op	     608 allocs/op
+BenchmarkInsertChain_empty_diskdb-2                      	    5432	    296891 ns/op	  188646 B/op	     627 allocs/op
+BenchmarkInsertChain_empty_diskdb-2                      	    5582	    294034 ns/op	  188520 B/op	     630 allocs/op
+BenchmarkInsertChain_empty_diskdb-2                      	    5401	    296016 ns/op	  188620 B/op	     627 allocs/op
+BenchmarkInsertChain_empty_diskdb-2                      	    5502	    293718 ns/op	  188423 B/op	     627 allocs/op
+BenchmarkInsertChain_empty_diskdb-2                      	    5526	    292050 ns/op	  188431 B/op	     627 allocs/op
+BenchmarkInsertChain_valueTx_memdb-2                     	    3255	    370118 ns/op	  262509 B/op	     834 allocs/op
+BenchmarkInsertChain_valueTx_memdb-2                     	    3925	    367495 ns/op	  261036 B/op	     833 allocs/op
+BenchmarkInsertChain_valueTx_memdb-2                     	    3349	    369831 ns/op	  262681 B/op	     834 allocs/op
+BenchmarkInsertChain_valueTx_memdb-2                     	    4081	    368790 ns/op	  261223 B/op	     834 allocs/op
+BenchmarkInsertChain_valueTx_memdb-2                     	    3925	    364324 ns/op	  261692 B/op	     834 allocs/op
+BenchmarkInsertChain_valueTx_diskdb-2                    	    3922	    400235 ns/op	  267819 B/op	     855 allocs/op
+BenchmarkInsertChain_valueTx_diskdb-2                    	    3934	    392584 ns/op	  267798 B/op	     855 allocs/op
+BenchmarkInsertChain_valueTx_diskdb-2                    	    4185	    394854 ns/op	  267272 B/op	     855 allocs/op
+BenchmarkInsertChain_valueTx_diskdb-2                    	    4154	    401917 ns/op	  266945 B/op	     855 allocs/op
+BenchmarkInsertChain_valueTx_diskdb-2                    	    4237	    394063 ns/op	  267574 B/op	     855 allocs/op
+BenchmarkInsertChain_valueTx_100kB_memdb-2               	    1165	   1033323 ns/op	  804779 B/op	     837 allocs/op
+BenchmarkInsertChain_valueTx_100kB_memdb-2               	    1243	    992068 ns/op	  803672 B/op	     837 allocs/op
+BenchmarkInsertChain_valueTx_100kB_memdb-2               	    1236	    982852 ns/op	  803976 B/op	     837 allocs/op
+BenchmarkInsertChain_valueTx_100kB_memdb-2               	    1250	    991733 ns/op	  803456 B/op	     837 allocs/op
+BenchmarkInsertChain_valueTx_100kB_memdb-2               	    1220	    995816 ns/op	  802841 B/op	     835 allocs/op
+BenchmarkInsertChain_valueTx_100kB_diskdb-2              	    1011	   1223797 ns/op	 1122091 B/op	     864 allocs/op
+BenchmarkInsertChain_valueTx_100kB_diskdb-2              	     999	   1250727 ns/op	 1123639 B/op	     867 allocs/op
+BenchmarkInsertChain_valueTx_100kB_diskdb-2              	     984	   1235638 ns/op	 1124262 B/op	     863 allocs/op
+BenchmarkInsertChain_valueTx_100kB_diskdb-2              	    1011	   1263763 ns/op	 1121375 B/op	     863 allocs/op
+BenchmarkInsertChain_valueTx_100kB_diskdb-2              	    1018	   1251925 ns/op	 1120822 B/op	     864 allocs/op
+BenchmarkInsertChain_uncles_memdb-2                      	    3567	    394771 ns/op	  225031 B/op	    1077 allocs/op
+BenchmarkInsertChain_uncles_memdb-2                      	    3778	    393253 ns/op	  224787 B/op	    1077 allocs/op
+BenchmarkInsertChain_uncles_memdb-2                      	    3452	    383076 ns/op	  225172 B/op	    1077 allocs/op
+BenchmarkInsertChain_uncles_memdb-2                      	    3572	    382923 ns/op	  225002 B/op	    1077 allocs/op
+BenchmarkInsertChain_uncles_memdb-2                      	    3189	    394475 ns/op	  224840 B/op	    1077 allocs/op
+BenchmarkInsertChain_uncles_diskdb-2                     	    3520	    471566 ns/op	  230095 B/op	    1096 allocs/op
+BenchmarkInsertChain_uncles_diskdb-2                     	    2913	    431387 ns/op	  230529 B/op	    1096 allocs/op
+BenchmarkInsertChain_uncles_diskdb-2                     	    3637	    431514 ns/op	  229838 B/op	    1097 allocs/op
+BenchmarkInsertChain_uncles_diskdb-2                     	    3415	    427478 ns/op	  230208 B/op	    1096 allocs/op
+BenchmarkInsertChain_uncles_diskdb-2                     	    3278	    431372 ns/op	  230347 B/op	    1096 allocs/op
+BenchmarkInsertChain_ring200_memdb-2                     	      68	  17289811 ns/op	10784973 B/op	   42887 allocs/op
+BenchmarkInsertChain_ring200_memdb-2                     	      69	  19817763 ns/op	10782351 B/op	   42885 allocs/op
+BenchmarkInsertChain_ring200_memdb-2                     	      68	  17733470 ns/op	10788104 B/op	   42886 allocs/op
+BenchmarkInsertChain_ring200_memdb-2                     	      69	  17728948 ns/op	10783328 B/op	   42884 allocs/op
+BenchmarkInsertChain_ring200_memdb-2                     	      68	  17290220 ns/op	10781617 B/op	   42885 allocs/op
+BenchmarkInsertChain_ring200_diskdb-2                    	      81	  15777770 ns/op	10828929 B/op	   42215 allocs/op
+BenchmarkInsertChain_ring200_diskdb-2                    	      79	  15295613 ns/op	10832118 B/op	   42215 allocs/op
+BenchmarkInsertChain_ring200_diskdb-2                    	      75	  15770908 ns/op	10839621 B/op	   42218 allocs/op
+BenchmarkInsertChain_ring200_diskdb-2                    	      76	  16160709 ns/op	10836776 B/op	   42219 allocs/op
+BenchmarkInsertChain_ring200_diskdb-2                    	      76	  15729046 ns/op	10836418 B/op	   42220 allocs/op
+BenchmarkInsertChain_ring1000_memdb-2                    	      57	  19698063 ns/op	11469996 B/op	   47987 allocs/op
+BenchmarkInsertChain_ring1000_memdb-2                    	      61	  20135973 ns/op	11457419 B/op	   47964 allocs/op
+BenchmarkInsertChain_ring1000_memdb-2                    	      60	  20197671 ns/op	11418248 B/op	   47968 allocs/op
+BenchmarkInsertChain_ring1000_memdb-2                    	      57	  19896402 ns/op	11463396 B/op	   47982 allocs/op
+BenchmarkInsertChain_ring1000_memdb-2                    	      58	  20144787 ns/op	11461933 B/op	   47973 allocs/op
+BenchmarkInsertChain_ring1000_diskdb-2                   	      66	  18857918 ns/op	11565869 B/op	   47284 allocs/op
+BenchmarkInsertChain_ring1000_diskdb-2                   	SIGQUIT: quit
+PC=0x46baa0 m=0 sigcode=0
+
+goroutine 0 [idle]:
+runtime.epollwait(0x4, 0x7ffc3df846f0, 0x4fc00000080, 0x0, 0x4fc, 0x12ebec0, 0x0, 0x0, 0x7ffc3df84be0, 0x0, ...)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/sys_linux_amd64.s:705 +0x20
+runtime.netpoll(0x4c1610f8, 0x3c4d6781b01)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/netpoll_epoll.go:119 +0x92
+runtime.findrunnable(0xc000032000, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2329 +0x72b
+runtime.schedule()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2526 +0x2fc
+runtime.park_m(0xc000083e00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2696 +0x9d
+runtime.mcall(0x9abb50)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/asm_amd64.s:318 +0x5b
+
+goroutine 1 [chan receive]:
+testing.(*B).doBench(0xc001dbc540, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:277 +0x73
+testing.(*benchContext).processBench(0xc0003fe620, 0xc001dbc540)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:568 +0x207
+testing.(*B).run(0xc003e1e000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:268 +0x63
+testing.(*B).Run(0xc000401dc0, 0xae9e63, 0x24, 0xb47b90, 0x501200)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:652 +0x3fd
+testing.runBenchmarks.func1(0xc000401dc0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:533 +0x78
+testing.(*B).runN(0xc000401dc0, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.runBenchmarks(0xaea427, 0x24, 0xc0003fe600, 0x12d9b40, 0x25, 0x25, 0xc0002dfec0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:539 +0x390
+testing.(*M).Run(0xc000142280, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/testing.go:1205 +0x42d
+main.main()
+	_testmain.go:312 +0x135
+
+goroutine 8 [chan receive]:
+github.com/ethereum/go-ethereum/metrics.(*meterArbiter).tick(0x1329ea0)
+	/home/runner/work/core-geth/core-geth/metrics/meter.go:289 +0x78
+created by github.com/ethereum/go-ethereum/metrics.NewMeterForced
+	/home/runner/work/core-geth/core-geth/metrics/meter.go:70 +0x105
+
+goroutine 9 [select]:
+github.com/ethereum/go-ethereum/consensus/ethash.(*remoteSealer).loop(0xc0001b6000)
+	/home/runner/work/core-geth/core-geth/consensus/ethash/sealer.go:278 +0x258
+created by github.com/ethereum/go-ethereum/consensus/ethash.startRemoteSealer
+	/home/runner/work/core-geth/core-geth/consensus/ethash/sealer.go:262 +0x2ae
+
+goroutine 10 [chan receive]:
+github.com/ethereum/go-ethereum/core.(*txSenderCacher).cache(0xc00016cbf0)
+	/home/runner/work/core-geth/core-geth/core/tx_cacher.go:63 +0x97
+created by github.com/ethereum/go-ethereum/core.newTxSenderCacher
+	/home/runner/work/core-geth/core-geth/core/tx_cacher.go:55 +0x9f
+
+goroutine 11 [chan receive]:
+github.com/ethereum/go-ethereum/core.(*txSenderCacher).cache(0xc00016cbf0)
+	/home/runner/work/core-geth/core-geth/core/tx_cacher.go:63 +0x97
+created by github.com/ethereum/go-ethereum/core.newTxSenderCacher
+	/home/runner/work/core-geth/core-geth/core/tx_cacher.go:55 +0x9f
+
+goroutine 619225 [runnable]:
+github.com/ethereum/go-ethereum/crypto/secp256k1._Cfunc_secp256k1_ecdsa_recoverable_signature_serialize_compact(0x273d930, 0xc000378b90, 0xc001a579a4, 0xc002264370, 0x1)
+	_cgo_gotypes.go:213 +0x4d
+github.com/ethereum/go-ethereum/crypto/secp256k1.Sign.func3(0xc000378b90, 0xc001a579a4, 0xc002264370, 0xc000378b90)
+	/home/runner/work/core-geth/core-geth/crypto/secp256k1/secp256.go:84 +0x72
+github.com/ethereum/go-ethereum/crypto/secp256k1.Sign(0xc00244e440, 0x20, 0x20, 0xc00244e500, 0x20, 0x20, 0x9f2dc0, 0xc0034cab80, 0xa590883ff5d72c50, 0x7b6767c4d8da8c5b, ...)
+	/home/runner/work/core-geth/core-geth/crypto/secp256k1/secp256.go:84 +0x14c
+github.com/ethereum/go-ethereum/crypto.Sign(0xc00244e440, 0x20, 0x20, 0xc000350150, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/crypto/signature_cgo.go:60 +0x1ee
+github.com/ethereum/go-ethereum/core/types.SignTx(0xc0021493b0, 0xc4ed00, 0x1371328, 0xc000350150, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/types/transaction_signing.go:58 +0x94
+github.com/ethereum/go-ethereum/core.genTxRing.func1(0x46, 0xc00366e1e0)
+	/home/runner/work/core-geth/core-geth/core/bench_test.go:130 +0xc5
+github.com/ethereum/go-ethereum/core.GenerateChain.func1(0x46, 0xc0045efe60, 0xc00200e840, 0xa1d763bdfc854090, 0xc51d80, 0xc0031ff3a0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/chain_makers.go:212 +0x3f1
+github.com/ethereum/go-ethereum/core.GenerateChain(0x132a640, 0xc0000da000, 0xc56620, 0xc000158540, 0xc57e00, 0xc000402330, 0x48, 0xc000d3e000, 0x0, 0x0, ...)
+	/home/runner/work/core-geth/core-geth/core/chain_makers.go:235 +0x26a
+github.com/ethereum/go-ethereum/core.benchInsertChain(0xc001dbc540, 0xc000d3e001, 0xc000d3e000)
+	/home/runner/work/core-geth/core-geth/core/bench_test.go:174 +0x475
+github.com/ethereum/go-ethereum/core.BenchmarkInsertChain_ring1000_diskdb(0xc001dbc540)
+	/home/runner/work/core-geth/core-geth/core/bench_test.go:71 +0x47
+testing.(*B).runN(0xc001dbc540, 0x48)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.(*B).launch(0xc001dbc540)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:321 +0xea
+created by testing.(*B).doBench
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:276 +0x55
+
+goroutine 619235 [select]:
+github.com/ethereum/go-ethereum/ethdb/leveldb.(*Database).meter(0xc0028c4500, 0xb2d05e00)
+	/home/runner/work/core-geth/core-geth/ethdb/leveldb/leveldb.go:402 +0x1a3a
+created by github.com/ethereum/go-ethereum/ethdb/leveldb.New
+	/home/runner/work/core-geth/core-geth/ethdb/leveldb/leveldb.go:132 +0xa25
+
+goroutine 619216 [select]:
+github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain(0xc000c5a000)
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db_state.go:101 +0xf6
+created by github.com/syndtr/goleveldb/leveldb.openDB
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db.go:149 +0x43b
+
+goroutine 619217 [select]:
+github.com/syndtr/goleveldb/leveldb.(*DB).tCompaction(0xc000c5a000)
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db_compaction.go:836 +0x259
+created by github.com/syndtr/goleveldb/leveldb.openDB
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db.go:155 +0x58f
+
+goroutine 619215 [select]:
+github.com/syndtr/goleveldb/leveldb.(*DB).compactionError(0xc000c5a000)
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db_compaction.go:91 +0xcd
+created by github.com/syndtr/goleveldb/leveldb.openDB
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db.go:148 +0x419
+
+goroutine 619213 [select]:
+github.com/syndtr/goleveldb/leveldb/util.(*BufferPool).drain(0xc000158380)
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/util/buffer_pool.go:206 +0x128
+created by github.com/syndtr/goleveldb/leveldb/util.NewBufferPool
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/util/buffer_pool.go:237 +0x19a
+
+goroutine 619234 [select]:
+github.com/syndtr/goleveldb/leveldb.(*DB).mCompaction(0xc000c5a000)
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db_compaction.go:773 +0x140
+created by github.com/syndtr/goleveldb/leveldb.openDB
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/db.go:156 +0x5b1
+
+goroutine 619214 [select]:
+github.com/syndtr/goleveldb/leveldb.(*session).refLoop(0xc0001b62d0)
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/session_util.go:189 +0x5e5
+created by github.com/syndtr/goleveldb/leveldb.newSession
+	/home/runner/go/pkg/mod/github.com/syndtr/goleveldb@v1.0.1-0.20190923125748-758128399b1d/leveldb/session.go:93 +0x2b4
+
+rax    0xfffffffffffffffc
+rbx    0x4fc
+rcx    0x46baa0
+rdx    0x80
+rdi    0x4
+rsi    0x7ffc3df846f0
+rbp    0x7ffc3df84cf0
+rsp    0x7ffc3df846a0
+r8     0x0
+r9     0x0
+r10    0x4fc
+r11    0x246
+r12    0x3
+r13    0x132ac40
+r14    0xc000bb60c0
+r15    0x0
+rip    0x46baa0
+rflags 0x246
+cs     0x33
+fs     0x0
+gs     0x0
+*** Test killed with quit: ran too long (6m0s).
+exit status 2
+FAIL	github.com/ethereum/go-ethereum/core	360.023s
+PASS
+ok  	github.com/ethereum/go-ethereum/core/asm	0.028s
+PASS
+ok  	github.com/ethereum/go-ethereum/core/bloombits	0.026s
+PASS
+ok  	github.com/ethereum/go-ethereum/core/forkid	0.027s
+PASS
+ok  	github.com/ethereum/go-ethereum/core/rawdb	0.027s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/core/state
+BenchmarkCutOriginal-2     	 5878448	       190 ns/op
+BenchmarkCutOriginal-2     	 6435906	       191 ns/op
+BenchmarkCutOriginal-2     	 6419725	       189 ns/op
+BenchmarkCutOriginal-2     	 6388366	       190 ns/op
+BenchmarkCutOriginal-2     	 6197984	       189 ns/op
+BenchmarkCutsetterFn-2     	11204984	       107 ns/op
+BenchmarkCutsetterFn-2     	10578666	       107 ns/op
+BenchmarkCutsetterFn-2     	11275948	       107 ns/op
+BenchmarkCutsetterFn-2     	11299045	       106 ns/op
+BenchmarkCutsetterFn-2     	11024290	       106 ns/op
+BenchmarkCutCustomTrim-2   	30450927	        39.9 ns/op
+BenchmarkCutCustomTrim-2   	30452708	        40.0 ns/op
+BenchmarkCutCustomTrim-2   	29918074	        39.6 ns/op
+BenchmarkCutCustomTrim-2   	29953479	        40.4 ns/op
+BenchmarkCutCustomTrim-2   	30241572	        39.6 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/core/state	19.666s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/core/state/snapshot
+BenchmarkSearch-2                          	  169327	      7100 ns/op
+BenchmarkSearch-2                          	  163845	      6954 ns/op
+BenchmarkSearch-2                          	  171213	      7242 ns/op
+BenchmarkSearch-2                          	  173191	      7310 ns/op
+BenchmarkSearch-2                          	  174716	      7000 ns/op
+BenchmarkSearchSlot-2                      	 2210498	       547 ns/op
+BenchmarkSearchSlot-2                      	 2163128	       555 ns/op
+BenchmarkSearchSlot-2                      	 2156842	       562 ns/op
+BenchmarkSearchSlot-2                      	 2236105	       553 ns/op
+BenchmarkSearchSlot-2                      	 2162187	       544 ns/op
+BenchmarkFlatten-2                         	     169	   7149508 ns/op
+BenchmarkFlatten-2                         	     170	   7061758 ns/op
+BenchmarkFlatten-2                         	     174	   6981310 ns/op
+BenchmarkFlatten-2                         	     168	   7144530 ns/op
+BenchmarkFlatten-2                         	     166	   6977325 ns/op
+BenchmarkJournal-2                         	       1	1453272143 ns/op
+BenchmarkJournal-2                         	       1	1544001453 ns/op
+BenchmarkJournal-2                         	       1	1659487823 ns/op
+BenchmarkJournal-2                         	       1	1445951096 ns/op
+BenchmarkJournal-2                         	SIGQUIT: quit
+PC=0x4beac3 m=0 sigcode=0
+
+goroutine 55 [running]:
+reflect.Value.Bytes(0x709800, 0xc026758140, 0x97, 0x0, 0x20, 0x709800)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/reflect/value.go:274 +0x93 fp=0xc0220c9b38 sp=0xc0220c9af8 pc=0x4beac3
+github.com/ethereum/go-ethereum/rlp.writeByteArray(0x75f920, 0xc029d328a0, 0x191, 0xc00009a0a0, 0x75f920, 0xc029d328a0)
+	/home/runner/work/core-geth/core-geth/rlp/encode.go:425 +0xb3 fp=0xc0220c9ba0 sp=0xc0220c9b38 pc=0x5ab543
+github.com/ethereum/go-ethereum/rlp.makeSliceWriter.func1(0x7076c0, 0xc02670e3e0, 0x197, 0xc00009a0a0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/rlp/encode.go:469 +0x125 fp=0xc0220c9c20 sp=0xc0220c9ba0 pc=0x5b04e5
+github.com/ethereum/go-ethereum/rlp.makeStructWriter.func1(0x7479a0, 0xc02670e3c0, 0x199, 0xc00009a0a0, 0x7479a0, 0xc02670e3c0)
+	/home/runner/work/core-geth/core-geth/rlp/encode.go:491 +0x149 fp=0xc0220c9ca0 sp=0xc0220c9c20 pc=0x5b0719
+github.com/ethereum/go-ethereum/rlp.makeSliceWriter.func1(0x707780, 0xc0266f3de0, 0x97, 0xc00009a0a0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/rlp/encode.go:469 +0x125 fp=0xc0220c9d20 sp=0xc0220c9ca0 pc=0x5b04e5
+github.com/ethereum/go-ethereum/rlp.(*encbuf).encode(0xc00009a0a0, 0x707780, 0xc0266f3de0, 0xffffffffffffffff, 0x1)
+	/home/runner/work/core-geth/core-geth/rlp/encode.go:160 +0x13a fp=0xc0220c9d88 sp=0xc0220c9d20 pc=0x5a96fa
+github.com/ethereum/go-ethereum/rlp.Encode(0x7f12e0, 0xc0206464e0, 0x707780, 0xc0266f3de0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/rlp/encode.go:62 +0xfa fp=0xc0220c9df0 sp=0xc0220c9d88 pc=0x5a908a
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116780, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:266 +0xbb9 fp=0xc0220ca180 sp=0xc0220c9df0 pc=0x6a2849
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116820, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ca510 sp=0xc0220ca180 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001168c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ca8a0 sp=0xc0220ca510 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ce5a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cac30 sp=0xc0220ca8a0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ce640, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cafc0 sp=0xc0220cac30 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ce820, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cb350 sp=0xc0220cafc0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ce8c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cb6e0 sp=0xc0220cb350 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ce960, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cba70 sp=0xc0220cb6e0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cea00, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cbe00 sp=0xc0220cba70 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ceaa0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cc190 sp=0xc0220cbe00 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ceb40, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cc520 sp=0xc0220cc190 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cebe0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cc8b0 sp=0xc0220cc520 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cec80, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ccc40 sp=0xc0220cc8b0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000ced20, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ccfd0 sp=0xc0220ccc40 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cedc0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cd360 sp=0xc0220ccfd0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cee60, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cd6f0 sp=0xc0220cd360 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cef00, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cda80 sp=0xc0220cd6f0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cefa0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cde10 sp=0xc0220cda80 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf040, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ce1a0 sp=0xc0220cde10 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf0e0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ce530 sp=0xc0220ce1a0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf180, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ce8c0 sp=0xc0220ce530 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf220, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cec50 sp=0xc0220ce8c0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf2c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cefe0 sp=0xc0220cec50 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf360, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cf370 sp=0xc0220cefe0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf400, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cf700 sp=0xc0220cf370 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf4a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cfa90 sp=0xc0220cf700 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf540, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220cfe20 sp=0xc0220cfa90 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf5e0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d01b0 sp=0xc0220cfe20 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf680, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d0540 sp=0xc0220d01b0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf720, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d08d0 sp=0xc0220d0540 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf7c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d0c60 sp=0xc0220d08d0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf860, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d0ff0 sp=0xc0220d0c60 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf900, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d1380 sp=0xc0220d0ff0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cf9a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d1710 sp=0xc0220d1380 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfa40, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d1aa0 sp=0xc0220d1710 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfae0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d1e30 sp=0xc0220d1aa0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfb80, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d21c0 sp=0xc0220d1e30 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfc20, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d2550 sp=0xc0220d21c0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfcc0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d28e0 sp=0xc0220d2550 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfd60, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d2c70 sp=0xc0220d28e0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfe00, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d3000 sp=0xc0220d2c70 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cfea0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d3390 sp=0xc0220d3000 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0000cff40, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d3720 sp=0xc0220d3390 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116960, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d3ab0 sp=0xc0220d3720 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650000, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d3e40 sp=0xc0220d3ab0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0186500a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d41d0 sp=0xc0220d3e40 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116a00, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d4560 sp=0xc0220d41d0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650140, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d48f0 sp=0xc0220d4560 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0186501e0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d4c80 sp=0xc0220d48f0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650280, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d5010 sp=0xc0220d4c80 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650320, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d53a0 sp=0xc0220d5010 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0186503c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d5730 sp=0xc0220d53a0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650460, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d5ac0 sp=0xc0220d5730 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650500, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d5e50 sp=0xc0220d5ac0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0186505a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d61e0 sp=0xc0220d5e50 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650640, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d6570 sp=0xc0220d61e0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0186506e0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d6900 sp=0xc0220d6570 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650780, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d6c90 sp=0xc0220d6900 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650820, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d7020 sp=0xc0220d6c90 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0186508c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d73b0 sp=0xc0220d7020 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650960, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d7740 sp=0xc0220d73b0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650a00, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d7ad0 sp=0xc0220d7740 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650aa0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d7e60 sp=0xc0220d7ad0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650b40, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d81f0 sp=0xc0220d7e60 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650be0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d8580 sp=0xc0220d81f0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650c80, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d8910 sp=0xc0220d8580 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650d20, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d8ca0 sp=0xc0220d8910 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116aa0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d9030 sp=0xc0220d8ca0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc018650dc0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d93c0 sp=0xc0220d9030 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116b40, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d9750 sp=0xc0220d93c0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116be0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d9ae0 sp=0xc0220d9750 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116c80, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220d9e70 sp=0xc0220d9ae0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116d20, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220da200 sp=0xc0220d9e70 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116dc0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220da590 sp=0xc0220da200 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116e60, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220da920 sp=0xc0220da590 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116f00, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dacb0 sp=0xc0220da920 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000116fa0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220db040 sp=0xc0220dacb0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117040, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220db3d0 sp=0xc0220db040 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001170e0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220db760 sp=0xc0220db3d0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117180, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dbaf0 sp=0xc0220db760 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117220, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dbe80 sp=0xc0220dbaf0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001172c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dc210 sp=0xc0220dbe80 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117360, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dc5a0 sp=0xc0220dc210 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117400, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dc930 sp=0xc0220dc5a0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001174a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dccc0 sp=0xc0220dc930 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117540, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dd050 sp=0xc0220dccc0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001175e0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dd3e0 sp=0xc0220dd050 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117680, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dd770 sp=0xc0220dd3e0 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117720, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220ddb00 sp=0xc0220dd770 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001177c0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220dde90 sp=0xc0220ddb00 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117860, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220de220 sp=0xc0220dde90 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc000117900, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220de5b0 sp=0xc0220de220 pc=0x6a1d14
+github.com/ethereum/go-ethereum/core/state/snapshot.(*diffLayer).Journal(0xc0001179a0, 0xc0206464e0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/state/snapshot/journal.go:227 +0x84 fp=0xc0220de940 sp=0xc0220de5b0 pc=0x6a1d14
+...additional frames elided...
+created by testing.(*B).run1
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:224 +0x7d
+
+goroutine 1 [chan receive]:
+testing.(*B).run1(0xc0000c8380, 0xc0000c8380)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:233 +0x9e
+testing.(*benchContext).processBench(0xc0000999e0, 0xc0000c8380)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:566 +0x1ee
+testing.(*B).run(0xc0000c81c0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:268 +0x63
+testing.(*B).Run(0xc0000c8e00, 0x786115, 0x10, 0x796f10, 0x4f4600)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:652 +0x3fd
+testing.runBenchmarks.func1(0xc0000c8e00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:533 +0x78
+testing.(*B).runN(0xc0000c8e00, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.runBenchmarks(0x793b8b, 0x33, 0xc0000999c0, 0xbfaca0, 0x6, 0x6, 0xc00011fec0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:539 +0x390
+testing.(*M).Run(0xc0000cc100, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/testing.go:1205 +0x42d
+main.main()
+	_testmain.go:106 +0x135
+
+rax    0x709800
+rbx    0xc029d328a0
+rcx    0xc000001980
+rdx    0x97
+rdi    0xc026758140
+rsi    0x18
+rbp    0xc0220c9b28
+rsp    0xc0220c9af8
+r8     0x7f306346cc0a
+r9     0x203009
+r10    0x4
+r11    0x11
+r12    0x18
+r13    0x0
+r14    0x7e5e88
+r15    0x0
+rip    0x4beac3
+rflags 0x246
+cs     0x33
+fs     0x0
+gs     0x0
+*** Test killed with quit: ran too long (6m0s).
+exit status 2
+FAIL	github.com/ethereum/go-ethereum/core/state/snapshot	360.020s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/core/types
+BenchmarkUncleHash-2   	1000000000	         0.403 ns/op
+BenchmarkUncleHash-2   	1000000000	         0.393 ns/op
+BenchmarkUncleHash-2   	1000000000	         0.400 ns/op
+BenchmarkUncleHash-2   	1000000000	         0.410 ns/op
+BenchmarkUncleHash-2   	1000000000	         0.394 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/core/types	2.245s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/core/vm
+BenchmarkJumpdestAnalysis_1200k-2          	    1108	   1042888 ns/op
+BenchmarkJumpdestAnalysis_1200k-2          	    1213	   1036545 ns/op
+BenchmarkJumpdestAnalysis_1200k-2          	    1180	   1048814 ns/op
+BenchmarkJumpdestAnalysis_1200k-2          	    1178	   1021990 ns/op
+BenchmarkJumpdestAnalysis_1200k-2          	    1104	   1022808 ns/op
+BenchmarkJumpdestHashing_1200k-2           	     241	   5031888 ns/op
+BenchmarkJumpdestHashing_1200k-2           	     237	   4966028 ns/op
+BenchmarkJumpdestHashing_1200k-2           	     240	   5010212 ns/op
+BenchmarkJumpdestHashing_1200k-2           	     240	   4959918 ns/op
+BenchmarkJumpdestHashing_1200k-2           	     238	   5068094 ns/op
+BenchmarkPrecompiledEcrecover/-Gas=3000-2  	    5936	    211512 ns/op	      3000 gas/op	    1280 B/op	       9 allocs/op
+BenchmarkPrecompiledEcrecover/-Gas=3000-2  	    5684	    213395 ns/op	      3000 gas/op	    1280 B/op	       9 allocs/op
+BenchmarkPrecompiledEcrecover/-Gas=3000-2  	    5725	    211043 ns/op	      3000 gas/op	    1280 B/op	       9 allocs/op
+BenchmarkPrecompiledEcrecover/-Gas=3000-2  	    5818	    210146 ns/op	      3000 gas/op	    1280 B/op	       9 allocs/op
+BenchmarkPrecompiledEcrecover/-Gas=3000-2  	    5703	    211075 ns/op	      3000 gas/op	    1280 B/op	       9 allocs/op
+BenchmarkPrecompiledSha256/128-Gas=108-2   	 1501107	       811 ns/op	       108 gas/op	      32 B/op	       1 allocs/op
+BenchmarkPrecompiledSha256/128-Gas=108-2   	 1464361	       809 ns/op	       108 gas/op	      32 B/op	       1 allocs/op
+BenchmarkPrecompiledSha256/128-Gas=108-2   	 1531202	       805 ns/op	       108 gas/op	      32 B/op	       1 allocs/op
+BenchmarkPrecompiledSha256/128-Gas=108-2   	 1514378	       809 ns/op	       108 gas/op	      32 B/op	       1 allocs/op
+BenchmarkPrecompiledSha256/128-Gas=108-2   	 1480167	       791 ns/op	       108 gas/op	      32 B/op	       1 allocs/op
+BenchmarkPrecompiledRipeMD/128-Gas=1080-2  	  632547	      1922 ns/op	      1080 gas/op	     176 B/op	       3 allocs/op
+BenchmarkPrecompiledRipeMD/128-Gas=1080-2  	  614770	      1909 ns/op	      1080 gas/op	     176 B/op	       3 allocs/op
+BenchmarkPrecompiledRipeMD/128-Gas=1080-2  	  652497	      1944 ns/op	      1080 gas/op	     176 B/op	       3 allocs/op
+BenchmarkPrecompiledRipeMD/128-Gas=1080-2  	  600129	      1955 ns/op	      1080 gas/op	     176 B/op	       3 allocs/op
+BenchmarkPrecompiledRipeMD/128-Gas=1080-2  	  641056	      1961 ns/op	      1080 gas/op	     176 B/op	       3 allocs/op
+BenchmarkPrecompiledIdentity/128-Gas=27-2  	51905989	        23.1 ns/op	        27.0 gas/op	       0 B/op	       0 allocs/op
+BenchmarkPrecompiledIdentity/128-Gas=27-2  	51802909	        23.2 ns/op	        27.0 gas/op	       0 B/op	       0 allocs/op
+BenchmarkPrecompiledIdentity/128-Gas=27-2  	51084306	        23.0 ns/op	        27.0 gas/op	       0 B/op	       0 allocs/op
+BenchmarkPrecompiledIdentity/128-Gas=27-2  	52961007	        22.9 ns/op	        27.0 gas/op	       0 B/op	       0 allocs/op
+BenchmarkPrecompiledIdentity/128-Gas=27-2  	52873730	        22.8 ns/op	        27.0 gas/op	       0 B/op	       0 allocs/op
+BenchmarkPrecompiledModExp/eip_example1-Gas=13056-2         	   26749	     45095 ns/op	     13056 gas/op	    2688 B/op	      41 allocs/op
+BenchmarkPrecompiledModExp/eip_example1-Gas=13056-2         	   26655	     45157 ns/op	     13056 gas/op	    2688 B/op	      41 allocs/op
+BenchmarkPrecompiledModExp/eip_example1-Gas=13056-2         	   27376	     44493 ns/op	     13056 gas/op	    2688 B/op	      41 allocs/op
+BenchmarkPrecompiledModExp/eip_example1-Gas=13056-2         	   27738	     44391 ns/op	     13056 gas/op	    2688 B/op	      41 allocs/op
+BenchmarkPrecompiledModExp/eip_example1-Gas=13056-2         	   27067	     44694 ns/op	     13056 gas/op	    2688 B/op	      41 allocs/op
+BenchmarkPrecompiledModExp/eip_example2-Gas=13056-2         	  133641	      9219 ns/op	     13056 gas/op	     760 B/op	      17 allocs/op
+BenchmarkPrecompiledModExp/eip_example2-Gas=13056-2         	  130794	      9151 ns/op	     13056 gas/op	     760 B/op	      17 allocs/op
+BenchmarkPrecompiledModExp/eip_example2-Gas=13056-2         	  131040	      9036 ns/op	     13056 gas/op	     760 B/op	      17 allocs/op
+BenchmarkPrecompiledModExp/eip_example2-Gas=13056-2         	  136894	      9145 ns/op	     13056 gas/op	     760 B/op	      17 allocs/op
+BenchmarkPrecompiledModExp/eip_example2-Gas=13056-2         	  135981	      9142 ns/op	     13056 gas/op	     760 B/op	      17 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-square-Gas=204-2      	  492808	      2441 ns/op	       204 gas/op	    1184 B/op	      21 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-square-Gas=204-2      	  507460	      2352 ns/op	       204 gas/op	    1184 B/op	      21 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-square-Gas=204-2      	  498097	      2413 ns/op	       204 gas/op	    1184 B/op	      21 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-square-Gas=204-2      	  520056	      2353 ns/op	       204 gas/op	    1184 B/op	      21 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-square-Gas=204-2      	  504612	      2390 ns/op	       204 gas/op	    1184 B/op	      21 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-qube-Gas=204-2        	  368512	      3210 ns/op	       204 gas/op	    1472 B/op	      22 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-qube-Gas=204-2        	  379490	      3313 ns/op	       204 gas/op	    1472 B/op	      22 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-qube-Gas=204-2        	  362540	      3293 ns/op	       204 gas/op	    1472 B/op	      22 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-qube-Gas=204-2        	  366309	      3215 ns/op	       204 gas/op	    1472 B/op	      22 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-qube-Gas=204-2        	  363997	      3282 ns/op	       204 gas/op	    1472 B/op	      22 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-pow0x10001-Gas=3276-2 	   64106	     18695 ns/op	      3276 gas/op	    1968 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-pow0x10001-Gas=3276-2 	   63066	     18914 ns/op	      3276 gas/op	    1968 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-pow0x10001-Gas=3276-2 	   61484	     18944 ns/op	      3276 gas/op	    1968 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-pow0x10001-Gas=3276-2 	   61687	     18962 ns/op	      3276 gas/op	    1968 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-1-pow0x10001-Gas=3276-2 	   63594	     19088 ns/op	      3276 gas/op	    1968 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-square-Gas=665-2      	  302521	      4055 ns/op	       665 gas/op	    1824 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-square-Gas=665-2      	  302325	      4075 ns/op	       665 gas/op	    1824 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-square-Gas=665-2      	  301435	      4100 ns/op	       665 gas/op	    1824 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-square-Gas=665-2      	  301125	      4051 ns/op	       665 gas/op	    1824 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-square-Gas=665-2      	  296924	      4112 ns/op	       665 gas/op	    1824 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-qube-Gas=665-2        	  197389	      6167 ns/op	       665 gas/op	    2368 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-qube-Gas=665-2        	  197016	      6254 ns/op	       665 gas/op	    2368 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-qube-Gas=665-2        	  190639	      6291 ns/op	       665 gas/op	    2368 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-qube-Gas=665-2        	  193648	      6257 ns/op	       665 gas/op	    2368 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-qube-Gas=665-2        	  191356	      6191 ns/op	       665 gas/op	    2368 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-pow0x10001-Gas=10649-2         	   30366	     39016 ns/op	     10649 gas/op	    3264 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-pow0x10001-Gas=10649-2         	   30481	     38954 ns/op	     10649 gas/op	    3264 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-pow0x10001-Gas=10649-2         	   31510	     38751 ns/op	     10649 gas/op	    3264 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-pow0x10001-Gas=10649-2         	   31165	     38697 ns/op	     10649 gas/op	    3264 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-2-pow0x10001-Gas=10649-2         	   30991	     38919 ns/op	     10649 gas/op	    3264 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-square-Gas=1894-2              	  161593	      7529 ns/op	      1894 gas/op	    2880 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-square-Gas=1894-2              	  161665	      7451 ns/op	      1894 gas/op	    2880 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-square-Gas=1894-2              	  159514	      7419 ns/op	      1894 gas/op	    2880 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-square-Gas=1894-2              	  153357	      7420 ns/op	      1894 gas/op	    2880 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-square-Gas=1894-2              	  167257	      7350 ns/op	      1894 gas/op	    2880 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-qube-Gas=1894-2                	   90408	     13405 ns/op	      1894 gas/op	    4096 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-qube-Gas=1894-2                	   89461	     13509 ns/op	      1894 gas/op	    4096 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-qube-Gas=1894-2                	   91755	     13741 ns/op	      1894 gas/op	    4096 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-qube-Gas=1894-2                	   88040	     13361 ns/op	      1894 gas/op	    4096 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-qube-Gas=1894-2                	   90298	     13618 ns/op	      1894 gas/op	    4096 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-pow0x10001-Gas=30310-2         	   13406	     91756 ns/op	     30310 gas/op	    5824 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-pow0x10001-Gas=30310-2         	   13455	     88311 ns/op	     30310 gas/op	    5824 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-pow0x10001-Gas=30310-2         	   12787	     90493 ns/op	     30310 gas/op	    5824 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-pow0x10001-Gas=30310-2         	   13378	     89275 ns/op	     30310 gas/op	    5824 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-3-pow0x10001-Gas=30310-2         	   13371	     89908 ns/op	     30310 gas/op	    5824 B/op	      29 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-square-Gas=5580-2              	   70233	     17348 ns/op	      5580 gas/op	    5152 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-square-Gas=5580-2              	   67665	     17392 ns/op	      5580 gas/op	    5152 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-square-Gas=5580-2              	   71643	     17583 ns/op	      5580 gas/op	    5152 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-square-Gas=5580-2              	   68577	     17569 ns/op	      5580 gas/op	    5152 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-square-Gas=5580-2              	   69252	     18034 ns/op	      5580 gas/op	    5152 B/op	      25 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-qube-Gas=5580-2                	   32510	     37293 ns/op	      5580 gas/op	   12194 B/op	      27 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-qube-Gas=5580-2                	   32580	     37154 ns/op	      5580 gas/op	   12194 B/op	      27 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-qube-Gas=5580-2                	   32346	     37748 ns/op	      5580 gas/op	   12193 B/op	      27 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-qube-Gas=5580-2                	   32228	     37440 ns/op	      5580 gas/op	   12194 B/op	      27 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-qube-Gas=5580-2                	   31647	     37693 ns/op	      5580 gas/op	   12194 B/op	      27 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-pow0x10001-Gas=89292-2         	    4690	    247710 ns/op	     89292 gas/op	   15650 B/op	      30 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-pow0x10001-Gas=89292-2         	    4977	    248952 ns/op	     89292 gas/op	   15650 B/op	      30 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-pow0x10001-Gas=89292-2         	    4666	    249351 ns/op	     89292 gas/op	   15650 B/op	      30 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-pow0x10001-Gas=89292-2         	    4933	    243039 ns/op	     89292 gas/op	   15649 B/op	      30 allocs/op
+BenchmarkPrecompiledModExp/nagydani-4-pow0x10001-Gas=89292-2         	    4760	    252696 ns/op	     89292 gas/op	   15649 B/op	      30 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-square-Gas=17868-2             	   25825	     44608 ns/op	     17868 gas/op	    9826 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-square-Gas=17868-2             	   26570	     45983 ns/op	     17868 gas/op	    9826 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-square-Gas=17868-2             	   26371	     45468 ns/op	     17868 gas/op	    9826 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-square-Gas=17868-2             	   26259	     45574 ns/op	     17868 gas/op	    9825 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-square-Gas=17868-2             	   26604	     45490 ns/op	     17868 gas/op	    9826 B/op	      26 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-qube-Gas=17868-2               	   10000	    103723 ns/op	     17868 gas/op	   23780 B/op	      28 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-qube-Gas=17868-2               	   10000	    103509 ns/op	     17868 gas/op	   23780 B/op	      28 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-qube-Gas=17868-2               	   10000	    102473 ns/op	     17868 gas/op	   23781 B/op	      28 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-qube-Gas=17868-2               	   10000	    102481 ns/op	     17868 gas/op	   23780 B/op	      28 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-qube-Gas=17868-2               	   10000	    104634 ns/op	     17868 gas/op	   23780 B/op	      28 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-pow0x10001-Gas=285900-2        	    1740	    701298 ns/op	    285900 gas/op	   32612 B/op	      46 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-pow0x10001-Gas=285900-2        	    1724	    710452 ns/op	    285900 gas/op	   32616 B/op	      46 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-pow0x10001-Gas=285900-2        	    1687	    725081 ns/op	    285900 gas/op	   32616 B/op	      46 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-pow0x10001-Gas=285900-2        	    1707	    720032 ns/op	    285900 gas/op	   32620 B/op	      46 allocs/op
+BenchmarkPrecompiledModExp/nagydani-5-pow0x10001-Gas=285900-2        	    1728	    710690 ns/op	    285900 gas/op	   32620 B/op	      46 allocs/op
+BenchmarkPrecompiledBn256Add/chfast1-Gas=150-2                       	   61998	     19239 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast1-Gas=150-2                       	   67029	     18522 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast1-Gas=150-2                       	   65528	     18655 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast1-Gas=150-2                       	   63542	     18755 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast1-Gas=150-2                       	   66823	     18296 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast2-Gas=150-2                       	   66236	     18733 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast2-Gas=150-2                       	   66270	     18593 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast2-Gas=150-2                       	   65185	     18612 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast2-Gas=150-2                       	   63157	     18338 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/chfast2-Gas=150-2                       	   66111	     18716 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio1-Gas=150-2                      	  845758	      1271 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio1-Gas=150-2                      	 1000000	      1264 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio1-Gas=150-2                      	  930258	      1292 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio1-Gas=150-2                      	  934808	      1248 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio1-Gas=150-2                      	 1000000	      1276 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio2-Gas=150-2                      	  972170	      1263 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio2-Gas=150-2                      	  967975	      1286 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio2-Gas=150-2                      	  967569	      1277 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio2-Gas=150-2                      	  979695	      1295 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio2-Gas=150-2                      	  998852	      1267 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio3-Gas=150-2                      	  955198	      1237 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio3-Gas=150-2                      	  949830	      1277 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio3-Gas=150-2                      	  971046	      1289 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio3-Gas=150-2                      	  926422	      1302 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio3-Gas=150-2                      	  957508	      1288 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio4-Gas=150-2                      	  971769	      1289 ns/op	       150 gas/op	     752 B/op	      13 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio4-Gas=150-2                      	  959307	      1323 ns/op	       150 gas/op	     752 B/op	      13 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio4-Gas=150-2                      	  948607	      1318 ns/op	       150 gas/op	     752 B/op	      13 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio4-Gas=150-2                      	  980704	      1374 ns/op	       150 gas/op	     752 B/op	      13 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio4-Gas=150-2                      	  948780	      1331 ns/op	       150 gas/op	     752 B/op	      13 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio5-Gas=150-2                      	 1000000	      1241 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio5-Gas=150-2                      	  944805	      1255 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio5-Gas=150-2                      	  982038	      1304 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio5-Gas=150-2                      	  997267	      1271 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio5-Gas=150-2                      	 1000000	      1243 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio6-Gas=150-2                      	  763210	      1632 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio6-Gas=150-2                      	  742267	      1697 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio6-Gas=150-2                      	  750123	      1658 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio6-Gas=150-2                      	  748677	      1639 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio6-Gas=150-2                      	  757506	      1645 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio7-Gas=150-2                      	  746641	      1646 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio7-Gas=150-2                      	  765992	      1667 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio7-Gas=150-2                      	  728252	      1659 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio7-Gas=150-2                      	  749542	      1633 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio7-Gas=150-2                      	  757884	      1633 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio8-Gas=150-2                      	  724195	      1664 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio8-Gas=150-2                      	  747134	      1643 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio8-Gas=150-2                      	  731065	      1698 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio8-Gas=150-2                      	  752461	      1715 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio8-Gas=150-2                      	  684303	      1649 ns/op	       150 gas/op	     688 B/op	      12 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio9-Gas=150-2                      	  752494	      1609 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio9-Gas=150-2                      	  756718	      1642 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio9-Gas=150-2                      	  752712	      1619 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio9-Gas=150-2                      	  754249	      1659 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio9-Gas=150-2                      	  747619	      1642 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio10-Gas=150-2                     	  666433	      1628 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio10-Gas=150-2                     	  751764	      1616 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio10-Gas=150-2                     	  787800	      1619 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio10-Gas=150-2                     	  754056	      1640 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio10-Gas=150-2                     	  786468	      1691 ns/op	       150 gas/op	     624 B/op	      11 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio11-Gas=150-2                     	   65910	     18527 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio11-Gas=150-2                     	   66256	     18240 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio11-Gas=150-2                     	   64689	     18160 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio11-Gas=150-2                     	   64736	     18765 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio11-Gas=150-2                     	   63732	     18443 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio12-Gas=150-2                     	   66500	     18333 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio12-Gas=150-2                     	   66572	     18136 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio12-Gas=150-2                     	   66464	     18273 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio12-Gas=150-2                     	   64562	     18293 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio12-Gas=150-2                     	   65799	     18349 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio13-Gas=150-2                     	   66685	     18281 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio13-Gas=150-2                     	   65216	     18027 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio13-Gas=150-2                     	   60582	     18348 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio13-Gas=150-2                     	   65907	     18394 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio13-Gas=150-2                     	   65554	     18518 ns/op	       150 gas/op	     784 B/op	      16 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio14-Gas=150-2                     	  454600	      2660 ns/op	       150 gas/op	     752 B/op	      15 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio14-Gas=150-2                     	  476672	      2550 ns/op	       150 gas/op	     752 B/op	      15 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio14-Gas=150-2                     	  454390	      2539 ns/op	       150 gas/op	     752 B/op	      15 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio14-Gas=150-2                     	  487621	      2600 ns/op	       150 gas/op	     752 B/op	      15 allocs/op
+BenchmarkPrecompiledBn256Add/cdetrio14-Gas=150-2                     	  478304	      2562 ns/op	       150 gas/op	     752 B/op	      15 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast1-Gas=6000-2                	    8996	    122852 ns/op	      6000 gas/op	    1288 B/op	      26 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast1-Gas=6000-2                	    8812	    125083 ns/op	      6000 gas/op	    1288 B/op	      26 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast1-Gas=6000-2                	    9848	    125005 ns/op	      6000 gas/op	    1288 B/op	      26 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast1-Gas=6000-2                	    9708	    125450 ns/op	      6000 gas/op	    1288 B/op	      26 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast1-Gas=6000-2                	    8839	    126035 ns/op	      6000 gas/op	    1288 B/op	      26 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast2-Gas=6000-2                	    9036	    132575 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast2-Gas=6000-2                	    8576	    138534 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast2-Gas=6000-2                	    8820	    135300 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast2-Gas=6000-2                	    9560	    135638 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast2-Gas=6000-2                	    9144	    134781 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast3-Gas=6000-2                	    8457	    128618 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast3-Gas=6000-2                	    9418	    129184 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast3-Gas=6000-2                	    9277	    129576 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast3-Gas=6000-2                	    9378	    128252 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/chfast3-Gas=6000-2                	    9037	    131053 ns/op	      6000 gas/op	    1496 B/op	      29 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio1-Gas=6000-2               	    7328	    139024 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio1-Gas=6000-2               	    8630	    136682 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio1-Gas=6000-2               	    8200	    138713 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio1-Gas=6000-2               	    8886	    136194 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio1-Gas=6000-2               	    7874	    139663 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio6-Gas=6000-2               	    8535	    140358 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio6-Gas=6000-2               	    8011	    138119 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio6-Gas=6000-2               	    7909	    138997 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio6-Gas=6000-2               	    8616	    138162 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio6-Gas=6000-2               	    8620	    140892 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio11-Gas=6000-2              	    8274	    139284 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio11-Gas=6000-2              	    8776	    138899 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio11-Gas=6000-2              	    8604	    138493 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio11-Gas=6000-2              	    9008	    137603 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256ScalarMul/cdetrio11-Gas=6000-2              	    7803	    138679 ns/op	      6000 gas/op	    1520 B/op	      28 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff1-Gas=113000-2                  	     295	   4178545 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff1-Gas=113000-2                  	     289	   4151914 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff1-Gas=113000-2                  	     291	   4169732 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff1-Gas=113000-2                  	     285	   4076689 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff1-Gas=113000-2                  	     285	   4184815 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff2-Gas=113000-2                  	     289	   4166337 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff2-Gas=113000-2                  	     290	   4065514 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff2-Gas=113000-2                  	     291	   4142034 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff2-Gas=113000-2                  	     296	   4148350 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff2-Gas=113000-2                  	     290	   4144534 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff3-Gas=113000-2                  	     291	   4208770 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff3-Gas=113000-2                  	     283	   4186655 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff3-Gas=113000-2                  	     289	   4125887 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff3-Gas=113000-2                  	     289	   4156555 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff3-Gas=113000-2                  	     268	   4180792 ns/op	    113000 gas/op	  103952 B/op	     980 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff4-Gas=147000-2                  	     210	   5602332 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff4-Gas=147000-2                  	     214	   5534977 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff4-Gas=147000-2                  	     212	   5543344 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff4-Gas=147000-2                  	     216	   5575075 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff4-Gas=147000-2                  	     207	   5586746 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff5-Gas=147000-2                  	     212	   5533273 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff5-Gas=147000-2                  	     216	   5572086 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff5-Gas=147000-2                  	     216	   5567320 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff5-Gas=147000-2                  	     210	   5557268 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff5-Gas=147000-2                  	     211	   5563277 ns/op	    147000 gas/op	  152576 B/op	    1458 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff6-Gas=113000-2                  	     284	   4173150 ns/op	    113000 gas/op	  103920 B/op	     979 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff6-Gas=113000-2                  	     290	   4175192 ns/op	    113000 gas/op	  103920 B/op	     979 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff6-Gas=113000-2                  	     286	   4214587 ns/op	    113000 gas/op	  103920 B/op	     979 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff6-Gas=113000-2                  	     290	   4239456 ns/op	    113000 gas/op	  103920 B/op	     979 allocs/op
+BenchmarkPrecompiledBn256Pairing/jeff6-Gas=113000-2                  	     286	   4163459 ns/op	    113000 gas/op	  103920 B/op	     979 allocs/op
+BenchmarkPrecompiledBn256Pairing/empty_data-Gas=45000-2              	     902	   1342349 ns/op	     45000 gas/op	    6784 B/op	      24 allocs/op
+BenchmarkPrecompiledBn256Pairing/empty_data-Gas=45000-2              	     898	   1338271 ns/op	     45000 gas/op	    6784 B/op	      24 allocs/op
+BenchmarkPrecompiledBn256Pairing/empty_data-Gas=45000-2              	SIGQUIT: quit
+PC=0x5f4a2b m=0 sigcode=0
+
+goroutine 528 [running]:
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.gfpMul(0xc000074e48, 0xc000074fa8, 0xc000074f88)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/gfp_amd64.s:119 +0x27b fp=0xc000074df0 sp=0xc000074d40 pc=0x5f4a2b
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.(*gfP2).Mul(0xc000074ea8, 0xc000074fa8, 0xc000074f68, 0xc000074f68)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/gfp2.go:80 +0x92 fp=0xc000074e88 sp=0xc000074df0 pc=0x5ec5f2
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.(*gfP6).Mul(0xc0000751f8, 0xc0000751f8, 0xc0000752b8, 0xc0000751f8)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/gfp6.go:115 +0x5c8 fp=0xc000075118 sp=0xc000074e88 pc=0x5ee038
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.(*gfP12).Square(0xc0000753d0, 0xc000075550, 0xc0001e0f00)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/gfp12.go:137 +0x1a9 fp=0xc0000753a8 sp=0xc000075118 pc=0x5ebba9
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.(*gfP12).Exp(0xc0001e1680, 0xc0001e0f00, 0xc0000ae640, 0xc0001e0f00)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/gfp12.go:118 +0x138 fp=0xc0000756e8 sp=0xc0000753a8 pc=0x5eb948
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.finalExponentiation(0xc0001e0d80, 0xc0001e0d80)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/optate.go:230 +0x235 fp=0xc000075c20 sp=0xc0000756e8 pc=0x5f1405
+github.com/ethereum/go-ethereum/crypto/bn256/cloudflare.PairingCheck(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x693c01)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/cloudflare/bn256.go:327 +0x1ee fp=0xc000075ca0 sp=0xc000075c20 pc=0x5e867e
+github.com/ethereum/go-ethereum/crypto/bn256.PairingCheck(...)
+	/home/runner/work/core-geth/core-geth/crypto/bn256/bn256_fast.go:24
+github.com/ethereum/go-ethereum/core/vm.runBn256Pairing(0xc98cb0, 0x0, 0x0, 0xc34780, 0x20, 0x20, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts.go:437 +0x3c4 fp=0xc000075d58 sp=0xc000075ca0 pc=0x694944
+github.com/ethereum/go-ethereum/core/vm.(*bn256PairingIstanbul).Run(0xc98cb0, 0xc98cb0, 0x0, 0x0, 0xafc8, 0x20, 0x20, 0x0, 0x0)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts.go:453 +0x3f fp=0xc000075da8 sp=0xc000075d58 pc=0x694acf
+github.com/ethereum/go-ethereum/core/vm.RunPrecompiledContract(0x8076a0, 0xc98cb0, 0xc98cb0, 0x0, 0x0, 0xc0000f20c0, 0xc34780, 0x20, 0x20, 0x0, ...)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts.go:108 +0xe3 fp=0xc000075e00 sp=0xc000075da8 pc=0x691483
+github.com/ethereum/go-ethereum/core/vm.benchmarkPrecompiled.func1(0xc00010a8c0)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts_test.go:149 +0x12b fp=0xc000075ee8 sp=0xc000075e00 pc=0x6bccab
+testing.(*B).runN(0xc00010a8c0, 0x378)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8 fp=0xc000075f58 sp=0xc000075ee8 pc=0x4f47e8
+testing.(*B).launch(0xc00010a8c0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:321 +0xea fp=0xc000075fd8 sp=0xc000075f58 pc=0x4f4e7a
+runtime.goexit()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/asm_amd64.s:1373 +0x1 fp=0xc000075fe0 sp=0xc000075fd8 pc=0x468de1
+created by testing.(*B).doBench
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:276 +0x55
+
+goroutine 1 [chan receive]:
+testing.(*B).run1(0xc00010a000, 0xc00010a000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:233 +0x9e
+testing.(*B).Run(0xc00010b880, 0x780dc5, 0x20, 0x78bd00, 0x4f4400)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:651 +0x341
+testing.runBenchmarks.func1(0xc00010b880)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:533 +0x78
+testing.(*B).runN(0xc00010b880, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.runBenchmarks(0x78480a, 0x27, 0xc0001033a0, 0xc30ce0, 0x35, 0x35, 0xc00025fec0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:539 +0x390
+testing.(*M).Run(0xc0000f0180, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/testing.go:1205 +0x42d
+main.main()
+	_testmain.go:226 +0x135
+
+goroutine 461 [chan receive]:
+testing.(*B).doBench(0xc00010a8c0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:277 +0x73
+testing.(*benchContext).processBench(0xc0001033c0, 0xc00010a8c0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:568 +0x207
+testing.(*B).run(0xc00010a1c0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:268 +0x63
+testing.(*B).Run(0xc00010a000, 0xc0003f9960, 0x14, 0xc0000ca0a0, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:652 +0x3fd
+github.com/ethereum/go-ethereum/core/vm.benchmarkPrecompiled(0x7770a2, 0x2, 0x0, 0x0, 0xc00012a180, 0x40, 0xc00001c0e0, 0xa, 0x0, 0xc00010a000)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts_test.go:143 +0x449
+github.com/ethereum/go-ethereum/core/vm.benchJson(0x779541, 0xc, 0x7770a2, 0x2, 0xc00010a000)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts_test.go:269 +0x1b5
+github.com/ethereum/go-ethereum/core/vm.BenchmarkPrecompiledBn256Pairing(0xc00010a000)
+	/home/runner/work/core-geth/core-geth/core/vm/contracts_test.go:230 +0x55
+testing.(*B).runN(0xc00010a000, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.(*B).run1.func1(0xc00010a000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:231 +0x57
+created by testing.(*B).run1
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:224 +0x7d
+
+rax    0x0
+rbx    0x0
+rcx    0xc000001680
+rdx    0x97816a916871ca8d
+rdi    0xc000074fa8
+rsi    0xc000074f88
+rbp    0xc000074de0
+rsp    0xc000074d40
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x0
+r12    0x0
+r13    0x0
+r14    0x0
+r15    0x0
+rip    0x5f4a2b
+rflags 0x246
+cs     0x33
+fs     0x0
+gs     0x0
+*** Test killed with quit: ran too long (6m0s).
+exit status 2
+FAIL	github.com/ethereum/go-ethereum/core/vm	360.009s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/core/vm/runtime
+BenchmarkCall-2               	      21	  53813001 ns/op
+BenchmarkCall-2               	      22	  52148189 ns/op
+BenchmarkCall-2               	      22	  52741501 ns/op
+BenchmarkCall-2               	      22	  53293337 ns/op
+BenchmarkCall-2               	      21	  53043157 ns/op
+BenchmarkEVM_CREATE_500-2     	      30	  39048088 ns/op
+BenchmarkEVM_CREATE_500-2     	      27	  38154667 ns/op
+BenchmarkEVM_CREATE_500-2     	      30	  38179377 ns/op
+BenchmarkEVM_CREATE_500-2     	      26	  38554167 ns/op
+BenchmarkEVM_CREATE_500-2     	      27	  38933416 ns/op
+BenchmarkEVM_CREATE2_500-2    	       6	 178743359 ns/op
+BenchmarkEVM_CREATE2_500-2    	       6	 176964550 ns/op
+BenchmarkEVM_CREATE2_500-2    	       6	 177369322 ns/op
+BenchmarkEVM_CREATE2_500-2    	       6	 178033762 ns/op
+BenchmarkEVM_CREATE2_500-2    	       6	 180204071 ns/op
+BenchmarkEVM_CREATE_1200-2    	       9	 122566395 ns/op
+BenchmarkEVM_CREATE_1200-2    	       9	 120675375 ns/op
+BenchmarkEVM_CREATE_1200-2    	       9	 127117575 ns/op
+BenchmarkEVM_CREATE_1200-2    	       9	 122749917 ns/op
+BenchmarkEVM_CREATE_1200-2    	       9	 121111447 ns/op
+BenchmarkEVM_CREATE2_1200-2   	       7	 161934391 ns/op
+BenchmarkEVM_CREATE2_1200-2   	       7	 162024379 ns/op
+BenchmarkEVM_CREATE2_1200-2   	       7	 164030467 ns/op
+BenchmarkEVM_CREATE2_1200-2   	       7	 163528871 ns/op
+BenchmarkEVM_CREATE2_1200-2   	       7	 166207862 ns/op
+BenchmarkSimpleLoop-2         	       6	 203338360 ns/op
+BenchmarkSimpleLoop-2         	       5	 200277555 ns/op
+BenchmarkSimpleLoop-2         	       6	 196953729 ns/op
+BenchmarkSimpleLoop-2         	       6	 200711106 ns/op
+BenchmarkSimpleLoop-2         	       6	 197203073 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/core/vm/runtime	47.094s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto
+BenchmarkSha3-2                 	  931332	      1157 ns/op
+BenchmarkSha3-2                 	 1000000	      1137 ns/op
+BenchmarkSha3-2                 	 1000000	      1148 ns/op
+BenchmarkSha3-2                 	 1000000	      1150 ns/op
+BenchmarkSha3-2                 	  985527	      1178 ns/op
+BenchmarkEcrecoverSignature-2   	    5475	    227603 ns/op
+BenchmarkEcrecoverSignature-2   	    5540	    224455 ns/op
+BenchmarkEcrecoverSignature-2   	    5362	    221527 ns/op
+BenchmarkEcrecoverSignature-2   	    5530	    223745 ns/op
+BenchmarkEcrecoverSignature-2   	    5400	    227980 ns/op
+BenchmarkVerifySignature-2      	    6180	    200498 ns/op
+BenchmarkVerifySignature-2      	    6208	    200965 ns/op
+BenchmarkVerifySignature-2      	    5617	    202246 ns/op
+BenchmarkVerifySignature-2      	    6190	    199649 ns/op
+BenchmarkVerifySignature-2      	    6186	    200234 ns/op
+BenchmarkDecompressPubkey-2     	   94688	     12700 ns/op
+BenchmarkDecompressPubkey-2     	   94326	     12846 ns/op
+BenchmarkDecompressPubkey-2     	   94275	     12807 ns/op
+BenchmarkDecompressPubkey-2     	   94782	     12795 ns/op
+BenchmarkDecompressPubkey-2     	   94537	     12780 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto	24.937s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto/blake2b
+BenchmarkWrite128Generic-2   	 2833086	       421 ns/op	 304.29 MB/s
+BenchmarkWrite128Generic-2   	 2801204	       429 ns/op	 298.59 MB/s
+BenchmarkWrite128Generic-2   	 2838060	       427 ns/op	 299.58 MB/s
+BenchmarkWrite128Generic-2   	 2896539	       419 ns/op	 305.72 MB/s
+BenchmarkWrite128Generic-2   	 2865878	       424 ns/op	 301.90 MB/s
+BenchmarkWrite1KGeneric-2    	  368731	      3223 ns/op	 317.70 MB/s
+BenchmarkWrite1KGeneric-2    	  367086	      3204 ns/op	 319.59 MB/s
+BenchmarkWrite1KGeneric-2    	  380294	      3293 ns/op	 311.00 MB/s
+BenchmarkWrite1KGeneric-2    	  367359	      3228 ns/op	 317.21 MB/s
+BenchmarkWrite1KGeneric-2    	  375654	      3165 ns/op	 323.55 MB/s
+BenchmarkWrite128SSE4-2      	 4406918	       277 ns/op	 462.86 MB/s
+BenchmarkWrite128SSE4-2      	 4334791	       273 ns/op	 468.41 MB/s
+BenchmarkWrite128SSE4-2      	 4441137	       270 ns/op	 473.50 MB/s
+BenchmarkWrite128SSE4-2      	 4238386	       270 ns/op	 473.86 MB/s
+BenchmarkWrite128SSE4-2      	 4456332	       277 ns/op	 461.82 MB/s
+BenchmarkWrite1KSSE4-2       	  596556	      2040 ns/op	 501.90 MB/s
+BenchmarkWrite1KSSE4-2       	  547628	      2048 ns/op	 499.92 MB/s
+BenchmarkWrite1KSSE4-2       	  590264	      2027 ns/op	 505.14 MB/s
+BenchmarkWrite1KSSE4-2       	  588301	      2021 ns/op	 506.58 MB/s
+BenchmarkWrite1KSSE4-2       	  601954	      2012 ns/op	 508.90 MB/s
+BenchmarkWrite128AVX-2       	 4759464	       250 ns/op	 511.80 MB/s
+BenchmarkWrite128AVX-2       	 4658691	       252 ns/op	 508.34 MB/s
+BenchmarkWrite128AVX-2       	 4809234	       251 ns/op	 509.72 MB/s
+BenchmarkWrite128AVX-2       	 4770330	       252 ns/op	 508.53 MB/s
+BenchmarkWrite128AVX-2       	 4800937	       253 ns/op	 506.18 MB/s
+BenchmarkWrite1KAVX-2        	  640182	      1872 ns/op	 546.99 MB/s
+BenchmarkWrite1KAVX-2        	  567664	      1905 ns/op	 537.49 MB/s
+BenchmarkWrite1KAVX-2        	  636237	      1872 ns/op	 546.92 MB/s
+BenchmarkWrite1KAVX-2        	  578210	      1881 ns/op	 544.35 MB/s
+BenchmarkWrite1KAVX-2        	  637509	      1877 ns/op	 545.44 MB/s
+BenchmarkWrite128AVX2-2      	 4962334	       240 ns/op	 533.39 MB/s
+BenchmarkWrite128AVX2-2      	 5005226	       246 ns/op	 520.57 MB/s
+BenchmarkWrite128AVX2-2      	 4987672	       242 ns/op	 528.14 MB/s
+BenchmarkWrite128AVX2-2      	 5017396	       243 ns/op	 527.48 MB/s
+BenchmarkWrite128AVX2-2      	 5025464	       243 ns/op	 526.17 MB/s
+BenchmarkWrite1KAVX2-2       	  667226	      1806 ns/op	 567.01 MB/s
+BenchmarkWrite1KAVX2-2       	  627153	      1821 ns/op	 562.28 MB/s
+BenchmarkWrite1KAVX2-2       	  675832	      1793 ns/op	 571.18 MB/s
+BenchmarkWrite1KAVX2-2       	  667482	      1797 ns/op	 569.79 MB/s
+BenchmarkWrite1KAVX2-2       	  662624	      1816 ns/op	 564.01 MB/s
+BenchmarkSum128Generic-2     	 2789258	       430 ns/op	 297.91 MB/s
+BenchmarkSum128Generic-2     	 2829464	       429 ns/op	 298.07 MB/s
+BenchmarkSum128Generic-2     	 2809353	       431 ns/op	 297.25 MB/s
+BenchmarkSum128Generic-2     	 2817969	       432 ns/op	 296.01 MB/s
+BenchmarkSum128Generic-2     	 2816283	       427 ns/op	 299.86 MB/s
+BenchmarkSum1KGeneric-2      	  350248	      3200 ns/op	 320.02 MB/s
+BenchmarkSum1KGeneric-2      	  374664	      3183 ns/op	 321.74 MB/s
+BenchmarkSum1KGeneric-2      	  373159	      3230 ns/op	 317.01 MB/s
+BenchmarkSum1KGeneric-2      	  368602	      3196 ns/op	 320.39 MB/s
+BenchmarkSum1KGeneric-2      	  369454	      3246 ns/op	 315.51 MB/s
+BenchmarkSum128SSE4-2        	 4208478	       290 ns/op	 440.63 MB/s
+BenchmarkSum128SSE4-2        	 4031197	       288 ns/op	 443.87 MB/s
+BenchmarkSum128SSE4-2        	 4234000	       284 ns/op	 451.29 MB/s
+BenchmarkSum128SSE4-2        	 4194706	       289 ns/op	 443.13 MB/s
+BenchmarkSum128SSE4-2        	 3956376	       286 ns/op	 446.93 MB/s
+BenchmarkSum1KSSE4-2         	  577798	      2050 ns/op	 499.46 MB/s
+BenchmarkSum1KSSE4-2         	  547279	      2015 ns/op	 508.31 MB/s
+BenchmarkSum1KSSE4-2         	  492477	      2039 ns/op	 502.21 MB/s
+BenchmarkSum1KSSE4-2         	  572338	      2021 ns/op	 506.60 MB/s
+BenchmarkSum1KSSE4-2         	  582338	      2026 ns/op	 505.50 MB/s
+BenchmarkSum128AVX-2         	 4455456	       267 ns/op	 478.93 MB/s
+BenchmarkSum128AVX-2         	 4363237	       267 ns/op	 479.33 MB/s
+BenchmarkSum128AVX-2         	 4489374	       269 ns/op	 476.55 MB/s
+BenchmarkSum128AVX-2         	 4448926	       266 ns/op	 480.91 MB/s
+BenchmarkSum128AVX-2         	 4504194	       270 ns/op	 474.32 MB/s
+BenchmarkSum1KAVX-2          	  595762	      1896 ns/op	 540.17 MB/s
+BenchmarkSum1KAVX-2          	  649568	      1899 ns/op	 539.12 MB/s
+BenchmarkSum1KAVX-2          	  632182	      1923 ns/op	 532.52 MB/s
+BenchmarkSum1KAVX-2          	  600276	      1890 ns/op	 541.66 MB/s
+BenchmarkSum1KAVX-2          	  618742	      1929 ns/op	 530.96 MB/s
+BenchmarkSum128AVX2-2        	 4627930	       255 ns/op	 502.19 MB/s
+BenchmarkSum128AVX2-2        	 4739857	       255 ns/op	 501.81 MB/s
+BenchmarkSum128AVX2-2        	 4696569	       255 ns/op	 502.83 MB/s
+BenchmarkSum128AVX2-2        	 4751577	       255 ns/op	 501.68 MB/s
+BenchmarkSum128AVX2-2        	 4671030	       258 ns/op	 496.41 MB/s
+BenchmarkSum1KAVX2-2         	  598628	      1827 ns/op	 560.37 MB/s
+BenchmarkSum1KAVX2-2         	  623474	      1809 ns/op	 565.92 MB/s
+BenchmarkSum1KAVX2-2         	  560006	      1804 ns/op	 567.72 MB/s
+BenchmarkSum1KAVX2-2         	  603302	      1828 ns/op	 560.24 MB/s
+BenchmarkSum1KAVX2-2         	  638935	      1828 ns/op	 560.27 MB/s
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto/blake2b	109.920s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto/bls12381
+BenchmarkMultiplication-2   	16090314	        75.9 ns/op
+BenchmarkMultiplication-2   	15168249	        74.7 ns/op
+BenchmarkMultiplication-2   	15250084	        75.5 ns/op
+BenchmarkMultiplication-2   	15661327	        74.9 ns/op
+BenchmarkMultiplication-2   	16250523	        74.8 ns/op
+BenchmarkG1Add-2            	  917533	      1305 ns/op
+BenchmarkG1Add-2            	  906880	      1296 ns/op
+BenchmarkG1Add-2            	  956470	      1284 ns/op
+BenchmarkG1Add-2            	  911227	      1295 ns/op
+BenchmarkG1Add-2            	  893683	      1283 ns/op
+BenchmarkG1Mul-2            	    3028	    347350 ns/op
+BenchmarkG1Mul-2            	    3378	    349295 ns/op
+BenchmarkG1Mul-2            	    3421	    342654 ns/op
+BenchmarkG1Mul-2            	    3435	    349533 ns/op
+BenchmarkG1Mul-2            	    3470	    347588 ns/op
+BenchmarkG1MapToCurve-2     	    5968	    203055 ns/op
+BenchmarkG1MapToCurve-2     	    6104	    201810 ns/op
+BenchmarkG1MapToCurve-2     	    5000	    206141 ns/op
+BenchmarkG1MapToCurve-2     	    5594	    201380 ns/op
+BenchmarkG1MapToCurve-2     	    5857	    199227 ns/op
+BenchmarkG2Add-2            	  290605	      4090 ns/op
+BenchmarkG2Add-2            	  286447	      4122 ns/op
+BenchmarkG2Add-2            	  265568	      4126 ns/op
+BenchmarkG2Add-2            	  286196	      4181 ns/op
+BenchmarkG2Add-2            	  290912	      4133 ns/op
+BenchmarkG2Mul-2            	    1072	   1115212 ns/op
+BenchmarkG2Mul-2            	    1088	   1106443 ns/op
+BenchmarkG2Mul-2            	    1021	   1100785 ns/op
+BenchmarkG2Mul-2            	    1090	   1100510 ns/op
+BenchmarkG2Mul-2            	    1048	   1106586 ns/op
+BenchmarkG2SWUMap-2         	     384	   3083415 ns/op
+BenchmarkG2SWUMap-2         	     387	   3110082 ns/op
+BenchmarkG2SWUMap-2         	     385	   3096294 ns/op
+BenchmarkG2SWUMap-2         	     380	   3091073 ns/op
+BenchmarkG2SWUMap-2         	     385	   3123091 ns/op
+BenchmarkPairing-2          	     543	   2213600 ns/op
+BenchmarkPairing-2          	     546	   2212407 ns/op
+BenchmarkPairing-2          	     548	   2213317 ns/op
+BenchmarkPairing-2          	     530	   2232424 ns/op
+BenchmarkPairing-2          	     528	   2222304 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto/bls12381	52.426s
+?   	github.com/ethereum/go-ethereum/crypto/bn256	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto/bn256/cloudflare
+BenchmarkG1-2        	    8989	    129249 ns/op
+BenchmarkG1-2        	    8479	    123846 ns/op
+BenchmarkG1-2        	    9498	    127345 ns/op
+BenchmarkG1-2        	    9986	    124442 ns/op
+BenchmarkG1-2        	    9396	    132133 ns/op
+BenchmarkG2-2        	    1767	    631485 ns/op
+BenchmarkG2-2        	    1768	    662947 ns/op
+BenchmarkG2-2        	    1723	    654156 ns/op
+BenchmarkG2-2        	    1876	    641845 ns/op
+BenchmarkG2-2        	    1833	    661120 ns/op
+BenchmarkPairing-2   	     556	   2195112 ns/op
+BenchmarkPairing-2   	     555	   2165971 ns/op
+BenchmarkPairing-2   	     546	   2156686 ns/op
+BenchmarkPairing-2   	     554	   2183213 ns/op
+BenchmarkPairing-2   	     553	   2157489 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto/bn256/cloudflare	19.290s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto/bn256/google
+BenchmarkPairing-2   	      61	  18498760 ns/op
+BenchmarkPairing-2   	      64	  18478891 ns/op
+BenchmarkPairing-2   	      61	  18868895 ns/op
+BenchmarkPairing-2   	      61	  18776651 ns/op
+BenchmarkPairing-2   	      64	  18584312 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto/bn256/google	5.905s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto/ecies
+BenchmarkGenerateKeyP256-2    	   52845	     22823 ns/op
+BenchmarkGenerateKeyP256-2    	   50892	     23105 ns/op
+BenchmarkGenerateKeyP256-2    	   52788	     23590 ns/op
+BenchmarkGenerateKeyP256-2    	   52621	     22825 ns/op
+BenchmarkGenerateKeyP256-2    	   52861	     22691 ns/op
+BenchmarkGenSharedKeyP256-2   	   13977	     86209 ns/op
+BenchmarkGenSharedKeyP256-2   	   13818	     88247 ns/op
+BenchmarkGenSharedKeyP256-2   	   13981	     86457 ns/op
+BenchmarkGenSharedKeyP256-2   	   13922	     85324 ns/op
+BenchmarkGenSharedKeyP256-2   	   13963	     85620 ns/op
+BenchmarkGenSharedKeyS256-2   	    6507	    187932 ns/op
+BenchmarkGenSharedKeyS256-2   	    6524	    187148 ns/op
+BenchmarkGenSharedKeyS256-2   	    6568	    186770 ns/op
+BenchmarkGenSharedKeyS256-2   	    6530	    188055 ns/op
+BenchmarkGenSharedKeyS256-2   	    6474	    188283 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto/ecies	23.838s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/crypto/secp256k1
+BenchmarkSign-2      	    8968	    139215 ns/op
+BenchmarkSign-2      	    8806	    139465 ns/op
+BenchmarkSign-2      	    8703	    138796 ns/op
+BenchmarkSign-2      	    8888	    139310 ns/op
+BenchmarkSign-2      	    9001	    138197 ns/op
+BenchmarkRecover-2   	    5527	    226658 ns/op
+BenchmarkRecover-2   	    5589	    223301 ns/op
+BenchmarkRecover-2   	    5378	    222298 ns/op
+BenchmarkRecover-2   	    5304	    226504 ns/op
+BenchmarkRecover-2   	    5521	    223936 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/crypto/secp256k1	12.528s
+PASS
+ok  	github.com/ethereum/go-ethereum/eth	0.037s
+PASS
+ok  	github.com/ethereum/go-ethereum/eth/downloader	2.756s
+PASS
+ok  	github.com/ethereum/go-ethereum/eth/fetcher	0.030s
+--- FAIL: BenchmarkBloomBits512
+    bench_test.go:66: Running bloombits benchmark   section size: 512
+    bench_test.go:74: chain data not found at /home/runner/.ethereum/geth/chaindata
+--- FAIL: BenchmarkBloomBits1k
+    bench_test.go:66: Running bloombits benchmark   section size: 1024
+    bench_test.go:70: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkBloomBits2k
+    bench_test.go:66: Running bloombits benchmark   section size: 2048
+    bench_test.go:70: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkBloomBits4k
+    bench_test.go:66: Running bloombits benchmark   section size: 4096
+    bench_test.go:70: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkBloomBits8k
+    bench_test.go:66: Running bloombits benchmark   section size: 8192
+    bench_test.go:70: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkBloomBits16k
+    bench_test.go:66: Running bloombits benchmark   section size: 16384
+    bench_test.go:70: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkBloomBits32k
+    bench_test.go:66: Running bloombits benchmark   section size: 32768
+    bench_test.go:70: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkNoBloomBits
+    bench_test.go:159: Running benchmark without bloombits
+    bench_test.go:162: error opening database at /home/runner/.ethereum/geth/chaindata: resource temporarily unavailable
+--- FAIL: BenchmarkFilters
+    filter_test.go:93: expected 4 logs, got 0
+FAIL
+exit status 1
+FAIL	github.com/ethereum/go-ethereum/eth/filters	15.476s
+?   	github.com/ethereum/go-ethereum/eth/gasprice	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/eth/tracers	0.030s
+?   	github.com/ethereum/go-ethereum/eth/tracers/internal/tracers	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/ethclient	0.039s
+?   	github.com/ethereum/go-ethereum/ethdb	[no test files]
+?   	github.com/ethereum/go-ethereum/ethdb/dbtest	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/ethdb/leveldb	0.006s
+PASS
+ok  	github.com/ethereum/go-ethereum/ethdb/memorydb	0.003s
+?   	github.com/ethereum/go-ethereum/ethstats	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/event
+BenchmarkPost1000-2         	    3717	    327071 ns/op
+BenchmarkPost1000-2         	    3542	    329929 ns/op
+BenchmarkPost1000-2         	    3645	    335918 ns/op
+BenchmarkPost1000-2         	    3326	    332582 ns/op
+BenchmarkPost1000-2         	    3610	    334191 ns/op
+BenchmarkPostConcurrent-2   	  136425	      8800 ns/op
+BenchmarkPostConcurrent-2   	  142358	      8787 ns/op
+BenchmarkPostConcurrent-2   	  138057	      8758 ns/op
+BenchmarkPostConcurrent-2   	  136212	      8795 ns/op
+BenchmarkPostConcurrent-2   	  142417	      8637 ns/op
+BenchmarkChanSend-2         	 3018814	       398 ns/op
+BenchmarkChanSend-2         	 2992620	       405 ns/op
+BenchmarkChanSend-2         	 3013956	       397 ns/op
+BenchmarkChanSend-2         	 3062484	       397 ns/op
+BenchmarkChanSend-2         	 3009489	       398 ns/op
+BenchmarkFeedSend1000-2     	    5343	    225922 ns/op
+BenchmarkFeedSend1000-2     	    5803	    198335 ns/op
+BenchmarkFeedSend1000-2     	    6224	    210586 ns/op
+BenchmarkFeedSend1000-2     	    6138	    213578 ns/op
+BenchmarkFeedSend1000-2     	    6316	    211091 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/event	27.236s
+PASS
+ok  	github.com/ethereum/go-ethereum/graphql	0.036s
+?   	github.com/ethereum/go-ethereum/internal/build	[no test files]
+?   	github.com/ethereum/go-ethereum/internal/cmdtest	[no test files]
+?   	github.com/ethereum/go-ethereum/internal/debug	[no test files]
+?   	github.com/ethereum/go-ethereum/internal/ethapi	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/internal/guide	0.028s
+PASS
+ok  	github.com/ethereum/go-ethereum/internal/jsre	0.005s
+?   	github.com/ethereum/go-ethereum/internal/jsre/deps	[no test files]
+?   	github.com/ethereum/go-ethereum/internal/testlog	[no test files]
+?   	github.com/ethereum/go-ethereum/internal/web3ext	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/les	0.038s
+?   	github.com/ethereum/go-ethereum/les/checkpointoracle	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/les/flowcontrol	0.005s
+PASS
+ok  	github.com/ethereum/go-ethereum/les/lespay/client	0.027s
+PASS
+ok  	github.com/ethereum/go-ethereum/les/utils	0.004s
+PASS
+ok  	github.com/ethereum/go-ethereum/light	0.030s
+?   	github.com/ethereum/go-ethereum/log	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/metrics
+BenchmarkCounter-2              	100000000	        10.2 ns/op
+BenchmarkCounter-2              	100000000	        10.2 ns/op
+BenchmarkCounter-2              	100000000	        10.3 ns/op
+BenchmarkCounter-2              	97936278	        10.3 ns/op
+BenchmarkCounter-2              	98765773	        10.2 ns/op
+BenchmarkDebugGCStats-2         	 1344324	       917 ns/op
+BenchmarkDebugGCStats-2         	 1266147	       961 ns/op
+BenchmarkDebugGCStats-2         	 1233753	       972 ns/op
+BenchmarkDebugGCStats-2         	 1201634	      1011 ns/op
+BenchmarkDebugGCStats-2         	 1000000	      1030 ns/op
+BenchmarkEWMA-2                 	27999786	        43.1 ns/op
+BenchmarkEWMA-2                 	27986464	        43.5 ns/op
+BenchmarkEWMA-2                 	26594029	        43.9 ns/op
+BenchmarkEWMA-2                 	27730532	        43.2 ns/op
+BenchmarkEWMA-2                 	27912704	        44.6 ns/op
+BenchmarkGuageFloat64-2         	56035664	        21.6 ns/op
+BenchmarkGuageFloat64-2         	56214440	        21.7 ns/op
+BenchmarkGuageFloat64-2         	53464508	        21.8 ns/op
+BenchmarkGuageFloat64-2         	51976773	        21.7 ns/op
+BenchmarkGuageFloat64-2         	56086480	        21.7 ns/op
+BenchmarkGuage-2                	100000000	        10.2 ns/op
+BenchmarkGuage-2                	100000000	        10.2 ns/op
+BenchmarkGuage-2                	100000000	        10.2 ns/op
+BenchmarkGuage-2                	100000000	        10.2 ns/op
+BenchmarkGuage-2                	117502581	        10.2 ns/op
+BenchmarkHistogram-2            	19706024	        59.6 ns/op
+BenchmarkHistogram-2            	17121638	        59.8 ns/op
+BenchmarkHistogram-2            	17779623	        59.5 ns/op
+BenchmarkHistogram-2            	20199644	        59.0 ns/op
+BenchmarkHistogram-2            	17915754	        60.9 ns/op
+BenchmarkMeter-2                	 5735304	       204 ns/op
+BenchmarkMeter-2                	 5817775	       227 ns/op
+BenchmarkMeter-2                	 5944230	       204 ns/op
+BenchmarkMeter-2                	 5789612	       203 ns/op
+BenchmarkMeter-2                	 5887945	       204 ns/op
+BenchmarkMetrics-2              	    3067	    379053 ns/op
+BenchmarkMetrics-2              	    2388	    535646 ns/op
+BenchmarkMetrics-2              	    3339	    525516 ns/op
+BenchmarkMetrics-2              	    2700	    521539 ns/op
+BenchmarkMetrics-2              	    3151	    365138 ns/op
+BenchmarkRegistry-2             	 3457231	       359 ns/op
+BenchmarkRegistry-2             	 3466015	       351 ns/op
+BenchmarkRegistry-2             	 3413031	       346 ns/op
+BenchmarkRegistry-2             	 3383451	       351 ns/op
+BenchmarkRegistry-2             	 3466719	       351 ns/op
+BenchmarkRuntimeMemStats-2      	   31147	     40210 ns/op
+BenchmarkRuntimeMemStats-2      	   30436	     39623 ns/op
+BenchmarkRuntimeMemStats-2      	   29803	     40048 ns/op
+BenchmarkRuntimeMemStats-2      	   29473	     40743 ns/op
+BenchmarkRuntimeMemStats-2      	   28872	     41017 ns/op
+BenchmarkCompute1000-2          	  544393	      2234 ns/op
+BenchmarkCompute1000-2          	  526582	      2223 ns/op
+BenchmarkCompute1000-2          	  459132	      2233 ns/op
+BenchmarkCompute1000-2          	  543556	      2210 ns/op
+BenchmarkCompute1000-2          	  542260	      2209 ns/op
+BenchmarkCompute1000000-2       	     534	   2268385 ns/op
+BenchmarkCompute1000000-2       	     535	   2257909 ns/op
+BenchmarkCompute1000000-2       	     541	   2228444 ns/op
+BenchmarkCompute1000000-2       	     535	   2261890 ns/op
+BenchmarkCompute1000000-2       	     526	   2219299 ns/op
+BenchmarkCopy1000-2             	  566368	      2055 ns/op
+BenchmarkCopy1000-2             	  607326	      2040 ns/op
+BenchmarkCopy1000-2             	  637210	      2051 ns/op
+BenchmarkCopy1000-2             	  540594	      2102 ns/op
+BenchmarkCopy1000-2             	  586178	      2147 ns/op
+BenchmarkCopy1000000-2          	     206	   5840308 ns/op
+BenchmarkCopy1000000-2          	     202	   5750542 ns/op
+BenchmarkCopy1000000-2          	     217	   5380528 ns/op
+BenchmarkCopy1000000-2          	     207	   5819824 ns/op
+BenchmarkCopy1000000-2          	     234	   5821446 ns/op
+BenchmarkExpDecaySample257-2    	 4832110	       247 ns/op
+--- BENCH: BenchmarkExpDecaySample257-2
+    sample_test.go:276: GC cost: 29601 ns/op
+    sample_test.go:276: GC cost: 273 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample257-2    	 4930029	       247 ns/op
+--- BENCH: BenchmarkExpDecaySample257-2
+    sample_test.go:276: GC cost: 6500 ns/op
+    sample_test.go:276: GC cost: 124 ns/op
+    sample_test.go:276: GC cost: 11 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample257-2    	 4925840	       248 ns/op
+--- BENCH: BenchmarkExpDecaySample257-2
+    sample_test.go:276: GC cost: 21801 ns/op
+    sample_test.go:276: GC cost: 232 ns/op
+    sample_test.go:276: GC cost: 2 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample257-2    	 4972322	       249 ns/op
+--- BENCH: BenchmarkExpDecaySample257-2
+    sample_test.go:276: GC cost: 6300 ns/op
+    sample_test.go:276: GC cost: 51 ns/op
+    sample_test.go:276: GC cost: 4 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample257-2    	 4977016	       250 ns/op
+--- BENCH: BenchmarkExpDecaySample257-2
+    sample_test.go:276: GC cost: 81206 ns/op
+    sample_test.go:276: GC cost: 241 ns/op
+    sample_test.go:276: GC cost: 1 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample514-2    	 4695486	       253 ns/op
+--- BENCH: BenchmarkExpDecaySample514-2
+    sample_test.go:276: GC cost: 28202 ns/op
+    sample_test.go:276: GC cost: 284 ns/op
+    sample_test.go:276: GC cost: 11 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample514-2    	 4731436	       258 ns/op
+--- BENCH: BenchmarkExpDecaySample514-2
+    sample_test.go:276: GC cost: 17001 ns/op
+    sample_test.go:276: GC cost: 312 ns/op
+    sample_test.go:276: GC cost: 11 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample514-2    	 4862176	       254 ns/op
+--- BENCH: BenchmarkExpDecaySample514-2
+    sample_test.go:276: GC cost: 20001 ns/op
+    sample_test.go:276: GC cost: 494 ns/op
+    sample_test.go:276: GC cost: 2 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample514-2    	 4351794	       255 ns/op
+--- BENCH: BenchmarkExpDecaySample514-2
+    sample_test.go:276: GC cost: 28702 ns/op
+    sample_test.go:276: GC cost: 342 ns/op
+    sample_test.go:276: GC cost: 16 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample514-2    	 4257003	       268 ns/op
+--- BENCH: BenchmarkExpDecaySample514-2
+    sample_test.go:276: GC cost: 24501 ns/op
+    sample_test.go:276: GC cost: 202 ns/op
+    sample_test.go:276: GC cost: 11 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample1028-2   	 4559648	       278 ns/op
+--- BENCH: BenchmarkExpDecaySample1028-2
+    sample_test.go:276: GC cost: 37402 ns/op
+    sample_test.go:276: GC cost: 246 ns/op
+    sample_test.go:276: GC cost: 4 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample1028-2   	 4493751	       261 ns/op
+--- BENCH: BenchmarkExpDecaySample1028-2
+    sample_test.go:276: GC cost: 34002 ns/op
+    sample_test.go:276: GC cost: 303 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample1028-2   	 4750812	       280 ns/op
+--- BENCH: BenchmarkExpDecaySample1028-2
+    sample_test.go:276: GC cost: 42102 ns/op
+    sample_test.go:276: GC cost: 306 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample1028-2   	 4507534	       262 ns/op
+--- BENCH: BenchmarkExpDecaySample1028-2
+    sample_test.go:276: GC cost: 37602 ns/op
+    sample_test.go:276: GC cost: 409 ns/op
+    sample_test.go:276: GC cost: 4 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkExpDecaySample1028-2   	 4671144	       255 ns/op
+--- BENCH: BenchmarkExpDecaySample1028-2
+    sample_test.go:276: GC cost: 34902 ns/op
+    sample_test.go:276: GC cost: 330 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample257-2     	19423264	        57.3 ns/op
+--- BENCH: BenchmarkUniformSample257-2
+    sample_test.go:276: GC cost: 5801 ns/op
+    sample_test.go:276: GC cost: 311 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample257-2     	18113985	        67.3 ns/op
+--- BENCH: BenchmarkUniformSample257-2
+    sample_test.go:276: GC cost: 70404 ns/op
+    sample_test.go:276: GC cost: 287 ns/op
+    sample_test.go:276: GC cost: 1 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample257-2     	18358814	        66.9 ns/op
+--- BENCH: BenchmarkUniformSample257-2
+    sample_test.go:276: GC cost: 79705 ns/op
+    sample_test.go:276: GC cost: 38 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample257-2     	18311354	        66.4 ns/op
+--- BENCH: BenchmarkUniformSample257-2
+    sample_test.go:276: GC cost: 32602 ns/op
+    sample_test.go:276: GC cost: 277 ns/op
+    sample_test.go:276: GC cost: 4 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample257-2     	18058156	        66.7 ns/op
+--- BENCH: BenchmarkUniformSample257-2
+    sample_test.go:276: GC cost: 26402 ns/op
+    sample_test.go:276: GC cost: 244 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample514-2     	19976636	        58.3 ns/op
+--- BENCH: BenchmarkUniformSample514-2
+    sample_test.go:276: GC cost: 22201 ns/op
+    sample_test.go:276: GC cost: 287 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample514-2     	17596038	        67.2 ns/op
+--- BENCH: BenchmarkUniformSample514-2
+    sample_test.go:276: GC cost: 63804 ns/op
+    sample_test.go:276: GC cost: 154 ns/op
+    sample_test.go:276: GC cost: 2 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample514-2     	20926176	        65.9 ns/op
+--- BENCH: BenchmarkUniformSample514-2
+    sample_test.go:276: GC cost: 33602 ns/op
+    sample_test.go:276: GC cost: 342 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample514-2     	17581111	        59.1 ns/op
+--- BENCH: BenchmarkUniformSample514-2
+    sample_test.go:276: GC cost: 33802 ns/op
+    sample_test.go:276: GC cost: 251 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample514-2     	21014184	        57.4 ns/op
+--- BENCH: BenchmarkUniformSample514-2
+    sample_test.go:276: GC cost: 29602 ns/op
+    sample_test.go:276: GC cost: 250 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample1028-2    	19503962	        58.1 ns/op
+--- BENCH: BenchmarkUniformSample1028-2
+    sample_test.go:276: GC cost: 29202 ns/op
+    sample_test.go:276: GC cost: 382 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample1028-2    	18158229	        66.6 ns/op
+--- BENCH: BenchmarkUniformSample1028-2
+    sample_test.go:276: GC cost: 30701 ns/op
+    sample_test.go:276: GC cost: 287 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample1028-2    	18255055	        66.5 ns/op
+--- BENCH: BenchmarkUniformSample1028-2
+    sample_test.go:276: GC cost: 10101 ns/op
+    sample_test.go:276: GC cost: 466 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample1028-2    	17800638	        66.7 ns/op
+--- BENCH: BenchmarkUniformSample1028-2
+    sample_test.go:276: GC cost: 25701 ns/op
+    sample_test.go:276: GC cost: 397 ns/op
+    sample_test.go:276: GC cost: 3 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkUniformSample1028-2    	20972167	        65.4 ns/op
+--- BENCH: BenchmarkUniformSample1028-2
+    sample_test.go:276: GC cost: 5101 ns/op
+    sample_test.go:276: GC cost: 215 ns/op
+    sample_test.go:276: GC cost: 2 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+    sample_test.go:276: GC cost: 0 ns/op
+BenchmarkTimer-2                	 2474214	       485 ns/op
+BenchmarkTimer-2                	 2502841	       495 ns/op
+BenchmarkTimer-2                	 2456083	       490 ns/op
+BenchmarkTimer-2                	 2514262	       486 ns/op
+BenchmarkTimer-2                	 2432713	       484 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/metrics	149.789s
+?   	github.com/ethereum/go-ethereum/metrics/exp	[no test files]
+?   	github.com/ethereum/go-ethereum/metrics/influxdb	[no test files]
+?   	github.com/ethereum/go-ethereum/metrics/librato	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/metrics/prometheus	0.006s
+PASS
+ok  	github.com/ethereum/go-ethereum/miner	0.032s
+PASS
+ok  	github.com/ethereum/go-ethereum/mobile	0.037s
+PASS
+ok  	github.com/ethereum/go-ethereum/node	0.038s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p	0.028s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/p2p/discover
+BenchmarkV5_DecodeAuthSecp256k1-2   	    1826	    651244 ns/op
+BenchmarkV5_DecodeAuthSecp256k1-2   	    1836	    654157 ns/op
+BenchmarkV5_DecodeAuthSecp256k1-2   	    1834	    644840 ns/op
+BenchmarkV5_DecodeAuthSecp256k1-2   	    1832	    645571 ns/op
+BenchmarkV5_DecodeAuthSecp256k1-2   	    1881	    638824 ns/op
+BenchmarkV5_DecodePing-2            	  563721	      2205 ns/op
+BenchmarkV5_DecodePing-2            	  548863	      2186 ns/op
+BenchmarkV5_DecodePing-2            	  557778	      2192 ns/op
+BenchmarkV5_DecodePing-2            	  559782	      2204 ns/op
+BenchmarkV5_DecodePing-2            	  554863	      2235 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/discover	12.737s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/discover/v4wire	0.033s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/discv5	0.030s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/dnsdisc	0.027s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/enode	0.028s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/enr	0.005s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/nat	0.005s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/p2p/netutil
+BenchmarkCheckRelayIP-2   	 2458036	       492 ns/op
+BenchmarkCheckRelayIP-2   	 2446232	       495 ns/op
+BenchmarkCheckRelayIP-2   	 2418453	       492 ns/op
+BenchmarkCheckRelayIP-2   	 2452368	       497 ns/op
+BenchmarkCheckRelayIP-2   	 2367139	       491 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/netutil	8.507s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/nodestate	0.029s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/p2p/simulations
+BenchmarkMinimalService/ring/32-2         	SIGQUIT: quit
+PC=0x45a5ea m=0 sigcode=0
+
+goroutine 0 [idle]:
+runtime.findfunc(0x657ad0, 0xc0e9a65500, 0x46b7d0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/symtab.go:648 +0x6a
+runtime.isSystemGoroutine(0xc0e9a65500, 0x0, 0x40bc01)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/traceback.go:1023 +0x36
+runtime.newproc1(0xc22ea6ab10, 0x7ffd13454928, 0x55f00000000, 0x1718c80, 0x4c9c94)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:3469 +0x1d6
+runtime.newproc.func1()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:3387 +0x4f
+runtime.newproc(0x0, 0xc22ea6ab10)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:3386 +0x6e
+time.goFunc(0xbe4920, 0xc22ea6ab10, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/time/sleep.go:168 +0x44
+runtime.runOneTimer(0xc000044000, 0xc25bcbb3b8, 0x51ef0dec6c4)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/time.go:826 +0x12f
+runtime.runtimer(0xc000044000, 0x51ef0dec6c4, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/time.go:734 +0xa0
+runtime.checkTimers(0xc000044000, 0x51ef0dec6c4, 0x507efabc701, 0x507efb76681, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2627 +0x104
+runtime.schedule()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2489 +0xdb
+runtime.goschedImpl(0xc137aefb00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2711 +0xd6
+runtime.gopreempt_m(0xc137aefb00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/proc.go:2739 +0x34
+runtime.newstack()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/stack.go:1025 +0x1ae
+runtime.morestack()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/asm_amd64.s:449 +0x8f
+
+goroutine 1 [chan receive, 8 minutes]:
+testing.(*B).run1(0xc000146000, 0xc000146000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:233 +0x9e
+testing.(*B).Run(0xc0001ca1c0, 0xd44d3a, 0x17, 0xd93398, 0x50bc00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:651 +0x341
+testing.runBenchmarks.func1(0xc0001ca1c0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:533 +0x78
+testing.(*B).runN(0xc0001ca1c0, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.runBenchmarks(0xd5d1a4, 0x2f, 0xc0003a65a0, 0x1607820, 0x1, 0x1, 0x1719600)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:539 +0x390
+testing.(*M).Run(0xc000111080, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/testing.go:1205 +0x42d
+github.com/ethereum/go-ethereum/p2p/simulations.TestMain(0xc000111080)
+	/home/runner/work/core-geth/core-geth/p2p/simulations/http_test.go:48 +0x182
+main.main()
+	_testmain.go:86 +0x135
+*** Test killed: ran too long (6m0s).
+signal: killed
+FAIL	github.com/ethereum/go-ethereum/p2p/simulations	565.760s
+PASS
+ok  	github.com/ethereum/go-ethereum/p2p/simulations/adapters	1.095s
+?   	github.com/ethereum/go-ethereum/p2p/simulations/examples	[no test files]
+?   	github.com/ethereum/go-ethereum/p2p/simulations/pipes	[no test files]
+?   	github.com/ethereum/go-ethereum/p2p/testing	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/params	0.261s
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/rlp
+BenchmarkDecode-2                	      97	  10856216 ns/op	  27.09 MB/s	 2258248 B/op	      55 allocs/op
+BenchmarkDecode-2                	     129	   8151856 ns/op	  36.08 MB/s	 2258249 B/op	      55 allocs/op
+BenchmarkDecode-2                	     145	   8220818 ns/op	  35.77 MB/s	 2258248 B/op	      55 allocs/op
+BenchmarkDecode-2                	     147	   8064144 ns/op	  36.47 MB/s	 2258248 B/op	      55 allocs/op
+BenchmarkDecode-2                	     147	   8277901 ns/op	  35.53 MB/s	 2258247 B/op	      55 allocs/op
+BenchmarkDecodeIntSliceReuse-2   	     147	   7973091 ns/op	  41.90 MB/s	   22991 B/op	       1 allocs/op
+BenchmarkDecodeIntSliceReuse-2   	     150	   7910720 ns/op	  42.23 MB/s	   22533 B/op	       1 allocs/op
+BenchmarkDecodeIntSliceReuse-2   	     152	   7939386 ns/op	  42.08 MB/s	   22237 B/op	       1 allocs/op
+BenchmarkDecodeIntSliceReuse-2   	     148	   7927409 ns/op	  42.14 MB/s	   22836 B/op	       1 allocs/op
+BenchmarkDecodeIntSliceReuse-2   	     150	   7920308 ns/op	  42.18 MB/s	   22533 B/op	       1 allocs/op
+PASS
+ok  	github.com/ethereum/go-ethereum/rlp	19.122s
+PASS
+ok  	github.com/ethereum/go-ethereum/rpc	0.046s
+PASS
+ok  	github.com/ethereum/go-ethereum/signer/core	0.164s
+PASS
+ok  	github.com/ethereum/go-ethereum/signer/fourbyte	0.145s
+PASS
+ok  	github.com/ethereum/go-ethereum/signer/rules	0.182s
+?   	github.com/ethereum/go-ethereum/signer/rules/deps	[no test files]
+PASS
+ok  	github.com/ethereum/go-ethereum/signer/storage	0.041s
+PASS
+ok  	github.com/ethereum/go-ethereum/tests	0.143s
+?   	github.com/ethereum/go-ethereum/tests/fuzzers/keystore	[no test files]
+?   	github.com/ethereum/go-ethereum/tests/fuzzers/rlp	[no test files]
+?   	github.com/ethereum/go-ethereum/tests/fuzzers/trie	[no test files]
+?   	github.com/ethereum/go-ethereum/tests/fuzzers/txfetcher	[no test files]
+?   	github.com/ethereum/go-ethereum/tests/fuzzers/whisperv6	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/trie
+BenchmarkHexToCompact-2               	39535129	        28.9 ns/op
+BenchmarkHexToCompact-2               	41625813	        28.9 ns/op
+BenchmarkHexToCompact-2               	42236208	        30.1 ns/op
+BenchmarkHexToCompact-2               	41129575	        29.3 ns/op
+BenchmarkHexToCompact-2               	42001143	        29.1 ns/op
+BenchmarkCompactToHex-2               	27288517	        42.8 ns/op
+BenchmarkCompactToHex-2               	27522166	        44.3 ns/op
+BenchmarkCompactToHex-2               	27570606	        43.4 ns/op
+BenchmarkCompactToHex-2               	27653397	        43.6 ns/op
+BenchmarkCompactToHex-2               	28017958	        43.9 ns/op
+BenchmarkKeybytesToHex-2              	25028068	        46.3 ns/op
+BenchmarkKeybytesToHex-2              	26002468	        46.3 ns/op
+BenchmarkKeybytesToHex-2              	26212009	        46.5 ns/op
+BenchmarkKeybytesToHex-2              	26811278	        46.4 ns/op
+BenchmarkKeybytesToHex-2              	26405706	        46.6 ns/op
+BenchmarkHexToKeybytes-2              	41075230	        28.8 ns/op
+BenchmarkHexToKeybytes-2              	42947928	        29.1 ns/op
+BenchmarkHexToKeybytes-2              	40132268	        29.4 ns/op
+BenchmarkHexToKeybytes-2              	40093112	        28.7 ns/op
+BenchmarkHexToKeybytes-2              	41668603	        29.0 ns/op
+BenchmarkProve-2                      	    1551	    646383 ns/op
+BenchmarkProve-2                      	    1764	    650907 ns/op
+BenchmarkProve-2                      	    1707	    671094 ns/op
+BenchmarkProve-2                      	    1657	    683286 ns/op
+BenchmarkProve-2                      	    1629	    678485 ns/op
+BenchmarkVerifyProof-2                	  138404	      9109 ns/op
+BenchmarkVerifyProof-2                	  119976	      9091 ns/op
+BenchmarkVerifyProof-2                	  120130	      9823 ns/op
+BenchmarkVerifyProof-2                	  124834	      9234 ns/op
+BenchmarkVerifyProof-2                	  129392	      8815 ns/op
+BenchmarkVerifyRangeProof10-2         	   11736	     96316 ns/op
+BenchmarkVerifyRangeProof10-2         	   10707	    105257 ns/op
+BenchmarkVerifyRangeProof10-2         	   10790	    101240 ns/op
+BenchmarkVerifyRangeProof10-2         	   11035	     96577 ns/op
+BenchmarkVerifyRangeProof10-2         	   11169	     94721 ns/op
+BenchmarkVerifyRangeProof100-2        	    2577	    465887 ns/op
+BenchmarkVerifyRangeProof100-2        	    2535	    471385 ns/op
+BenchmarkVerifyRangeProof100-2        	    2649	    464186 ns/op
+BenchmarkVerifyRangeProof100-2        	    2714	    456479 ns/op
+BenchmarkVerifyRangeProof100-2        	    2374	    444773 ns/op
+BenchmarkVerifyRangeProof1000-2       	     255	   4491323 ns/op
+BenchmarkVerifyRangeProof1000-2       	     238	   4404742 ns/op
+BenchmarkVerifyRangeProof1000-2       	     250	   4637555 ns/op
+BenchmarkVerifyRangeProof1000-2       	     229	   4516057 ns/op
+BenchmarkVerifyRangeProof1000-2       	     265	   4342753 ns/op
+BenchmarkVerifyRangeProof5000-2       	      54	  21589249 ns/op
+BenchmarkVerifyRangeProof5000-2       	      52	  21418333 ns/op
+BenchmarkVerifyRangeProof5000-2       	      51	  22056884 ns/op
+BenchmarkVerifyRangeProof5000-2       	      55	  21915049 ns/op
+BenchmarkVerifyRangeProof5000-2       	      50	  22293783 ns/op
+BenchmarkGet-2                        	 5131852	       244 ns/op
+BenchmarkGet-2                        	 5061169	       236 ns/op
+BenchmarkGet-2                        	 5244693	       241 ns/op
+BenchmarkGet-2                        	 4967862	       241 ns/op
+BenchmarkGet-2                        	 4924623	       241 ns/op
+BenchmarkGetDB-2                      	 5968332	       201 ns/op
+BenchmarkGetDB-2                      	 5923934	       199 ns/op
+BenchmarkGetDB-2                      	 5965819	       202 ns/op
+BenchmarkGetDB-2                      	 5821501	       202 ns/op
+BenchmarkGetDB-2                      	 5895153	       202 ns/op
+BenchmarkUpdateBE-2                   	  959376	      2223 ns/op	    1804 B/op	       9 allocs/op
+BenchmarkUpdateBE-2                   	  977691	      2251 ns/op	    1805 B/op	       9 allocs/op
+BenchmarkUpdateBE-2                   	  911163	      2296 ns/op	    1803 B/op	       9 allocs/op
+BenchmarkUpdateBE-2                   	  951358	      2267 ns/op	    1804 B/op	       9 allocs/op
+BenchmarkUpdateBE-2                   	  941823	      2270 ns/op	    1803 B/op	       9 allocs/op
+BenchmarkUpdateLE-2                   	  838830	      3353 ns/op	    1852 B/op	       9 allocs/op
+BenchmarkUpdateLE-2                   	  792954	      3471 ns/op	    1851 B/op	       9 allocs/op
+BenchmarkUpdateLE-2                   	  834096	      3361 ns/op	    1852 B/op	       9 allocs/op
+BenchmarkUpdateLE-2                   	  739693	      3241 ns/op	    1848 B/op	       9 allocs/op
+BenchmarkUpdateLE-2                   	  827270	      3325 ns/op	    1852 B/op	       9 allocs/op
+BenchmarkHash-2                       	  268548	      4852 ns/op	     910 B/op	      12 allocs/op
+BenchmarkHash-2                       	  260955	      4703 ns/op	     911 B/op	      12 allocs/op
+BenchmarkHash-2                       	  258236	      4139 ns/op	     911 B/op	      12 allocs/op
+BenchmarkHash-2                       	  265143	      4555 ns/op	     910 B/op	      12 allocs/op
+BenchmarkHash-2                       	  282972	      4896 ns/op	     910 B/op	      12 allocs/op
+BenchmarkCommitAfterHash/no-onleaf-2  	  513668	      2860 ns/op	     764 B/op	       7 allocs/op
+BenchmarkCommitAfterHash/no-onleaf-2  	  459768	      2804 ns/op	     786 B/op	       7 allocs/op
+BenchmarkCommitAfterHash/no-onleaf-2  	  518167	      2802 ns/op	     763 B/op	       7 allocs/op
+BenchmarkCommitAfterHash/no-onleaf-2  	  486348	      2771 ns/op	     773 B/op	       7 allocs/op
+BenchmarkCommitAfterHash/no-onleaf-2  	  526912	      3151 ns/op	     760 B/op	       7 allocs/op
+BenchmarkCommitAfterHash/with-onleaf-2         	  407892	      3947 ns/op	    1045 B/op	      13 allocs/op
+BenchmarkCommitAfterHash/with-onleaf-2         	  360643	      4168 ns/op	    1082 B/op	      13 allocs/op
+BenchmarkCommitAfterHash/with-onleaf-2         	  389961	      4028 ns/op	    1058 B/op	      13 allocs/op
+BenchmarkCommitAfterHash/with-onleaf-2         	  390235	      4117 ns/op	    1058 B/op	      13 allocs/op
+BenchmarkCommitAfterHash/with-onleaf-2         	  379377	      4120 ns/op	    1066 B/op	      13 allocs/op
+BenchmarkHashFixedSize/10-2                    	   15610	     76808 ns/op	   12626 B/op	     176 allocs/op
+BenchmarkHashFixedSize/10-2                    	   15564	     75383 ns/op	   12625 B/op	     176 allocs/op
+BenchmarkHashFixedSize/10-2                    	   15931	     75978 ns/op	   12625 B/op	     176 allocs/op
+BenchmarkHashFixedSize/10-2                    	   15658	     76629 ns/op	   12626 B/op	     176 allocs/op
+BenchmarkHashFixedSize/10-2                    	   15746	     76596 ns/op	   12625 B/op	     176 allocs/op
+BenchmarkHashFixedSize/100-2                   	    3733	    309294 ns/op	   59049 B/op	     849 allocs/op
+BenchmarkHashFixedSize/100-2                   	    3715	    307769 ns/op	   59043 B/op	     849 allocs/op
+BenchmarkHashFixedSize/100-2                   	    3820	    319891 ns/op	   59033 B/op	     849 allocs/op
+BenchmarkHashFixedSize/100-2                   	    3484	    309072 ns/op	   59034 B/op	     849 allocs/op
+BenchmarkHashFixedSize/100-2                   	    3692	    315315 ns/op	   59044 B/op	     849 allocs/op
+BenchmarkHashFixedSize/1K-2                    	     450	   2684240 ns/op	  635924 B/op	    8862 allocs/op
+BenchmarkHashFixedSize/1K-2                    	     442	   2669911 ns/op	  635725 B/op	    8861 allocs/op
+BenchmarkHashFixedSize/1K-2                    	     442	   2602423 ns/op	  635656 B/op	    8861 allocs/op
+BenchmarkHashFixedSize/1K-2                    	     458	   2651736 ns/op	  635694 B/op	    8861 allocs/op
+BenchmarkHashFixedSize/1K-2                    	     465	   2613226 ns/op	  635730 B/op	    8861 allocs/op
+BenchmarkHashFixedSize/10K-2                   	      33	  31643834 ns/op	 6637622 B/op	   91025 allocs/op
+BenchmarkHashFixedSize/10K-2                   	      40	  30777492 ns/op	 6638073 B/op	   91026 allocs/op
+BenchmarkHashFixedSize/10K-2                   	      36	  30853296 ns/op	 6637744 B/op	   91024 allocs/op
+BenchmarkHashFixedSize/10K-2                   	      34	  32178838 ns/op	 6637608 B/op	   91023 allocs/op
+BenchmarkHashFixedSize/10K-2                   	      36	  32215443 ns/op	 6638576 B/op	   91028 allocs/op
+BenchmarkHashFixedSize/100K-2                  	       3	 337752926 ns/op	65545093 B/op	  904680 allocs/op
+BenchmarkHashFixedSize/100K-2                  	       4	 332508969 ns/op	65547826 B/op	  904698 allocs/op
+BenchmarkHashFixedSize/100K-2                  	       4	 330545588 ns/op	65545848 B/op	  904686 allocs/op
+BenchmarkHashFixedSize/100K-2                  	       3	 334838785 ns/op	65545829 B/op	  904686 allocs/op
+BenchmarkHashFixedSize/100K-2                  	       3	 335470320 ns/op	65546696 B/op	  904690 allocs/op
+BenchmarkCommitAfterHashFixedSize/10-2         	   34669	     35230 ns/op	   17028 B/op	     162 allocs/op
+BenchmarkCommitAfterHashFixedSize/10-2         	   34262	     35654 ns/op	   17028 B/op	     162 allocs/op
+BenchmarkCommitAfterHashFixedSize/10-2         	   34635	     34895 ns/op	   17027 B/op	     162 allocs/op
+BenchmarkCommitAfterHashFixedSize/10-2         	   34806	     34848 ns/op	   17027 B/op	     162 allocs/op
+BenchmarkCommitAfterHashFixedSize/10-2         	   34998	     34764 ns/op	   17027 B/op	     162 allocs/op
+BenchmarkCommitAfterHashFixedSize/100-2        	    7611	    156624 ns/op	   80556 B/op	     768 allocs/op
+BenchmarkCommitAfterHashFixedSize/100-2        	    7873	    156879 ns/op	   80556 B/op	     768 allocs/op
+BenchmarkCommitAfterHashFixedSize/100-2        	SIGQUIT: quit
+PC=0x593e91 m=0 sigcode=0
+
+goroutine 950255 [running]:
+golang.org/x/crypto/sha3.keccakF1600(0xc000377340)
+	/home/runner/go/pkg/mod/golang.org/x/crypto@v0.0.0-20200311171314-f7b00557c8c4/sha3/keccakf_amd64.s:372 +0x3091 fp=0xc000125c38 sp=0xc000125b60 pc=0x593e91
+golang.org/x/crypto/sha3.(*state).permute(0xc000377340)
+	/home/runner/go/pkg/mod/golang.org/x/crypto@v0.0.0-20200311171314-f7b00557c8c4/sha3/sha3.go:87 +0x146 fp=0xc000125c68 sp=0xc000125c38 pc=0x58fd36
+golang.org/x/crypto/sha3.(*state).padAndPermute(0xc000377340, 0xc000125d01)
+	/home/runner/go/pkg/mod/golang.org/x/crypto@v0.0.0-20200311171314-f7b00557c8c4/sha3/sha3.go:118 +0x121 fp=0xc000125cc8 sp=0xc000125c68 pc=0x58fe91
+golang.org/x/crypto/sha3.(*state).Read(0xc000377340, 0xc0003f7c80, 0x20, 0x20, 0xc0003e1f40, 0xc0003f7c01, 0x14)
+	/home/runner/go/pkg/mod/golang.org/x/crypto@v0.0.0-20200311171314-f7b00557c8c4/sha3/sha3.go:164 +0x1b4 fp=0xc000125d10 sp=0xc000125cc8 pc=0x590554
+golang.org/x/crypto/sha3.(*state).Sum(0xc000377180, 0x0, 0x0, 0x0, 0x14, 0x0, 0x0)
+	/home/runner/go/pkg/mod/golang.org/x/crypto@v0.0.0-20200311171314-f7b00557c8c4/sha3/sha3.go:191 +0x10f fp=0xc000125d90 sp=0xc000125d10 pc=0x59068f
+github.com/ethereum/go-ethereum/crypto.Keccak256(0xc000125e40, 0x1, 0x1, 0x20, 0xc0002ad880, 0x6e)
+	/home/runner/work/core-geth/core-geth/crypto/crypto.go:60 +0xec fp=0xc000125df0 sp=0xc000125d90 pc=0x609bec
+github.com/ethereum/go-ethereum/trie.benchmarkCommitAfterHashFixedSize(0xc000490000, 0xc0002a8000, 0x64, 0x64, 0xc0002aa000, 0x64, 0x64)
+	/home/runner/work/core-geth/core-geth/trie/trie_test.go:760 +0x101 fp=0xc000125e68 sp=0xc000125df0 pc=0x6af791
+github.com/ethereum/go-ethereum/trie.BenchmarkCommitAfterHashFixedSize.func2(0xc000490000)
+	/home/runner/work/core-geth/core-geth/trie/trie_test.go:729 +0xac fp=0xc000125ee8 sp=0xc000125e68 pc=0x6b1c8c
+testing.(*B).runN(0xc000490000, 0x1ebc)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8 fp=0xc000125f58 sp=0xc000125ee8 pc=0x4f4f38
+testing.(*B).launch(0xc000490000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:321 +0xea fp=0xc000125fd8 sp=0xc000125f58 pc=0x4f55ca
+runtime.goexit()
+	/opt/hostedtoolcache/go/1.14.4/x64/src/runtime/asm_amd64.s:1373 +0x1 fp=0xc000125fe0 sp=0xc000125fd8 pc=0x468c81
+created by testing.(*B).doBench
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:276 +0x55
+
+goroutine 1 [chan receive]:
+testing.(*B).run1(0xc000110000, 0xc000110000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:233 +0x9e
+testing.(*B).Run(0xc000110540, 0x76d042, 0x21, 0x7758c8, 0x4f4b00)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:651 +0x341
+testing.runBenchmarks.func1(0xc000110540)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:533 +0x78
+testing.(*B).runN(0xc000110540, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.runBenchmarks(0x76e70c, 0x24, 0xc00000ed80, 0xbc4cc0, 0x13, 0x13, 0xc0000d3e01)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:539 +0x390
+testing.(*M).Run(0xc00011c000, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/testing.go:1205 +0x42d
+main.main()
+	_testmain.go:198 +0x135
+
+goroutine 699230 [chan receive]:
+testing.(*B).doBench(0xc000490000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:277 +0x73
+testing.(*benchContext).processBench(0xc00000edc0, 0xc000490000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:568 +0x207
+testing.(*B).run(0xc000145500)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:268 +0x63
+testing.(*B).Run(0xc000110000, 0x762977, 0x3, 0x7758a8, 0xbdf400)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:652 +0x3fd
+github.com/ethereum/go-ethereum/trie.BenchmarkCommitAfterHashFixedSize(0xc000110000)
+	/home/runner/work/core-geth/core-geth/trie/trie_test.go:725 +0x7f
+testing.(*B).runN(0xc000110000, 0x1)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:191 +0xe8
+testing.(*B).run1.func1(0xc000110000)
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:231 +0x57
+created by testing.(*B).run1
+	/opt/hostedtoolcache/go/1.14.4/x64/src/testing/benchmark.go:224 +0x7d
+
+rax    0x9a048ba81ae46f03
+rbx    0x820c9b3b2a8ef958
+rcx    0x2a0344ae7ff2e3b7
+rdx    0xcb8a01ac9789847b
+rdi    0xc000377340
+rsi    0x9e5265d359323206
+rbp    0x577c229579cd5ac
+rsp    0xc000125b60
+r8     0xcbeeae6d980eccd9
+r9     0xdbda2a64526ecce6
+r10    0x4cc7c79d1d2259a5
+r11    0xe470c1c23dabb121
+r12    0xaaf67083f6732f46
+r13    0x9a8944b8d37d06ce
+r14    0xc613af9ad8238f47
+r15    0x88e31f6985b75200
+rip    0x593e91
+rflags 0x207
+cs     0x33
+fs     0x0
+gs     0x0
+*** Test killed with quit: ran too long (6m0s).
+exit status 2
+FAIL	github.com/ethereum/go-ethereum/trie	360.016s
+PASS
+ok  	github.com/ethereum/go-ethereum/whisper/mailserver	0.071s
+?   	github.com/ethereum/go-ethereum/whisper/shhclient	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/ethereum/go-ethereum/whisper/whisperv6
+BenchmarkDeriveKeyMaterial-2       	      14	  77797340 ns/op
+BenchmarkDeriveKeyMaterial-2       	      15	  76803643 ns/op
+BenchmarkDeriveKeyMaterial-2       	      14	  78820528 ns/op
+BenchmarkDeriveKeyMaterial-2       	      15	  77189430 ns/op
+BenchmarkDeriveKeyMaterial-2       	      15	  76415920 ns/op
+BenchmarkEncryptionSym-2           	     588	   2127067 ns/op
+BenchmarkEncryptionSym-2           	    1023	   1065511 ns/op
+BenchmarkEncryptionSym-2           	    1082	   1146679 ns/op
+BenchmarkEncryptionSym-2           	    1279	    812373 ns/op
+BenchmarkEncryptionSym-2           	     578	   1975986 ns/op
+BenchmarkEncryptionAsym-2          	    1977	    610493 ns/op
+BenchmarkEncryptionAsym-2          	    1347	    849474 ns/op
+BenchmarkEncryptionAsym-2          	     670	   2271383 ns/op
+BenchmarkEncryptionAsym-2          	    1974	    588955 ns/op
+BenchmarkEncryptionAsym-2          	    1438	    856865 ns/op
+BenchmarkDecryptionSymValid-2      	    4959	    226972 ns/op
+BenchmarkDecryptionSymValid-2      	    4843	    227558 ns/op
+BenchmarkDecryptionSymValid-2      	    5060	    232400 ns/op
+BenchmarkDecryptionSymValid-2      	    4465	    230566 ns/op
+BenchmarkDecryptionSymValid-2      	    5149	    226823 ns/op
+BenchmarkDecryptionSymInvalid-2    	 8796498	       128 ns/op
+BenchmarkDecryptionSymInvalid-2    	 8538932	       137 ns/op
+BenchmarkDecryptionSymInvalid-2    	 9380098	       130 ns/op
+BenchmarkDecryptionSymInvalid-2    	 9077853	       131 ns/op
+BenchmarkDecryptionSymInvalid-2    	 8831379	       131 ns/op
+BenchmarkDecryptionAsymValid-2     	    2838	    427297 ns/op
+BenchmarkDecryptionAsymValid-2     	    2847	    423892 ns/op
+BenchmarkDecryptionAsymValid-2     	    2710	    428905 ns/op
+BenchmarkDecryptionAsymValid-2     	    2780	    423479 ns/op
+BenchmarkDecryptionAsymValid-2     	    2812	    422543 ns/op
+BenchmarkDecryptionAsymInvalid-2   	    5475	    195485 ns/op
+BenchmarkDecryptionAsymInvalid-2   	    5217	    193366 ns/op
+BenchmarkDecryptionAsymInvalid-2   	    5208	    193886 ns/op
+BenchmarkDecryptionAsymInvalid-2   	    5481	    199125 ns/op
+BenchmarkDecryptionAsymInvalid-2   	    6206	    196775 ns/op
+BenchmarkPoW-2                     	     124	   9799855 ns/op
+BenchmarkPoW-2                     	     126	  11085818 ns/op
+BenchmarkPoW-2                     	      92	  11353179 ns/op
+BenchmarkPoW-2                     	     100	  10991926 ns/op
+BenchmarkPoW-2                     	     100	  10368060 ns/op
+PASS
+ok  	github.com/ethereum/go-ethereum/whisper/whisperv6	55.322s
+FAIL
