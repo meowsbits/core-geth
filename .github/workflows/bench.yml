@@ -7,9 +7,71 @@ on:
 #    branches: [ master ]
 
 jobs:
+  import_excercises:
+    name: Import Exercises
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
 
-  build:
-    name: Bench
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Git remotes
+        run: |
+          git remote add upstream https://github.com/ethereum/go-ethereum.git
+          git fetch upstream
+          git remote add multigeth https://github.com/multi-geth/multi-geth.git
+          git fetch multigeth
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          date --iso-8601=hours | sed 's/:/_/g' > DATEFILE
+          mkdir -p ./tmp
+
+      - name: Import with core-geth
+        run: |
+          git rev-parse HEAD | cut -c1-10 > COREGETH_HEAD
+          make geth
+          ./build/bin/geth --datadir ./tmpdd init ./build/testdata/dev-genesis.json
+          ./build/bin/geth --datadir ./tmpdd import ./build/testdata/dev-export.rlp.gz | tee ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          rm -rf ./tmpdd
+
+      - name: Import with go-ethereum
+        run: |
+          git checkout upstream/master
+          git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
+          make geth
+          ./build/bin/geth --datadir ./tmpdd init ./build/testdata/dev-genesis.json
+          ./build/bin/geth --datadir ./tmpdd import ./build/testdata/dev-export.rlp.gz | tee ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          rm -rf ./tmpdd
+          git checkout ${GITHUB_REF}
+
+      - name: Import with multi-geth
+        run: |
+          git checkout multigeth/master
+          git rev-parse HEAD | cut -c1-10 > MULTIGETH_HEAD
+          make geth
+          ./build/bin/geth --datadir ./tmpdd init ./build/testdata/dev-genesis.json
+          ./build/bin/geth --datadir ./tmpdd import ./build/testdata/dev-export.rlp.gz | tee ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
+          rm -rf ./tmpdd
+          git checkout ${GITHUB_REF}
+
+      - name: Report
+        run: |
+          cat ./tmp/*out
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: import-artifacts
+          path: ./tmp/*out
+
+  benchmark_tests:
+    name: Benchmark Tests
     runs-on: ubuntu-latest
     steps:
 
