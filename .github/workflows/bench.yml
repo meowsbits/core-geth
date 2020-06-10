@@ -34,32 +34,34 @@ jobs:
           go get -v -t -d ./...
           date --iso-8601=hours | sed 's/:/_/g' > DATEFILE
           mkdir -p ./build/bench-results
+          mkdir -p ./tmp
           sudo apt-get -y install bc
 
       - name: Bench core-geth
         run: |
           git rev-parse HEAD | cut -c1-10 > COREGETH_HEAD
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
-          cp ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out ./build/bench-results/coregeth-latest.out
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          cp ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out ./tmp/coregeth-latest.out
 
       - name: Bench go-ethereum
         run: |
           git checkout upstream/master
           git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
-          cp ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/goethereum-latest.out
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          cp ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./tmp/goethereum-latest.out
           git checkout ${GITHUB_REF}
 
       - name: Bench multi-geth
         run: |
           git checkout multigeth/master
           git rev-parse HEAD | cut -c1-10 > MULTIGETH_HEAD
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
-          cp ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out ./build/bench-results/multigeth-latest.out
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
+          cp ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out ./tmp/multigeth-latest.out
           git checkout ${GITHUB_REF}
 
       - name: Benchstat
         run: |
+          mv ./tmp/* ./build/bench-results/
           go get golang.org/x/perf/cmd/benchstat
           benchstat ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out   | tee ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-coregeth_$(cat COREGETH_HEAD).txt
           benchstat ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out   ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out   | tee ./build/bench-results/stat-$(cat DATEFILE)-multigeth_$(cat MULTIGETH_HEAD)-coregeth_$(cat COREGETH_HEAD).txt
