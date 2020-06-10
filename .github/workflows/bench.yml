@@ -2,9 +2,9 @@ name: Benchmark
 
 on:
   push:
-    branches: [ bench ]
-  pull_request:
-    branches: [ bench ]
+    branches: [ 'bench**' ]
+#  pull_request:
+#    branches: [ master ]
 
 jobs:
 
@@ -48,7 +48,7 @@ jobs:
           git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
           go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
           cp ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/goethereum-latest.out
-          git checkout bench
+          git checkout ${GITHUB_REF}
 
       - name: Bench multi-geth
         run: |
@@ -56,7 +56,7 @@ jobs:
           git rev-parse HEAD | cut -c1-10 > MULTIGETH_HEAD
           go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
           cp ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out ./build/bench-results/multigeth-latest.out
-          git checkout bench
+          git checkout ${GITHUB_REF}
 
       - name: Benchstat
         run: |
@@ -82,8 +82,11 @@ jobs:
           git commit -F- <<EOF
           Benchmarking results $(cat DATEFILE)
 
-          go-ethereum=$(cat GOETHEREUM_HEAD)
           core-geth=$(cat COREGETH_HEAD)
+          go-ethereum=$(cat GOETHEREUM_HEAD)
+          multi-geth=$(cat MULTIGETH_HEAD)
+          
+          ref=${GITHUB_REF}
           github-run-id=${GITHUB_RUN_ID}
           github-run-number=${GITHUB_RUN_NUMBER}
           EOF
@@ -92,7 +95,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: bench
+          branch: ${{ github.ref }}
 
       - name : Prepare artifacts
         run: |
