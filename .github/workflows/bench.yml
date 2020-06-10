@@ -64,7 +64,7 @@ jobs:
 
       - name: Report
         run: |
-          cat ./tmp/*out
+          find ./tmp -type f | while read f; do echo ">>> $f"; cat "$f"; echo "--------; done
 
       - uses: actions/upload-artifact@v2
         with:
