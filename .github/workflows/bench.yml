@@ -26,6 +26,8 @@ jobs:
         run: |
           git remote add upstream https://github.com/ethereum/go-ethereum.git
           git fetch upstream
+          git remote add multigeth https://github.com/multi-geth/multi-geth.git
+          git fetch multigeth
 
       - name: Get dependencies
         run: |
@@ -37,27 +39,54 @@ jobs:
       - name: Bench core-geth
         run: |
           git rev-parse HEAD | cut -c1-10 > COREGETH_HEAD
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/core-geth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          cp ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out ./build/bench-results/coregeth-latest.out
 
       - name: Bench go-ethereum
         run: |
           git checkout upstream/master
           git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
-          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/go-ethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          cp ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/goethereum-latest.out
+          git checkout bench
+
+      - name: Bench multi-geth
+        run: |
+          git checkout multigeth/master
+          git rev-parse HEAD | cut -c1-10 > MULTIGETH_HEAD
+          go test -timeout=5m -bench=. -run='^$' -count=5 ./... | tee ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
+          cp ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out ./build/bench-results/multigeth-latest.out
           git checkout bench
 
       - name: Benchstat
         run: |
           go get golang.org/x/perf/cmd/benchstat
-          benchstat ./build/bench-results/go-ethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/core-geth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out | tee ./build/bench-results/stat-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
-          ./build/filter-stat.sh ./build/bench-results/stat-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD)-$(cat COREGETH_HEAD).txt
+          benchstat ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out   | tee ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-coregeth_$(cat COREGETH_HEAD).txt
+          benchstat ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out   ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out   | tee ./build/bench-results/stat-$(cat DATEFILE)-multigeth_$(cat MULTIGETH_HEAD)-coregeth_$(cat COREGETH_HEAD).txt
+          benchstat ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out | tee ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-multigeth_$(cat MULTIGETH_HEAD).txt
+          echo ">>> go-ethereum vs. core-geth"
+          ./build/filter-stat.sh ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-coregeth_$(cat COREGETH_HEAD).txt
+          echo ">>> multi-geth vs. core-geth"
+          ./build/filter-stat.sh ./build/bench-results/stat-$(cat DATEFILE)-multigeth_$(cat MULTIGETH_HEAD)-coregeth_$(cat COREGETH_HEAD).txt
+          echo ">>> go-ethereum vs. multi-geth"
+          ./build/filter-stat.sh ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-multigeth_$(cat MULTIGETH_HEAD).txt
+          cp ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-coregeth_$(cat COREGETH_HEAD).txt ./build/bench-results/stat-goethereum-coregeth_latest.txt
+          cp ./build/bench-results/stat-$(cat DATEFILE)-multigeth_$(cat MULTIGETH_HEAD)-coregeth_$(cat COREGETH_HEAD).txt ./build/bench-results/stat-multigeth-coregeth_latest.txt
+          cp ./build/bench-results/stat-$(cat DATEFILE)-goethereum_$(cat GOETHEREUM_HEAD)-multigeth_$(cat MULTIGETH_HEAD).txt ./build/bench-results/stat-goethereum-multigeth_latest.txt
 
       - name: Commit results
         run: |
           git add ./build/bench-results
           git config --local user.email "b5c6@protonmail.com"
           git config --local user.name "meows"
-          git commit -m "Benchmarking results $(cat DATEFILE)\n\ngo-ethereum=$(cat GOETHEREUM_HEAD)\ncore-geth=$(cat COREGETH_HEAD)\ngithub-run-id=${GITHUB_RUN_ID}\ngithub-run-number=${GITHUB_RUN_NUMBER}"
+          git commit -F- <<EOF
+          Benchmarking results $(cat DATEFILE)
+
+          go-ethereum=$(cat GOETHEREUM_HEAD)
+          core-geth=$(cat COREGETH_HEAD)
+          github-run-id=${GITHUB_RUN_ID}
+          github-run-number=${GITHUB_RUN_NUMBER}
+          EOF
 
       - name: Push changes
         uses: ad-m/github-push-action@master
@@ -65,7 +94,14 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: bench
 
+      - name : Prepare artifacts
+        run: |
+          mkdir -p ./build/artifacts
+          mv ./build/bench-results/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out ./build/artifacts/
+          mv ./build/bench-results/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out ./build/artifacts/
+          mv ./build/bench-results/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out ./build/artifacts/
+
       - uses: actions/upload-artifact@v2
         with:
-          name: bench-results-$(cat DATEFILE)-$(GOETHEREUM_HEAD)-$(cat COREGETH_HEAD)
-          path: ./build/bench-results/
+          name: bench-artifacts
+          path: ./build/artifacts/
