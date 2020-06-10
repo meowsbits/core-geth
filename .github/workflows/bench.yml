@@ -32,13 +32,14 @@ jobs:
           go get -v -t -d ./...
           date --iso-8601=hours | sed 's/:/_/g' > DATEFILE
           mkdir -p ./tmp
+          cp -a ./build/testdata ./testdata
 
       - name: Import with core-geth
         run: |
           git rev-parse HEAD | cut -c1-10 > COREGETH_HEAD
           make geth
-          ./build/bin/geth --datadir ./tmpdd init ./build/testdata/dev-genesis.json
-          ./build/bin/geth --datadir ./tmpdd import ./build/testdata/dev-export.rlp.gz | tee ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          ./build/bin/geth --datadir ./tmpdd init ./testdata/dev-genesis.json
+          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz | tee ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
           rm -rf ./tmpdd
 
       - name: Import with go-ethereum
@@ -46,8 +47,8 @@ jobs:
           git checkout upstream/master
           git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
           make geth
-          ./build/bin/geth --datadir ./tmpdd init ./build/testdata/dev-genesis.json
-          ./build/bin/geth --datadir ./tmpdd import ./build/testdata/dev-export.rlp.gz | tee ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          ./build/bin/geth --datadir ./tmpdd init ./testdata/dev-genesis.json
+          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz | tee ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
           rm -rf ./tmpdd
           git checkout ${GITHUB_REF}
 
@@ -56,8 +57,8 @@ jobs:
           git checkout multigeth/master
           git rev-parse HEAD | cut -c1-10 > MULTIGETH_HEAD
           make geth
-          ./build/bin/geth --datadir ./tmpdd init ./build/testdata/dev-genesis.json
-          ./build/bin/geth --datadir ./tmpdd import ./build/testdata/dev-export.rlp.gz | tee ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
+          ./build/bin/geth --datadir ./tmpdd init ./testdata/dev-genesis.json
+          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz | tee ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
           rm -rf ./tmpdd
           git checkout ${GITHUB_REF}
 
