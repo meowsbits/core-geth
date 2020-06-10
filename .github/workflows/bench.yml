@@ -39,7 +39,8 @@ jobs:
           git rev-parse HEAD | cut -c1-10 > COREGETH_HEAD
           make geth
           ./build/bin/geth --datadir ./tmpdd init ./testdata/dev-genesis.json
-          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz | tee ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          echo ">>> coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD)" > ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
+          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz |& tee -a ./tmp/coregeth-$(cat DATEFILE)-$(cat COREGETH_HEAD).out
           rm -rf ./tmpdd
 
       - name: Import with go-ethereum
@@ -48,7 +49,8 @@ jobs:
           git rev-parse HEAD | cut -c1-10 > GOETHEREUM_HEAD
           make geth
           ./build/bin/geth --datadir ./tmpdd init ./testdata/dev-genesis.json
-          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz | tee ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          echo ">>> goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD)" > ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
+          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz |& tee -a ./tmp/goethereum-$(cat DATEFILE)-$(cat GOETHEREUM_HEAD).out
           rm -rf ./tmpdd
           git checkout ${GITHUB_REF}
 
@@ -58,7 +60,8 @@ jobs:
           git rev-parse HEAD | cut -c1-10 > MULTIGETH_HEAD
           make geth
           ./build/bin/geth --datadir ./tmpdd init ./testdata/dev-genesis.json
-          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz | tee ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
+          echo ">>> multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD)" > ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
+          ./build/bin/geth --datadir ./tmpdd import ./testdata/dev-export.rlp.gz |& tee -a ./tmp/multigeth-$(cat DATEFILE)-$(cat MULTIGETH_HEAD).out
           rm -rf ./tmpdd
           git checkout ${GITHUB_REF}
 
