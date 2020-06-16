@@ -137,7 +137,7 @@ func TestSetupGenesis(t *testing.T) {
 			wantHash:   customghash,
 			wantConfig: customg.Config.(*goethereum.ChainConfig),
 			wantErr: &confp.ConfigCompatError{
-				What:         "incompatible fork value: GetEIP2Transition",
+				What:         "incompatible fork value: GetEIP7Transition",
 				StoredConfig: func() *uint64 { b := big.NewInt(2).Uint64(); return &b }(),
 				NewConfig:    func() *uint64 { b := big.NewInt(3).Uint64(); return &b }(),
 				RewindTo:     1,
