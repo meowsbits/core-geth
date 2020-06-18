@@ -1326,6 +1326,9 @@ func setDataDir(ctx *cli.Context, cfg *node.Config) {
 	case ctx.GlobalIsSet(DataDirFlag.Name):
 		val := ctx.GlobalString(DataDirFlag.Name)
 		log.Info("Using custom datadir", "dir", val)
+		if val == "" {
+			log.Warn("Using memory-backed DB. Data will not persist between sessions.")
+		}
 		cfg.DataDir = val
 
 	case ctx.GlobalBool(DeveloperFlag.Name):
@@ -1846,6 +1849,13 @@ func MakeChainDatabase(ctx *cli.Context, stack *node.Node) ethdb.Database {
 	name := "chaindata"
 	if ctx.GlobalString(SyncModeFlag.Name) == "light" {
 		name = "lightchaindata"
+	}
+	if ctx.GlobalIsSet(DataDirFlag.Name) && ctx.GlobalString(DataDirFlag.Name) == "" {
+		chainDb, err := stack.OpenDatabase(name, cache, handles, "")
+		if err != nil {
+			Fatalf("Could not open database: %v", err)
+		}
+		return chainDb
 	}
 	chainDb, err := stack.OpenDatabaseWithFreezer(name, cache, handles, ctx.GlobalString(AncientFlag.Name), "")
 	if err != nil {

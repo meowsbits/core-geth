@@ -24,6 +24,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/event"
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/rpc"
 )
@@ -42,7 +43,9 @@ type ServiceContext struct {
 // if no previous can be found) from within the node's data directory. If the
 // node is an ephemeral one, a memory database is returned.
 func (ctx *ServiceContext) OpenDatabase(name string, cache int, handles int, namespace string) (ethdb.Database, error) {
+	log.Info("ServiceContext.OpenDatabase", "ctx.Config.Datadir", ctx.Config.DataDir)
 	if ctx.Config.DataDir == "" {
+		log.Warn("Using memory-backed DB. Data will not persist between sessions.")
 		return rawdb.NewMemoryDatabase(), nil
 	}
 	return rawdb.NewLevelDBDatabase(ctx.Config.ResolvePath(name), cache, handles, namespace)
@@ -54,7 +57,9 @@ func (ctx *ServiceContext) OpenDatabase(name string, cache int, handles int, nam
 // database to immutable append-only files. If the node is an ephemeral one, a
 // memory database is returned.
 func (ctx *ServiceContext) OpenDatabaseWithFreezer(name string, cache int, handles int, freezer string, namespace string) (ethdb.Database, error) {
+	log.Info("ServiceContext.OpenDatabaseWithFreezer", "ctx.Config.Datadir", ctx.Config.DataDir)
 	if ctx.Config.DataDir == "" {
+		log.Warn("Using memory-backed DB. Data will not persist between sessions.")
 		return rawdb.NewMemoryDatabase(), nil
 	}
 	root := ctx.Config.ResolvePath(name)
