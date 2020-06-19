@@ -62,7 +62,7 @@ pipeline {
         }
         stage('Goerli') {
             steps {
-                sh "./build/bin/geth --goerli --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
+                sh "./build/bin/geth --goerli --cache 2048 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
             }
             post {
                 always {
@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                sh "./build/bin/geth --classic --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
+                sh "./build/bin/geth --classic --cache 2048 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
                 always {
