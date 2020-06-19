@@ -5,6 +5,14 @@ pipeline {
         GETH_DATADIR = '/data/geth'
     }
     stages {
+        stage('Notify Github of Pending Jobs') {
+            steps {
+                githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                githubNotify context: 'Goerli Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                githubNotify context: 'Classic Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+            }
+        }
         stage('Print Context') {
             steps {
                 sh 'uname -a'
@@ -21,7 +29,6 @@ pipeline {
         }
         stage('Kotti') {
             steps {
-                githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 sh "./build/bin/geth --kotti --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
             }
             post {
@@ -38,7 +45,6 @@ pipeline {
         }
         stage('Mordor') {
             steps {
-                githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 sh "./build/bin/geth --mordor --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
@@ -56,7 +62,6 @@ pipeline {
         }
         stage('Goerli') {
             steps {
-                githubNotify context: 'Goerli Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 sh "./build/bin/geth --goerli --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
             }
             post {
@@ -73,7 +78,6 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                githubNotify context: 'Classic Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 sh "./build/bin/geth --classic --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
