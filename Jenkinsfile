@@ -31,7 +31,7 @@ pipeline {
                 success {
                     githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
-                failure {
+                unsuccessful {
                     githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
             }
@@ -49,7 +49,7 @@ pipeline {
                 success {
                     githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
-                failure {
+                unsuccessful {
                     githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
             }
@@ -66,7 +66,7 @@ pipeline {
                 success {
                     githubNotify context: 'Goerli Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
-                failure {
+                unsuccessful {
                     githubNotify context: 'Goerli Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
             }
@@ -83,7 +83,7 @@ pipeline {
                 success {
                     githubNotify context: 'Classic Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
-                failure {
+                unsuccessful {
                     githubNotify context: 'Classic Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
             }
