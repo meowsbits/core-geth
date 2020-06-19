@@ -21,14 +21,37 @@ pipeline {
         }
         stage('Kotti') {
             steps {
+                githubNotify description: 'Kotti Regression', status: 'PENDING'
                 sh "./build/bin/geth --kotti --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
-                sh("rm -rf ${GETH_DATADIR}")
+            }
+            post {
+                always {
+                    sh("rm -rf ${GETH_DATADIR}")
+                }
+                success {
+                    githubNotify description: 'Kotti Regression', status: 'SUCCESS'
+                }
+                failure {
+                    githubNotify description: 'Kotti Regression', status: 'FAILURE'
+                }
             }
         }
         stage('Mordor') {
             steps {
+                githubNotify description: 'Mordor Regression', status: 'PENDING'
                 sh "./build/bin/geth --mordor --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
+            }
+            post {
+                always {
+                    sh("rm -rf ${GETH_DATADIR}")
+                }
+                success {
+                    githubNotify description: 'Mordor Regression', status: 'SUCCESS'
+                }
+                failure {
+                    githubNotify description: 'Mordor Regression', status: 'FAILURE'
+                }
             }
         }
         // stage('Goerli') {
@@ -60,5 +83,16 @@ pipeline {
         always {
             sh("rm -rf ${GETH_DATADIR}")
         }
+        success {
+            mail to: 'b5c6@protonmail.com',
+             subject: "Passed Pipeline: ${currentBuild.fullDisplayName}",
+             body: "Build passed regression tests: ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'b5c6@protonmail.com',
+             subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+             body: "Something is wrong with ${env.BUILD_URL}"
+        }
+
     }
 }
