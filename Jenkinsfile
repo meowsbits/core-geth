@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Kotti') {
             steps {
-                githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'd03bd5f4-d1ed-46c6-8f88-a943a7183337'
+                githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins'
                 sh "./build/bin/geth --kotti --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
             }
             post {
@@ -29,16 +29,16 @@ pipeline {
                     sh("rm -rf ${GETH_DATADIR}")
                 }
                 success {
-                    githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'd03bd5f4-d1ed-46c6-8f88-a943a7183337'
+                    githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins'
                 }
                 failure {
-                    githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'd03bd5f4-d1ed-46c6-8f88-a943a7183337'
+                    githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins'
                 }
             }
         }
         stage('Mordor') {
             steps {
-                githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'd03bd5f4-d1ed-46c6-8f88-a943a7183337'
+                githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins'
                 sh "./build/bin/geth --mordor --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
@@ -47,10 +47,10 @@ pipeline {
                     sh("rm -rf ${GETH_DATADIR}")
                 }
                 success {
-                    githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'd03bd5f4-d1ed-46c6-8f88-a943a7183337'
+                    githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins'
                 }
                 failure {
-                    githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'd03bd5f4-d1ed-46c6-8f88-a943a7183337'
+                    githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins'
                 }
             }
         }
