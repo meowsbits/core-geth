@@ -12,11 +12,6 @@ pipeline {
                 sh 'go env'
             }
         }
-        stage('Install') {
-            steps {
-                sh('go get -v -t -d ./...')
-            }
-        }
         stage('Build') {
             steps {
                 echo "Building 123456..."
