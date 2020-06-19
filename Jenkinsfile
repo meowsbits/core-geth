@@ -2,14 +2,30 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Print Context') {
             steps {
-                echo 'Building...'
+                pwd
+                git status
+                ls -lshat .
+                ls -lshat /data/ethereum-exports
+                go version
+                go env
             }
         }
-        stage('Test') {
+        stage('Install') {
             steps {
-                echo 'Testing 123...'
+                go get -v -t -d ./...
+            }
+        }
+        stage('Build') {
+            steps {
+                make geth
+                ./build/bin/geth version
+            }
+        }
+        stage('Kotti') {
+            steps {
+                ./build/bin/geth --help
             }
         }
     }
