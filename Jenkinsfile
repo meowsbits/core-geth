@@ -4,29 +4,29 @@ pipeline {
     stages {
         stage('Print Context') {
             steps {
-                pwd
-                git status
-                ls -lshat .
-                ls -lshat /data/ethereum-exports
-                go version
-                go env
+                sh 'pwd'
+                sh 'git status'
+                sh 'ls -lshat .'
+                sh 'ls -lshat /data/ethereum-exports'
+                sh 'go version'
+                sh 'go env'
             }
         }
         stage('Install') {
             steps {
-                go get -v -t -d ./...
+                sh('go get -v -t -d ./...')
             }
         }
         stage('Build') {
             steps {
                 echo "Building 123456..."
-                make geth
-                ./build/bin/geth version
+                sh 'make geth'
+                sh './build/bin/geth version'
             }
         }
         stage('Kotti') {
             steps {
-                ./build/bin/geth --help
+                sh './build/bin/geth --help'
             }
         }
     }
