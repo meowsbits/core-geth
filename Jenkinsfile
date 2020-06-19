@@ -19,6 +19,7 @@ pipeline {
         }
         stage('Build') {
             steps {
+                echo "Building..."
                 make geth
                 ./build/bin/geth version
             }
