@@ -20,28 +20,22 @@ pipeline {
                 sh './build/bin/geth version'
             }
         }
-        stage("Example") {
+        stage('Kotti') {
             steps {
-                sh("echo exports dir: ${GETH_EXPORTS}")
-                sh("echo geth datadir: ${GETH_DATADIR}")
+                sh "./build/bin/geth --kotti --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
+                sh("rm -rf ${GETH_DATADIR}")
             }
         }
-    //     stage('Kotti') {
-    //         steps {
-    //             sh "./build/bin/geth --kotti --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
-    //             sh("rm -rf ${GETH_DATADIR}")
-    //         }
-    //     }
-    //     stage('Mordor') {
-    //         steps {
-    //             sh "./build/bin/geth --mordor --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
-    //             sh("rm -rf ${GETH_DATADIR}")
-    //         }
-    //     }
+        stage('Mordor') {
+            steps {
+                sh "./build/bin/geth --mordor --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
+                sh("rm -rf ${GETH_DATADIR}")
+            }
+        }
     }
-    // post {
-    //     always {
-    //         sh("rm -rf ${GETH_DATADIR}")
-    //     }
-    // }
+    post {
+        always {
+            sh("rm -rf ${GETH_DATADIR}")
+        }
+    }
 }
