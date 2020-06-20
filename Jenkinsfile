@@ -7,8 +7,8 @@ pipeline {
     stages {
         stage('Notify Github of Pending Jobs') {
             steps {
-                githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                // githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                // githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Goerli Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Classic Regression', description: 'Checks import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
             }
@@ -27,42 +27,42 @@ pipeline {
                 sh './build/bin/geth version'
             }
         }
-        stage('Kotti') {
-            steps {
-                sh "./build/bin/geth --kotti --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
-            }
-            post {
-                always {
-                    sh("rm -rf ${GETH_DATADIR}")
-                }
-                success {
-                    githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                }
-                unsuccessful {
-                    githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                }
-            }
-        }
-        stage('Mordor') {
-            steps {
-                sh "./build/bin/geth --mordor --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
-                sh("rm -rf ${GETH_DATADIR}")
-            }
-            post {
-                always {
-                    sh("rm -rf ${GETH_DATADIR}")
-                }
-                success {
-                    githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                }
-                unsuccessful {
-                    githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                }
-            }
-        }
+        // stage('Kotti') {
+        //     steps {
+        //         sh "./build/bin/geth --kotti --cache.snapshot=0 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
+        //     }
+        //     post {
+        //         always {
+        //             sh("rm -rf ${GETH_DATADIR}")
+        //         }
+        //         success {
+        //             githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+        //         }
+        //         unsuccessful {
+        //             githubNotify context: 'Kotti Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+        //         }
+        //     }
+        // }
+        // stage('Mordor') {
+        //     steps {
+        //         sh "./build/bin/geth --mordor --cache.snapshot=0 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
+        //         sh("rm -rf ${GETH_DATADIR}")
+        //     }
+        //     post {
+        //         always {
+        //             sh("rm -rf ${GETH_DATADIR}")
+        //         }
+        //         success {
+        //             githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+        //         }
+        //         unsuccessful {
+        //             githubNotify context: 'Mordor Regression', description: 'Checks import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+        //         }
+        //     }
+        // }
         stage('Goerli') {
             steps {
-                sh "./build/bin/geth --goerli --cache 2048 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
+                sh "./build/bin/geth --goerli --cache.snapshot=0 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
             }
             post {
                 always {
@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                sh "./build/bin/geth --classic --cache 2048 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
+                sh "./build/bin/geth --classic --cache.snapshot=0 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
                 always {
