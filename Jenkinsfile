@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Kotti') {
             steps {
-                sh "./build/bin/geth --kotti --cache=4096 --nocompaction --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
+                sh "./build/bin/geth --kotti --cache=2048 --nocompaction --nousb --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
             }
             post {
                 always {
@@ -47,7 +47,7 @@ pipeline {
         }
         stage('Mordor') {
             steps {
-                sh "./build/bin/geth --mordor --fakepow --cache=4096 --nocompaction --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
+                sh "./build/bin/geth --mordor --fakepow --cache=2048 --nocompaction --nousb --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
             post {
@@ -64,7 +64,7 @@ pipeline {
         }
         stage('Goerli') {
             steps {
-                sh "./build/bin/geth --goerli --cache=4096 --nocompaction --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
+                sh "./build/bin/geth --goerli --cache=2048 --nocompaction --nousb --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
             }
             post {
                 always {
@@ -80,7 +80,7 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                sh "./build/bin/geth --classic --fakepow --cache=4096 --nocompaction --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
+                sh "./build/bin/geth --classic --fakepow --cache=2048 --nocompaction --nousb --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
                 always {
