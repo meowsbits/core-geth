@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label "aws-slave"
+    }
     environment {
         GETH_EXPORTS = '/data/ethereum-exports'
         GETH_DATADIR = '/data/geth'
