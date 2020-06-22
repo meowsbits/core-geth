@@ -31,7 +31,6 @@ pipeline {
             steps {
                 sh 'make geth'
                 sh './build/bin/geth version'
-
                 // This should never happen normally, but in case the instance is halted and the job is unable to clean up after itself, this ensures tabula rasa.
                 sh "rm -rf ${GETH_DATADIR}"
             }
