@@ -17,6 +17,7 @@ pipeline {
         }
         stage('Print Context') {
             steps {
+                sh 'hostname'
                 sh 'uname -a'
                 sh 'lsb_release -a'
                 sh 'go version'
