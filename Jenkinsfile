@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Notify Github of Pending Jobs') {
             steps {
+                githubNotify context: 'Classic PoW Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Kotti Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Mordor Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Goerli Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
@@ -31,6 +32,22 @@ pipeline {
                 sh './build/bin/geth version'
                 // This should never happen normally, but in case the instance is halted and the job is unable to clean up after itself, this ensures tabula rasa.
                 sh "rm -rf ${GETH_DATADIR}"
+            }
+        }
+        stage('Classic (Real PoW)') {
+            steps {
+                sh "./build/bin/geth --classic --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10000.rlp.gz"
+            }
+            post {
+                always {
+                    sh("rm -rf ${GETH_DATADIR}")
+                }
+                success {
+                    githubNotify context: 'Classic PoW Regression', description: 'Assert import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                }
+                unsuccessful {
+                    githubNotify context: 'Classic PoW Regression', description: 'Assert import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                }
             }
         }
         stage('Kotti') {
