@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Kotti') {
             steps {
-                sh "./build/bin/geth --kotti --cache=2048 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
+                sh "./build/bin/geth --kotti --cache=12288 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
             }
             post {
                 always {
@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Mordor') {
             steps {
-                sh "./build/bin/geth --mordor --fakepow --cache=2048 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
+                sh "./build/bin/geth --mordor --fakepow --cache=12288 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
             post {
@@ -86,7 +86,7 @@ pipeline {
         }
         stage('Goerli') {
             steps {
-                sh "./build/bin/geth --goerli --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2000000.rlp.gz"
+                sh "./build/bin/geth --goerli --cache=10240 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2000000.rlp.gz"
             }
             post {
                 always {
@@ -102,7 +102,7 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                sh "./build/bin/geth --classic --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
+                sh "./build/bin/geth --classic --fakepow --cache=10240 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
                 always {
@@ -124,7 +124,7 @@ pipeline {
         // }
         stage('Foundation') {
             steps {
-                sh "./build/bin/geth --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
+                sh "./build/bin/geth --fakepow --cache=10240 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
             post {
