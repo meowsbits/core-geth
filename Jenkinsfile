@@ -14,6 +14,7 @@ pipeline {
                 githubNotify context: 'Mordor Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Goerli Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 githubNotify context: 'Classic Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                githubNotify context: 'Foundation Regression', description: 'Assert import of canonical chain data', status: 'PENDING', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
             }
         }
         stage('Print Context') {
@@ -121,12 +122,23 @@ pipeline {
         //         sh("rm -rf ${GETH_DATADIR}")
         //     }
         // }
-        // stage('Foundation') {
-        //     steps {
-        //         sh "./build/bin/geth --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
-        //         sh("rm -rf ${GETH_DATADIR}")
-        //     }
-        // }
+        stage('Foundation') {
+            steps {
+                sh "./build/bin/geth --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
+                sh("rm -rf ${GETH_DATADIR}")
+            }
+            post {
+                always {
+                    sh("rm -rf ${GETH_DATADIR}")
+                }
+                success {
+                    githubNotify context: 'Foundation Regression', description: 'Assert import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                }
+                unsuccessful {
+                    githubNotify context: 'Foundation Regression', description: 'Assert import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
+                }
+            }
+        }
     }
     post {
         always {
