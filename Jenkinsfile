@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Kotti') {
             steps {
-                sh "./build/bin/geth --kotti --cache=12288 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
+                sh "./build/bin/geth --kotti --cache=10240 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/kotti.0-2544960.rlp.gz"
             }
             post {
                 always {
@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Mordor') {
             steps {
-                sh "./build/bin/geth --mordor --fakepow --cache=12288 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
+                sh "./build/bin/geth --mordor --fakepow --cache=10240 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/mordor.0-1686858.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
             post {
