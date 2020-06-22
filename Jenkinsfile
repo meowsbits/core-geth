@@ -68,7 +68,7 @@ pipeline {
         }
         stage('Goerli') {
             steps {
-                sh "./build/bin/geth --goerli --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2886512.rlp.gz"
+                sh "./build/bin/geth --goerli --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/goerli.0-2000000.rlp.gz"
             }
             post {
                 always {
