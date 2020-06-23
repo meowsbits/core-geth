@@ -102,7 +102,7 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                sh "./build/bin/geth --classic --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
+                sh "./build/bin/geth --classic --fakepow --cache=4096 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
                 always {
@@ -112,6 +112,7 @@ pipeline {
                     githubNotify context: 'Classic Regression', description: 'Assert import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
                 unsuccessful {
+                    sh 'dmesg | grep -i kill'
                     githubNotify context: 'Classic Regression', description: 'Assert import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
             }
@@ -124,7 +125,7 @@ pipeline {
         // }
         stage('Foundation') {
             steps {
-                sh "./build/bin/geth --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
+                sh "./build/bin/geth --fakepow --cache=4096 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
             post {
@@ -135,6 +136,7 @@ pipeline {
                     githubNotify context: 'Foundation Regression', description: 'Assert import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
                 unsuccessful {
+                    sh 'dmesg | grep -i kill'
                     githubNotify context: 'Foundation Regression', description: 'Assert import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
                 }
             }
