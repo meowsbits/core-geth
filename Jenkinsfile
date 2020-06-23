@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
         GETH_EXPORTS = '/data/ethereum-exports'
         GETH_DATADIR = '/data/geth'
