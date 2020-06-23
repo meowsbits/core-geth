@@ -17,28 +17,6 @@ pipeline {
         }
         stage("Run Regression Tests") {
             parallel {
-                stage('Classic (Real PoW)') {
-                    agent {
-                        label "aws-slave-t2-medium"
-                    }
-                    steps {
-                        sh 'make geth'
-                        sh './build/bin/geth version'
-                        sh "rm -rf ${GETH_DATADIR}-classic-pow"
-                        sh "./build/bin/geth --classic --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR}-classic-pow import ${GETH_EXPORTS}/classic.0-10000.rlp.gz"
-                    }
-                    post {
-                        always {
-                            sh "rm -rf ${GETH_DATADIR}-classic-pow"
-                        }
-                        success {
-                            githubNotify context: 'Classic PoW Regression', description: 'Assert import of canonical chain data', status: 'SUCCESS', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                        }
-                        unsuccessful {
-                            githubNotify context: 'Classic PoW Regression', description: 'Assert import of canonical chain data', status: 'FAILURE', account: 'meowsbits', repo: 'core-geth', credentialsId: 'meowsbits-github-jenkins', sha: "${GIT_COMMIT}"
-                        }
-                    }
-                }
                 stage('Kotti') {
                     agent {
                         label "aws-slave-m5-xlarge"
