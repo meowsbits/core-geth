@@ -102,7 +102,7 @@ pipeline {
         }
         stage('Classic') {
             steps {
-                sh "./build/bin/geth --classic --fakepow --cache=2048 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
+                sh "./build/bin/geth --classic --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/classic.0-10620587.rlp.gz"
             }
             post {
                 always {
@@ -124,7 +124,7 @@ pipeline {
         // }
         stage('Foundation') {
             steps {
-                sh "./build/bin/geth --fakepow --cache=2048 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
+                sh "./build/bin/geth --fakepow --cache=1024 --nocompaction --nousb --txlookuplimit=1 --datadir=${GETH_DATADIR} import ${GETH_EXPORTS}/ETH.0-10229163.rlp.gz"
                 sh("rm -rf ${GETH_DATADIR}")
             }
             post {
