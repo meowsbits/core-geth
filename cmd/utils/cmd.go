@@ -164,7 +164,6 @@ func ImportChain(chain *core.BlockChain, fn string) error {
 		if _, err := chain.InsertChain(missing); err != nil {
 			return fmt.Errorf("invalid block %d: %v", n, err)
 		}
-		stream.Reset(reader, 0)
 	}
 	return nil
 }
