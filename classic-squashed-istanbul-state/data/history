@@ -1,0 +1,2 @@
+miner.stop();
+miner.start(1);

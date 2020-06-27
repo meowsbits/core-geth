@@ -92,6 +92,7 @@ func TestState(t *testing.T) {
 						if err != nil {
 							t.Fatal(err)
 						}
+						MyTransmitter.currentBlock = bl.NumberU64()
 						fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex())
 						for _, tr := range bl.Transactions() {
 

@@ -186,6 +186,7 @@ type Transmitter struct {
 	client             *ethclient.Client
 	sender             common.Address
 	nonce              uint64
+	currentBlock       uint64
 	chainId            *big.Int
 	ks                 *keystore.KeyStore
 	txPendingContracts map[common.Hash]core.Message
@@ -245,9 +246,13 @@ func NewTransmitter() *Transmitter {
 	ks := setupKeystore()
 	sender := ks.Accounts()[0]
 
+	bal, _ := cl.BalanceAt(ctx, sender.Address, nil)
+	log.Printf("sender=%s balance=%d", sender.Address.String(), bal)
+
 	t := &Transmitter{
 		ctx:                ctx,
 		client:             cl,
+		currentBlock:       0,
 		chainId:            cid,
 		ks:                 ks,
 		sender:             sender.Address,
@@ -268,7 +273,6 @@ func (t *Transmitter) setNonce() {
 	fmt.Println("set transmitter nonce", nonce)
 }
 
-
 var maxValue = big.NewInt(vars.GWei) // As much as is willing to go into value in transaction.
 func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	t.mu.Lock()
@@ -279,11 +283,21 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	var tx *types.Transaction
 
 	gas := msg.Gas()
-	igas, err := core.IntrinsicGas(msg.Data(), msg.To() == nil, true, true)
+	eip2b := uint64(115)
+	eip155b := uint64(300)
+	eip2028b := uint64(1050)
+
+	if t.currentBlock == 0 {
+		b, _ := t.client.BlockByNumber(t.ctx, nil)
+		t.currentBlock = b.NumberU64()
+	}
+	isEIP2, isEIP155, isEIP2028 := t.currentBlock >= eip2b, t.currentBlock >= eip155b, t.currentBlock >= eip2028b
+
+	igas, err := core.IntrinsicGas(msg.Data(), msg.To() == nil, isEIP2, isEIP2028)
 	if err != nil {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
-	gas += igas
+	gas += igas * 2
 	if gas > 8000000 {
 		gas = 8000000
 	}
@@ -304,7 +318,12 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 		}
 	}
 
-	signed, err := t.ks.SignTx(accounts.Account{Address: t.sender}, tx, t.chainId)
+	var signed *types.Transaction
+	if isEIP155 {
+		signed, err = t.ks.SignTx(accounts.Account{Address: t.sender}, tx, t.chainId)
+	} else {
+		signed, err = t.ks.SignTx(accounts.Account{Address: t.sender}, tx, nil)
+	}
 	if err != nil {
 		return txhash, fmt.Errorf("sign tx: %v", err)
 	}
@@ -317,7 +336,7 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	//t.count++
 	//
 	if err != nil {
-		return txhash, fmt.Errorf("send tx: %v nonce=%d gas=%d", err, t.nonce, msg.Gas())
+		return txhash, fmt.Errorf("send tx: %v nonce=%d gas=%d gasPrice=%d value=%d", err, t.nonce, msg.Gas(), msg.GasPrice(), val)
 	}
 	t.nonce++
 	return signed.Hash(), nil
