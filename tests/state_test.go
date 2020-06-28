@@ -76,8 +76,8 @@ func TestState(t *testing.T) {
 
 	// For Istanbul, older tests were moved into LegacyTests
 	for _, dir := range []string{
-		stateTestDir,
-		//legacyStateTestDir,
+		legacyStateTestDir,
+		// stateTestDir,
 	} {
 		if os.Getenv("AM") != "" {
 			go func() {
