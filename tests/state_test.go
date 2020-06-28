@@ -24,6 +24,7 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
@@ -63,21 +64,19 @@ func TestState(t *testing.T) {
 	var err error
 	quit := make(chan bool)
 
-	fnames := []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
-	fblocks := []uint64{0, 115, 246, 267, 437, 728, 728, 906}
-
 	// if client has met istanbul and we have run tests against it,
 	// then we can exit.
 	metIstanbul := false
 
 	forkEnabled := func(name string, num uint64) bool {
+		na := ""
 		for i, v := range fnames {
-			if v == name {
-				n := fblocks[i]
-				return num >= n
+			n := fblocks[i]
+			if num >= n {
+				na = v
 			}
 		}
-		return false
+		return name == na
 	}
 
 	fnameForClient := func(n uint64) string {
@@ -91,6 +90,8 @@ func TestState(t *testing.T) {
 		}
 		return name
 	}
+
+
 
 	if os.Getenv("AM") != "" {
 		MyTransmitter = NewTransmitter()
@@ -106,6 +107,8 @@ func TestState(t *testing.T) {
 
 	if os.Getenv("AM") != "" {
 		go func() {
+			zeroTxsN := 0
+			lfn := ""
 			for {
 				select {
 				// case err := <-sub.Err():
@@ -116,6 +119,19 @@ func TestState(t *testing.T) {
 					bl, err := MyTransmitter.client.BlockByHash(MyTransmitter.ctx, head.Hash())
 					if err != nil {
 						t.Fatal(err)
+					}
+					fn := fnameForClient(bl.NumberU64())
+					if lfn != fn {
+						MyTransmitter.purgePending()
+						lfn = fn
+					}
+					if bl.Transactions().Len() == 0 {
+						zeroTxsN++
+					} else {
+						zeroTxsN = 0
+					}
+					if zeroTxsN > 10 && len(MyTransmitter.txPendingContracts) > 0 {
+						MyTransmitter.purgePending()
 					}
 					MyTransmitter.currentBlock = bl.NumberU64()
 					fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex(), "q", len(MyTransmitter.txPendingContracts))
@@ -135,7 +151,7 @@ func TestState(t *testing.T) {
 							panic(fmt.Sprintf("receipt err=%v tx=%x", err, tr.Hash()))
 						}
 
-						next := types.NewMessage(MyTransmitter.sender, &receipt.ContractAddress, 0, v.Value(), v.Gas(), v.GasPrice(), v.Data(), false)
+						next := types.NewMessage(MyTransmitter.sender, &receipt.ContractAddress, 0, v.Value(), v.Gas(), v.GasPrice(), v.Data(), true)
 
 						sentTxHash, err := MyTransmitter.SendMessage(next)
 						if err != nil {
@@ -160,7 +176,17 @@ func TestState(t *testing.T) {
 	}
 
 	// For Istanbul, older tests were moved into LegacyTests
+	lastForkName := ""
 	for !metIstanbul {
+
+		fname := fnameForClient(MyTransmitter.currentBlock)
+		if lastForkName == fname {
+			fmt.Printf("Finished dirs, same fork (%s) (sleeping)\n", fname)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		lastForkName = fnameForClient(MyTransmitter.currentBlock)
+
 		dirs := []string{legacyStateTestDir}
 		if fnameForClient(MyTransmitter.currentBlock) == "Istanbul" {
 			dirs = append([]string{stateTestDir}, legacyStateTestDir)
@@ -184,7 +210,7 @@ func TestState(t *testing.T) {
 
 					fmt.Println("running test", name)
 					t.Run(key+"/trie", func(t *testing.T) {
-						withTrace(t, test.gasLimit(subtest), func(vmconfig vm.Config) error {
+						withFakeTrace(t, test.gasLimit(subtest), func(vmconfig vm.Config) error {
 							_, _, err := test.Run(subtest, vmconfig, false)
 							return st.checkFailure(t, name+"/trie", err)
 						})
@@ -224,6 +250,12 @@ func TestState(t *testing.T) {
 
 // Transactions with gasLimit above this value will not get a VM trace on failure.
 const traceErrorLimit = 400000
+
+func withFakeTrace(t *testing.T, gasLimit uint64, test func(vm.Config) error) {
+	// Use config from command line arguments.
+	config := vm.Config{EVMInterpreter: *testEVM, EWASMInterpreter: *testEWASM}
+	test(config)
+}
 
 func withTrace(t *testing.T, gasLimit uint64, test func(vm.Config) error) {
 	// Use config from command line arguments.

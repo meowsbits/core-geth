@@ -264,6 +264,7 @@ func NewTransmitter() *Transmitter {
 func (t *Transmitter) setNonce() {
 	t.mu.Lock()
 	defer t.mu.Unlock()
+	// t.client.PendingNonceAt(t.ctx, t.sender)
 	nonce, err := t.client.NonceAt(t.ctx, t.sender, nil)
 	if err != nil {
 		log.Fatal("pending nonce", err)
@@ -272,16 +273,54 @@ func (t *Transmitter) setNonce() {
 	fmt.Println("set transmitter nonce", nonce)
 }
 
+// purgePending clears the pending list of transactions.
+// This is used around fork transitions, where the waited-on transactions
+// are still in the txpool as the fork hits. Once this happens, those transactions
+// MAY be made invalid (eg. EIP155 signing).
+// The ugly solution here is to purge the dependent transactions to avoid
+// an unbounded backlog.
+func (t *Transmitter) purgePending() {
+	if len(t.txPendingContracts) == 0 {
+		return
+	}
+	fmt.Println("PURGE stale data. Will result in inconsistency with source txs.")
+
+	MyTransmitter.mu.Lock()
+	for range MyTransmitter.txPendingContracts {
+		MyTransmitter.wg.Done()
+	}
+	MyTransmitter.txPendingContracts = make(map[common.Hash]core.Message)
+	MyTransmitter.mu.Unlock()
+}
+
 var maxValue = big.NewInt(vars.GWei) // As much as is willing to go into value in transaction.
 
-var eip2b = uint64(115)
-var eip155b = uint64(267)
-var eip2028b = uint64(906)
+var fnames = []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
+var fblocks = []uint64{0, 30, 100, 200, 437, 728, 728, 906}
+// var fblocks = []uint64{0, 50, 150, 220, 437, 728, 728, 906}
+// var fblocks = []uint64{0, 0, 0, 0, 437, 728, 728, 906}
+
+func fnumberForName(name string) uint64 {
+	for i, v := range fnames {
+		if name == v {
+			return fblocks[i]
+		}
+	}
+	return math.MaxUint64
+}
+
+var eip2b = fnumberForName("Homestead")
+// var eip155b = fnumberForName("EIP158")
+var eip2028b = fnumberForName("Istanbul")
 
 func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	defer t.wg.Done()
+
+	// Why wasn't I doing this before???
+	n, _ := t.client.PendingNonceAt(t.ctx, t.sender)
+	t.nonce = n
 
 	txhash := common.Hash{}
 	var tx *types.Transaction
@@ -289,20 +328,23 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	gas := msg.Gas()
 
 	bl, _ := t.client.BlockByNumber(t.ctx, nil)
-	if t.currentBlock == 0 {
-		t.currentBlock = bl.NumberU64()
-	}
+	t.currentBlock = bl.NumberU64()
 
-	isEIP2, isEIP155, isEIP2028 := t.currentBlock >= eip2b, t.currentBlock >= eip155b, t.currentBlock >= eip2028b
+	var err error
+	isEIP2, isEIP2028 := t.currentBlock+1 >= eip2b, t.currentBlock+1 >= eip2028b
 
 	igas, err := core.IntrinsicGas(msg.Data(), msg.To() == nil, isEIP2, isEIP2028)
 	if err != nil {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
-	gas += igas
-	lim := bl.GasLimit() - (bl.GasLimit() / vars.GasLimitBoundDivisor)
+	gas -= igas
+	// lim := bl.GasLimit() + (bl.GasLimit() / vars.GasLimitBoundDivisor)
+	lim := core.CalcGasLimit(bl, bl.GasLimit(), bl.GasLimit())
 	if gas >= lim {
 		gas = lim - 1
+	}
+	if gas < igas {
+		gas = igas
 	}
 
 	val := msg.Value()
@@ -310,11 +352,19 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 		val.Set(maxValue)
 	}
 
+	gp := msg.GasPrice()
+	if gp.Sign() == 0 {
+		p, _ := t.client.SuggestGasPrice(t.ctx)
+		gp.Set(p)
+	}
+
 	if msg.To() == nil {
-		tx = types.NewContractCreation(t.nonce, val, gas, msg.GasPrice(), msg.Data())
+		tx = types.NewContractCreation(t.nonce, val, gas, gp, msg.Data())
 	} else {
 		to := *msg.To()
-		tx = types.NewTransaction(t.nonce, to, val, gas, msg.GasPrice(), msg.Data())
+		tx = types.NewTransaction(t.nonce, to, val, gas, gp, msg.Data())
+
+		// Sanity check.
 		if strings.Contains(to.Hex(), "000000000000000000000000000000000") {
 			b, _ := json.MarshalIndent(tx, "", "    ")
 			panic(fmt.Sprintf("empty To address=%v", string(b)))
@@ -322,27 +372,26 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	}
 
 	var signed *types.Transaction
+	if t.chainId == nil || t.chainId.Sign() == 0 {
+		t.chainId, _ = t.client.ChainID(t.ctx)
+	}
+	isEIP155 := t.chainId != nil && t.chainId.Sign() > 0
 	if isEIP155 {
-		signed, err = t.ks.SignTx(accounts.Account{Address: t.sender}, tx, t.chainId)
+		signed, err = t.ks.SignTxFrontierAvailable(accounts.Account{Address: t.sender}, tx, t.chainId, isEIP2)
 	} else {
-		signed, err = t.ks.SignTx(accounts.Account{Address: t.sender}, tx, nil)
+		signed, err = t.ks.SignTxFrontierAvailable(accounts.Account{Address: t.sender}, tx, nil, isEIP2)
 	}
 	if err != nil {
 		return txhash, fmt.Errorf("sign tx: %v", err)
 	}
 	err = t.client.SendTransaction(t.ctx, signed)
 
-	//if t.count > 15 {
-	//	time.Sleep(15 * time.Second)
-	//	t.count = 0
-	//}
-	//t.count++
-	//
 	if err != nil {
 		bal, _ := t.client.BalanceAt(t.ctx, t.sender, nil)
-		return txhash, fmt.Errorf("send tx: %v nonce=%d gas=%d gasPrice=%d value=%d sender.bal=%d", err, t.nonce, msg.Gas(), msg.GasPrice(), val, bal)
+		return txhash, fmt.Errorf(
+			"send tx err: %v block: %d nonce=%d gas=%d gasPrice=%d value=%d sender.bal=%d eip155=%v chainid=%v",
+			err, bl.NumberU64(), t.nonce, msg.Gas(), msg.GasPrice(), val, bal, isEIP155, t.chainId)
 	}
-	t.nonce++
 	return signed.Hash(), nil
 }
 
@@ -463,15 +512,15 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		MyTransmitter.wg.Add(1)
 		txHash, err := MyTransmitter.SendMessage(tx)
 		if err != nil {
+			// fmt.Println("send prestate message ", err)
 			log.Fatal("send prestate message ", err)
+		} else {
+			// regsiter this sent transaction hash to the transaction that we should send when the one we just sent completes.
+			MyTransmitter.mu.Lock()
+			MyTransmitter.wg.Add(1)
+			MyTransmitter.txPendingContracts[txHash] = msg
+			MyTransmitter.mu.Unlock()
 		}
-
-		// regsiter this sent transaction hash to the transaction that we should send when the one we just sent completes.
-		MyTransmitter.mu.Lock()
-		MyTransmitter.wg.Add(1)
-		MyTransmitter.txPendingContracts[txHash] = msg
-		MyTransmitter.mu.Unlock()
-
 	}
 
 	if msg.To() == nil {
@@ -500,6 +549,7 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		txHash, err := MyTransmitter.SendMessage(tx)
 		if err != nil {
 			log.Fatal("send contract create ", err)
+			// fmt.Println("send contract create ", err)
 		}
 		fmt.Println("sent contract creation", txHash.Hex())
 	}
