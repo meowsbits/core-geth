@@ -300,7 +300,7 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	if err != nil {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
-	gas += igas * 2
+	gas += igas
 	if gas > 8000000 {
 		gas = 8000000
 	}
@@ -339,7 +339,8 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	//t.count++
 	//
 	if err != nil {
-		return txhash, fmt.Errorf("send tx: %v nonce=%d gas=%d gasPrice=%d value=%d", err, t.nonce, msg.Gas(), msg.GasPrice(), val)
+		bal, _ := t.client.BalanceAt(t.ctx, t.sender, nil)
+		return txhash, fmt.Errorf("send tx: %v nonce=%d gas=%d gasPrice=%d value=%d sender.bal=%d", err, t.nonce, msg.Gas(), msg.GasPrice(), val, bal)
 	}
 	t.nonce++
 	return signed.Hash(), nil
@@ -450,7 +451,7 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		if err != nil {
 			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 		}
-		gas += igas * 2
+		gas += igas
 		if gas > 8000000 {
 			gas = 8000000
 		}
@@ -484,7 +485,7 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		if err != nil {
 			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 		}
-		gas += igas *2
+		gas += igas
 		if gas > 8000000 {
 			gas = 8000000
 		}

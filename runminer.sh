@@ -2,7 +2,7 @@
 
 
 
-make geth
+# make geth
 
 if [[ $1 == reset ]]; then
   rm -rf ./data && ./build/bin/geth --datadir ./data init foundation.conf.json
