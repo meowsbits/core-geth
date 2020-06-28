@@ -36,7 +36,6 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/state"
 	"github.com/ethereum/go-ethereum/core/state/snapshot"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -289,20 +288,21 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 
 	gas := msg.Gas()
 
-
+	bl, _ := t.client.BlockByNumber(t.ctx, nil)
 	if t.currentBlock == 0 {
-		b, _ := t.client.BlockByNumber(t.ctx, nil)
-		t.currentBlock = b.NumberU64()
+		t.currentBlock = bl.NumberU64()
 	}
+
 	isEIP2, isEIP155, isEIP2028 := t.currentBlock >= eip2b, t.currentBlock >= eip155b, t.currentBlock >= eip2028b
 
 	igas, err := core.IntrinsicGas(msg.Data(), msg.To() == nil, isEIP2, isEIP2028)
 	if err != nil {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
-	gas += igas *2
-	if gas > 8000000 {
-		gas = 8000000
+	gas += igas
+	lim := bl.GasLimit() - (bl.GasLimit() / vars.GasLimitBoundDivisor)
+	if gas >= lim {
+		gas = lim - 1
 	}
 
 	val := msg.Value()
@@ -367,29 +367,29 @@ func (t *StateTest) Run(subtest StateSubtest, vmconfig vm.Config, snapshotter bo
 // RunNoVerify runs a specific subtest and returns the statedb and post-state root
 func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapshotter bool) (*snapshot.Tree, *state.StateDB, common.Hash, error) {
 
-	config, eips, err := getVMConfig(subtest.Fork)
-	if err != nil {
-		return nil, nil, common.Hash{}, UnsupportedForkError{subtest.Fork}
-	}
-	vmconfig.ExtraEips = eips
-	block := core.GenesisToBlock(t.genesis(config), nil)
-	snaps, statedb := MakePreState(rawdb.NewMemoryDatabase(), t.json.Pre, snapshotter)
+	// config, eips, err := getVMConfig(subtest.Fork)
+	// if err != nil {
+	// 	return nil, nil, common.Hash{}, UnsupportedForkError{subtest.Fork}
+	// }
+	// vmconfig.ExtraEips = eips
+	// block := core.GenesisToBlock(t.genesis(config), nil)
+	// snaps, statedb := MakePreState(rawdb.NewMemoryDatabase(), t.json.Pre, snapshotter)
 
 	post := t.json.Post[subtest.Fork][subtest.Index]
 	msg, err := t.json.Tx.toMessage(post)
 	if err != nil {
 		return nil, nil, common.Hash{}, err
 	}
-	context := core.NewEVMContext(msg, block.Header(), nil, &t.json.Env.Coinbase)
-	context.GetHash = vmTestBlockHash
-	evm := vm.NewEVM(context, statedb, config, vmconfig)
-
-	gaspool := new(core.GasPool)
-	gaspool.AddGas(block.GasLimit())
-	snapshot := statedb.Snapshot()
-	if _, err := core.ApplyMessage(evm, msg, gaspool); err != nil {
-		statedb.RevertToSnapshot(snapshot)
-	}
+	// context := core.NewEVMContext(msg, block.Header(), nil, &t.json.Env.Coinbase)
+	// context.GetHash = vmTestBlockHash
+	// evm := vm.NewEVM(context, statedb, config, vmconfig)
+	//
+	// gaspool := new(core.GasPool)
+	// gaspool.AddGas(block.GasLimit())
+	// snapshot := statedb.Snapshot()
+	// if _, err := core.ApplyMessage(evm, msg, gaspool); err != nil {
+	// 	statedb.RevertToSnapshot(snapshot)
+	// }
 
 	n, err := MyTransmitter.client.TxpoolPending(MyTransmitter.ctx)
 
@@ -444,17 +444,17 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 			b, _ := MyTransmitter.client.BlockByNumber(MyTransmitter.ctx, nil)
 			MyTransmitter.currentBlock = b.NumberU64()
 		}
-		isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
+		// isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
 
-		gas := uint64(0)
-		igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
-		if err != nil {
-			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
-		}
-		gas += igas *2
-		if gas > 8000000 {
-			gas = 8000000
-		}
+		gas := msg.Gas()
+		// igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
+		// if err != nil {
+		// 	panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
+		// }
+		// gas += igas
+		// if gas > 8000000 {
+		// 	gas = 8000000
+		// }
 
 		gp, _ := MyTransmitter.client.SuggestGasPrice(MyTransmitter.ctx)
 		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, gp, st.Code, false)
@@ -479,17 +479,19 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 			b, _ := MyTransmitter.client.BlockByNumber(MyTransmitter.ctx, nil)
 			MyTransmitter.currentBlock = b.NumberU64()
 		}
-		isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
 
-		gas := uint64(0)
-		igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
-		if err != nil {
-			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
-		}
-		gas += igas *2
-		if gas > 8000000 {
-			gas = 8000000
-		}
+		gas := msg.Gas()
+		// isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
+
+		// gas := uint64(0)
+		// igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
+		// if err != nil {
+		// 	panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
+		// }
+		// gas += igas
+		// if gas > 8000000 {
+		// 	gas = 8000000
+		// }
 
 		gp, _ := MyTransmitter.client.SuggestGasPrice(MyTransmitter.ctx)
 		fmt.Println("TX", t.Name, subtest.Fork, subtest.Index, common.Bytes2Hex(msg.Data()))
@@ -502,17 +504,18 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		fmt.Println("sent contract creation", txHash.Hex())
 	}
 
-	// Commit block
-	statedb.Commit(config.IsEnabled(config.GetEIP161dTransition, block.Number()))
-	// Add 0-value mining reward. This only makes a difference in the cases
-	// where
-	// - the coinbase suicided, or
-	// - there are only 'bad' transactions, which aren't executed. In those cases,
-	//   the coinbase gets no txfee, so isn't created, and thus needs to be touched
-	statedb.AddBalance(block.Coinbase(), new(big.Int))
-	// And _now_ get the state root
-	root := statedb.IntermediateRoot(config.IsEnabled(config.GetEIP161dTransition, block.Number()))
-	return snaps, statedb, root, nil
+	// // Commit block
+	// statedb.Commit(config.IsEnabled(config.GetEIP161dTransition, block.Number()))
+	// // Add 0-value mining reward. This only makes a difference in the cases
+	// // where
+	// // - the coinbase suicided, or
+	// // - there are only 'bad' transactions, which aren't executed. In those cases,
+	// //   the coinbase gets no txfee, so isn't created, and thus needs to be touched
+	// statedb.AddBalance(block.Coinbase(), new(big.Int))
+	// // And _now_ get the state root
+	// root := statedb.IntermediateRoot(config.IsEnabled(config.GetEIP161dTransition, block.Number()))
+	// return snaps, statedb, root, nil
+	return nil, nil, common.Hash{}, nil
 }
 
 func (t *StateTest) gasLimit(subtest StateSubtest) uint64 {
