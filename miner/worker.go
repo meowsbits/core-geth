@@ -67,7 +67,7 @@ const (
 
 	// intervalAdjustRatio is the impact a single interval adjustment has on sealing work
 	// resubmitting interval.
-	intervalAdjustRatio = 0.1
+	intervalAdjustRatio = 0.5
 
 	// intervalAdjustBias is applied during the new resubmit interval calculation in favor of
 	// increasing upper limit or decreasing lower limit so that the limit can be reachable.
@@ -106,6 +106,18 @@ const (
 	commitInterruptNewHead
 	commitInterruptResubmit
 )
+
+func interruptString(interrupt int32) string {
+	switch interrupt {
+	case commitInterruptNone:
+		return "none"
+	case commitInterruptNewHead:
+		return "new head"
+	case commitInterruptResubmit:
+		return "resubmit"
+	}
+	return "unknown"
+}
 
 // newWorkReq represents a request for new sealing work submitting with relative interrupt notifier.
 type newWorkReq struct {
@@ -225,6 +237,7 @@ func newWorker(config *Config, chainConfig ctypes.ChainConfigurator, engine cons
 	}
 
 	go worker.mainLoop()
+	log.Info("Starting miner worker", "recommit interval", recommit)
 	go worker.newWorkLoop(recommit)
 	go worker.resultLoop()
 	go worker.taskLoop()
@@ -402,11 +415,11 @@ func (w *worker) newWorkLoop(recommit time.Duration) {
 			if adjust.inc {
 				before := recommit
 				recalcRecommit(float64(recommit.Nanoseconds())/adjust.ratio, true)
-				log.Trace("Increase miner recommit interval", "from", before, "to", recommit)
+				log.Info("Increase miner recommit interval", "from", before, "to", recommit)
 			} else {
 				before := recommit
 				recalcRecommit(float64(minRecommit.Nanoseconds()), false)
-				log.Trace("Decrease miner recommit interval", "from", before, "to", recommit)
+				log.Info("Decrease miner recommit interval", "from", before, "to", recommit)
 			}
 
 			if w.resubmitHook != nil {
@@ -750,26 +763,29 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 		// For the third case, the semi-finished work will be submitted to the consensus engine.
 		if interrupt != nil && atomic.LoadInt32(interrupt) != commitInterruptNone {
 			// Notify resubmit loop to increase resubmitting interval due to too frequent commits.
+			log.Info("Commit transactions interrupt", "interrupt", interruptString(atomic.LoadInt32(interrupt)))
 			if atomic.LoadInt32(interrupt) == commitInterruptResubmit {
 				ratio := float64(w.current.header.GasLimit-w.current.gasPool.Gas()) / float64(w.current.header.GasLimit)
-				if ratio < 0.1 {
-					ratio = 0.1
+				if ratio < intervalAdjustRatio {
+					ratio = intervalAdjustRatio
 				}
 				w.resubmitAdjustCh <- &intervalAdjust{
 					ratio: ratio,
 					inc:   true,
 				}
+			} else {
+				return atomic.LoadInt32(interrupt) == commitInterruptNewHead
 			}
-			return atomic.LoadInt32(interrupt) == commitInterruptNewHead
 		}
 		// If we don't have enough gas for any further transactions then we're done
 		if w.current.gasPool.Gas() < vars.TxGas {
-			log.Trace("Not enough gas for further transactions", "have", w.current.gasPool, "want", vars.TxGas)
+			log.Warn("Not enough gas for further transactions", "have", w.current.gasPool, "want", vars.TxGas)
 			break
 		}
 		// Retrieve the next transaction and abort if all done
 		tx := txs.Peek()
 		if tx == nil {
+			log.Info("Commit transactions: none left")
 			break
 		}
 		// Error may be ignored here. The error has already been checked
@@ -780,7 +796,7 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 		// Check whether the tx is replay protected. If we're not in the EIP155 hf
 		// phase, start ignoring the sender until we do.
 		if tx.Protected() && !w.chainConfig.IsEnabled(w.chainConfig.GetEIP155Transition, w.current.header.Number) {
-			log.Trace("Ignoring reply protected transaction", "hash", tx.Hash(), "eip155", w.chainConfig.GetEIP155Transition())
+			log.Warn("Ignoring reply protected transaction", "hash", tx.Hash(), "eip155", w.chainConfig.GetEIP155Transition())
 
 			txs.Pop()
 			continue
@@ -792,17 +808,17 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 		switch err {
 		case core.ErrGasLimitReached:
 			// Pop the current out-of-gas transaction without shifting in the next from the account
-			log.Trace("Gas limit exceeded for current block", "sender", from)
+			log.Warn("Gas limit exceeded for current block", "sender", from)
 			txs.Pop()
 
 		case core.ErrNonceTooLow:
 			// New head notification data race between the transaction pool and miner, shift
-			log.Trace("Skipping transaction with low nonce", "sender", from, "nonce", tx.Nonce())
+			log.Warn("Skipping transaction with low nonce", "sender", from, "nonce", tx.Nonce())
 			txs.Shift()
 
 		case core.ErrNonceTooHigh:
 			// Reorg notification data race between the transaction pool and miner, skip account =
-			log.Trace("Skipping account with hight nonce", "sender", from, "nonce", tx.Nonce())
+			log.Warn("Skipping account with high nonce", "sender", from, "nonce", tx.Nonce())
 			txs.Pop()
 
 		case nil:
@@ -957,6 +973,7 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 			localTxs[account] = txs
 		}
 	}
+	log.Info("Commit work pending txs", "local", len(localTxs), "remote", len(remoteTxs))
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, localTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {

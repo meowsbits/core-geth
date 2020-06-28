@@ -20,6 +20,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -64,10 +65,14 @@ func TestState(t *testing.T) {
 	var err error
 	quit := make(chan bool)
 
-	forkEnabled := func(name string, num uint64) bool {
-		fnames := []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
-		fblocks := []uint64{0, 115, 246, 267, 437, 728, 728, 906}
+	fnames := []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
+	fblocks := []uint64{0, 115, 246, 267, 437, 728, 728, 906}
 
+	// if client has met istanbul and we have run tests against it,
+	// then we can exit.
+	metIstanbul := false
+
+	forkEnabled := func(name string, num uint64) bool {
 		for i, v := range fnames {
 			if v == name {
 				n := fblocks[i]
@@ -75,6 +80,18 @@ func TestState(t *testing.T) {
 			}
 		}
 		return false
+	}
+
+	fnameForClient := func(n uint64) string {
+		name := ""
+		for i, v := range fblocks {
+			if n >= v {
+				name = fnames[i]
+				continue
+			}
+			break
+		}
+		return name
 	}
 
 	if os.Getenv("AM") != "" {
@@ -89,117 +106,125 @@ func TestState(t *testing.T) {
 		//defer sub.Unsubscribe()
 	}
 
+	if os.Getenv("AM") != "" {
+		go func() {
+			for {
+				select {
+				// case err := <-sub.Err():
+				//	if err != nil {
+				//		t.Fatal("subscription error", err)
+				//	}
+				case head := <-heads:
+					bl, err := MyTransmitter.client.BlockByHash(MyTransmitter.ctx, head.Hash())
+					if err != nil {
+						t.Fatal(err)
+					}
+					MyTransmitter.currentBlock = bl.NumberU64()
+					fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex(), "q", len(MyTransmitter.txPendingContracts))
+					for _, tr := range bl.Transactions() {
 
+						MyTransmitter.mu.Lock()
+						v, ok := MyTransmitter.txPendingContracts[tr.Hash()]
+						MyTransmitter.mu.Unlock()
+						if !ok {
+							continue
+						}
+
+						fmt.Println("Matched pending transaction", tr.Hash().Hex())
+
+						receipt, err := MyTransmitter.client.TransactionReceipt(MyTransmitter.ctx, tr.Hash())
+						if err != nil {
+							panic(fmt.Sprintf("receipt err=%v tx=%x", err, tr.Hash()))
+						}
+
+						gas := v.Gas()
+						lim := bl.GasLimit() - (bl.GasLimit() / vars.GasLimitBoundDivisor)
+						if gas >= lim {
+							gas = lim - 1
+						}
+						next := types.NewMessage(MyTransmitter.sender, &receipt.ContractAddress, 0, v.Value(), gas, v.GasPrice(), v.Data(), false)
+
+						sentTxHash, err := MyTransmitter.SendMessage(next)
+						if err != nil {
+							b, _ := json.MarshalIndent(next, "", "    ")
+							panic(fmt.Sprintf("send pend err=%v tx=%s", err, string(b)))
+						}
+
+						MyTransmitter.mu.Lock()
+						delete(MyTransmitter.txPendingContracts, tr.Hash())
+						MyTransmitter.mu.Unlock()
+
+						fmt.Println("Sent was-pending tx", "hash", sentTxHash.Hex())
+					}
+
+				case <-quit:
+					return
+
+				}
+			}
+		}()
+	}
 
 	// For Istanbul, older tests were moved into LegacyTests
-	for _, dir := range []string{
-		stateTestDir,
-		legacyStateTestDir,
-	} {
-		if os.Getenv("AM") != "" {
-			go func() {
-				for {
-					select {
-					//case err := <-sub.Err():
-					//	if err != nil {
-					//		t.Fatal("subscription error", err)
-					//	}
-					case head := <-heads:
-						bl, err := MyTransmitter.client.BlockByHash(MyTransmitter.ctx, head.Hash())
-						if err != nil {
-							t.Fatal(err)
-						}
-						MyTransmitter.currentBlock = bl.NumberU64()
-						fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex(), "q", len(MyTransmitter.txPendingContracts))
-						for _, tr := range bl.Transactions() {
-
-							MyTransmitter.mu.Lock()
-							v, ok := MyTransmitter.txPendingContracts[tr.Hash()]
-							MyTransmitter.mu.Unlock()
-							if !ok {
-								continue
-							}
-
-							fmt.Println("Matched pending transaction", tr.Hash().Hex())
-
-							receipt, err := MyTransmitter.client.TransactionReceipt(MyTransmitter.ctx, tr.Hash())
-							if err != nil {
-								panic(fmt.Sprintf("receipt err=%v tx=%x", err, tr.Hash()))
-							}
-
-							gas := v.Gas()
-							lim := bl.GasLimit() - (bl.GasLimit() / vars.GasLimitBoundDivisor)
-							if gas >= lim {
-								gas = lim - 1
-							}
-							next := types.NewMessage(MyTransmitter.sender, &receipt.ContractAddress, 0, v.Value(), gas, v.GasPrice(), v.Data(), false)
-
-							sentTxHash, err := MyTransmitter.SendMessage(next)
-							if err != nil {
-								panic(fmt.Sprintf("send pend err=%v tx=%v", err, next))
-							}
-
-							MyTransmitter.mu.Lock()
-							delete(MyTransmitter.txPendingContracts, tr.Hash())
-							MyTransmitter.mu.Unlock()
-
-							fmt.Println("Sent was-pending tx", "hash", sentTxHash.Hex())
-						}
-
-					case <-quit:
-						return
-
-					}
-				}
-			}()
+	for !metIstanbul {
+		dirs := []string{legacyStateTestDir}
+		if fnameForClient(MyTransmitter.currentBlock) == "Istanbul" {
+			dirs = append([]string{stateTestDir}, legacyStateTestDir)
 		}
-		st.walk(t, dir, func(t *testing.T, name string, test *StateTest) {
-			for _, subtest := range test.Subtests() {
-				subtest := subtest
+		for id, dir := range dirs {
+			fmt.Printf("Running st walk: %d (client=%d => %s)", id, MyTransmitter.currentBlock, fnameForClient(MyTransmitter.currentBlock))
+			st.walk(t, dir, func(t *testing.T, name string, test *StateTest) {
+				for _, subtest := range test.Subtests() {
+					subtest := subtest
 
-				if !forkEnabled(subtest.Fork, MyTransmitter.currentBlock) {
-					t.Skip("Skipping fork !=", subtest.Fork)
-				}
+					if !forkEnabled(subtest.Fork, MyTransmitter.currentBlock) {
+						t.Logf("Skipping fork (%s > %d)", subtest.Fork, MyTransmitter.currentBlock)
+						return
+					}
+					if subtest.Fork == "Istanbul" {
+						metIstanbul = true
+					}
 
-				key := fmt.Sprintf("%s/%d", subtest.Fork, subtest.Index)
-				name := name + "/" + key
+					key := fmt.Sprintf("%s/%d", subtest.Fork, subtest.Index)
+					name := name + "/" + key
 
-				fmt.Println("running test", name)
-				t.Run(key+"/trie", func(t *testing.T) {
-					withTrace(t, test.gasLimit(subtest), func(vmconfig vm.Config) error {
-						_, _, err := test.Run(subtest, vmconfig, false)
-						return st.checkFailure(t, name+"/trie", err)
+					fmt.Println("running test", name)
+					t.Run(key+"/trie", func(t *testing.T) {
+						withTrace(t, test.gasLimit(subtest), func(vmconfig vm.Config) error {
+							_, _, err := test.Run(subtest, vmconfig, false)
+							return st.checkFailure(t, name+"/trie", err)
+						})
 					})
-				})
-				//time.Sleep(time.Second)
-				//t.Run(key+"/snap", func(t *testing.T) {
-				//	withTrace(t, test.gasLimit(subtest), func(vmconfig vm.Config) error {
-				//		snaps, statedb, err := test.Run(subtest, vmconfig, true)
-				//		if _, err := snaps.Journal(statedb.IntermediateRoot(false)); err != nil {
-				//			return err
-				//		}
-				//		return st.checkFailure(t, name+"/snap", err)
-				//	})
-				//})
-			}
-		})
-		MyTransmitter.wg.Wait()
-		//t.Run("wait for pending txs", func(t *testing.T) {
-		//	time.Sleep(5*time.Second)
-		//	for len(MyTransmitter.txPendingContracts) > 0 {
-		//		fmt.Println("Sleeping")
-		//		time.Sleep(time.Minute)
-		//		//MyTransmitter.mu.Lock()
-		//		//for k, v := range MyTransmitter.txPendingContracts {
-		//		//
-		//		//}
-		//		//
-		//		//MyTransmitter.mu.Unlock()
-		//		//
-		//	}
-		//	quit <- true
-		//	close(quit)
-		//})
+					// time.Sleep(time.Second)
+					// t.Run(key+"/snap", func(t *testing.T) {
+					//	withTrace(t, test.gasLimit(subtest), func(vmconfig vm.Config) error {
+					//		snaps, statedb, err := test.Run(subtest, vmconfig, true)
+					//		if _, err := snaps.Journal(statedb.IntermediateRoot(false)); err != nil {
+					//			return err
+					//		}
+					//		return st.checkFailure(t, name+"/snap", err)
+					//	})
+					// })
+				}
+			})
+			MyTransmitter.wg.Wait()
+			// t.Run("wait for pending txs", func(t *testing.T) {
+			//	time.Sleep(5*time.Second)
+			//	for len(MyTransmitter.txPendingContracts) > 0 {
+			//		fmt.Println("Sleeping")
+			//		time.Sleep(time.Minute)
+			//		//MyTransmitter.mu.Lock()
+			//		//for k, v := range MyTransmitter.txPendingContracts {
+			//		//
+			//		//}
+			//		//
+			//		//MyTransmitter.mu.Unlock()
+			//		//
+			//	}
+			//	quit <- true
+			//	close(quit)
+			// })
+		}
 	}
 }
 

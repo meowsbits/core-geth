@@ -274,6 +274,11 @@ func (t *Transmitter) setNonce() {
 }
 
 var maxValue = big.NewInt(vars.GWei) // As much as is willing to go into value in transaction.
+
+var eip2b = uint64(115)
+var eip155b = uint64(267)
+var eip2028b = uint64(906)
+
 func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
@@ -283,9 +288,7 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	var tx *types.Transaction
 
 	gas := msg.Gas()
-	eip2b := uint64(115)
-	eip155b := uint64(267)
-	eip2028b := uint64(906)
+
 
 	if t.currentBlock == 0 {
 		b, _ := t.client.BlockByNumber(t.ctx, nil)
@@ -436,12 +439,18 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 			continue
 		}
 
+		if MyTransmitter.currentBlock == 0 {
+			b, _ := MyTransmitter.client.BlockByNumber(MyTransmitter.ctx, nil)
+			MyTransmitter.currentBlock = b.NumberU64()
+		}
+		isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
+
 		gas := uint64(0)
-		igas, err := core.IntrinsicGas(msg.Data(), true, true, true)
+		igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
 		if err != nil {
 			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 		}
-		gas += igas
+		gas += igas * 2
 		if gas > 8000000 {
 			gas = 8000000
 		}
@@ -464,12 +473,18 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 	}
 
 	if msg.To() == nil {
+		if MyTransmitter.currentBlock == 0 {
+			b, _ := MyTransmitter.client.BlockByNumber(MyTransmitter.ctx, nil)
+			MyTransmitter.currentBlock = b.NumberU64()
+		}
+		isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
+
 		gas := uint64(0)
-		igas, err := core.IntrinsicGas(msg.Data(), true, true, true)
+		igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
 		if err != nil {
 			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 		}
-		gas += igas
+		gas += igas *2
 		if gas > 8000000 {
 			gas = 8000000
 		}
