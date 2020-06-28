@@ -300,7 +300,7 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	if err != nil {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
-	gas += igas
+	gas += igas *2
 	if gas > 8000000 {
 		gas = 8000000
 	}
@@ -451,12 +451,13 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		if err != nil {
 			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 		}
-		gas += igas
+		gas += igas *2
 		if gas > 8000000 {
 			gas = 8000000
 		}
 
-		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, big.NewInt(vars.GWei), st.Code, false)
+		gp, _ := MyTransmitter.client.SuggestGasPrice(MyTransmitter.ctx)
+		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, gp, st.Code, false)
 
 		fmt.Println("PRE", t.Name, subtest.Fork, subtest.Index, preAccount.Hex(), common.Bytes2Hex(tx.Data()))
 		MyTransmitter.wg.Add(1)
@@ -485,13 +486,14 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		if err != nil {
 			panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 		}
-		gas += igas
+		gas += igas *2
 		if gas > 8000000 {
 			gas = 8000000
 		}
 
+		gp, _ := MyTransmitter.client.SuggestGasPrice(MyTransmitter.ctx)
 		fmt.Println("TX", t.Name, subtest.Fork, subtest.Index, common.Bytes2Hex(msg.Data()))
-		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, big.NewInt(vars.GWei), msg.Data(), false)
+		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, gp, msg.Data(), false)
 		MyTransmitter.wg.Add(1)
 		txHash, err := MyTransmitter.SendMessage(tx)
 		if err != nil {
