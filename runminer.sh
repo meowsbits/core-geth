@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ $1 == reset ]]; then
-  rm -rf ./data && ./build/bin/geth --datadir ./data init classic.ref.json
+  rm -rf ./data && ./build/bin/geth --datadir ./data init foundation.conf.json
 fi
 
 (

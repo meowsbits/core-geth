@@ -284,8 +284,8 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 
 	gas := msg.Gas()
 	eip2b := uint64(115)
-	eip155b := uint64(300)
-	eip2028b := uint64(1050)
+	eip155b := uint64(267)
+	eip2028b := uint64(906)
 
 	if t.currentBlock == 0 {
 		b, _ := t.client.BlockByNumber(t.ctx, nil)

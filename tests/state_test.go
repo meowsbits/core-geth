@@ -63,6 +63,20 @@ func TestState(t *testing.T) {
 	//var sub ethereum.Subscription
 	var err error
 	quit := make(chan bool)
+
+	forkEnabled := func(name string, num uint64) bool {
+		fnames := []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
+		fblocks := []uint64{0, 115, 246, 267, 437, 728, 728, 906}
+
+		for i, v := range fnames {
+			if v == name {
+				n := fblocks[i]
+				return num >= n
+			}
+		}
+		return false
+	}
+
 	if os.Getenv("AM") != "" {
 		MyTransmitter = NewTransmitter()
 		_, err = MyTransmitter.client.SubscribeNewHead(context.Background(), heads)
@@ -71,13 +85,16 @@ func TestState(t *testing.T) {
 		}
 		fmt.Println("Transmitter OKGO")
 		t.Log("log: Transmitter OKGO")
+
 		//defer sub.Unsubscribe()
 	}
 
+
+
 	// For Istanbul, older tests were moved into LegacyTests
 	for _, dir := range []string{
+		stateTestDir,
 		legacyStateTestDir,
-		// stateTestDir,
 	} {
 		if os.Getenv("AM") != "" {
 			go func() {
@@ -93,7 +110,7 @@ func TestState(t *testing.T) {
 							t.Fatal(err)
 						}
 						MyTransmitter.currentBlock = bl.NumberU64()
-						fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex())
+						fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex(), "q", len(MyTransmitter.txPendingContracts))
 						for _, tr := range bl.Transactions() {
 
 							MyTransmitter.mu.Lock()
@@ -128,6 +145,7 @@ func TestState(t *testing.T) {
 
 							fmt.Println("Sent was-pending tx", "hash", sentTxHash.Hex())
 						}
+
 					case <-quit:
 						return
 
@@ -138,6 +156,11 @@ func TestState(t *testing.T) {
 		st.walk(t, dir, func(t *testing.T, name string, test *StateTest) {
 			for _, subtest := range test.Subtests() {
 				subtest := subtest
+
+				if !forkEnabled(subtest.Fork, MyTransmitter.currentBlock) {
+					t.Skip("Skipping fork !=", subtest.Fork)
+				}
+
 				key := fmt.Sprintf("%s/%d", subtest.Fork, subtest.Index)
 				name := name + "/" + key
 
