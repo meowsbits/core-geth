@@ -14,3 +14,11 @@ desired configuration to use the former.
 the _runtest_ program depends on some changes at `tests/` which are a little unpolished.
 
 
+## important
+
+the export.rlp.gz file included here imports successfully against core-geth and go-ethereum.
+
+it was generated with go-ethereum.
+
+
+
