@@ -91,8 +91,6 @@ func TestState(t *testing.T) {
 		return name
 	}
 
-
-
 	if os.Getenv("AM") != "" {
 		MyTransmitter = NewTransmitter()
 		_, err = MyTransmitter.client.SubscribeNewHead(context.Background(), heads)
@@ -108,6 +106,7 @@ func TestState(t *testing.T) {
 	if os.Getenv("AM") != "" {
 		go func() {
 			zeroTxsN := 0
+			// didBump := false
 			lfn := ""
 			for {
 				select {
@@ -132,7 +131,16 @@ func TestState(t *testing.T) {
 						zeroTxsN = 0
 					}
 					if zeroTxsN > 10 && len(MyTransmitter.txPendingContracts) > 0 {
+						// if !didBump {
+						// 	to := common.HexToAddress("0xb1355e69c1ba7b401E38c95CdB936727aE88bE76")
+						// 	n, _ := MyTransmitter.client.NonceAt(MyTransmitter.ctx, MyTransmitter.sender, nil)
+						// 	bump := types.NewMessage(MyTransmitter.sender, &to, n, new(big.Int).SetUint64(13), vars.TxGasContractCreation, big.NewInt(vars.GWei), nil, false)
+						// 	MyTransmitter.SendMessage(bump)
+						// 	didBump = true
+						// 	zeroTxsN = 0
+						// } else {
 						MyTransmitter.purgePending()
+						// }
 					}
 					MyTransmitter.currentBlock = bl.NumberU64()
 					fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex(), "q", len(MyTransmitter.txPendingContracts))
@@ -182,7 +190,7 @@ func TestState(t *testing.T) {
 
 		fname := fnameForClient(MyTransmitter.currentBlock)
 		if lastForkName == fname {
-			fmt.Printf("Finished dirs, same fork (%s) (sleeping)\n", fname)
+			fmt.Printf("Finished dirs, same fork (%s) (waiting)\n", fname)
 			<-nextFork
 		}
 		lastForkName = fnameForClient(MyTransmitter.currentBlock)
