@@ -299,7 +299,7 @@ func (t *Transmitter) purgePending() {
 var maxValue = big.NewInt(vars.GWei) // As much as is willing to go into value in transaction.
 
 var fnames = []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
-var fblocks = []uint64{0, 0, 0, 0, 437, 728, 728, 906}
+var fblocks = []uint64{0, math.MaxUint64, math.MaxUint64, 0, 437, 728, 728, 906}
 
 // var fblocks = []uint64{0, 50, 150, 220, 437, 728, 728, 906}
 // var fblocks = []uint64{0, 0, 0, 0, 437, 728, 728, 906}
