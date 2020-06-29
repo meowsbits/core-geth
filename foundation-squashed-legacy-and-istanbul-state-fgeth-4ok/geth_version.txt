@@ -1,0 +1,10 @@
+Geth
+Version: 1.9.16-unstable
+Git Commit: 413358abb915dd2cfd948f2f9a58b5bff3e672fe
+Git Commit Date: 20200624
+Architecture: amd64
+Protocol Versions: [65 64 63]
+Go Version: go1.14.3
+Operating System: linux
+GOPATH=/home/ia/go
+GOROOT=/home/ia/go1.14.3.linux-amd64

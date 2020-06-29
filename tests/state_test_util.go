@@ -297,6 +297,7 @@ var maxValue = big.NewInt(vars.GWei) // As much as is willing to go into value i
 
 var fnames = []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
 var fblocks = []uint64{0, 30, 100, 200, 437, 728, 728, 906}
+
 // var fblocks = []uint64{0, 50, 150, 220, 437, 728, 728, 906}
 // var fblocks = []uint64{0, 0, 0, 0, 437, 728, 728, 906}
 
@@ -310,6 +311,7 @@ func fnumberForName(name string) uint64 {
 }
 
 var eip2b = fnumberForName("Homestead")
+
 // var eip155b = fnumberForName("EIP158")
 var eip2028b = fnumberForName("Istanbul")
 
@@ -337,11 +339,11 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	if err != nil {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
-	gas -= igas
+	gas += igas
 	// lim := bl.GasLimit() + (bl.GasLimit() / vars.GasLimitBoundDivisor)
 	lim := core.CalcGasLimit(bl, bl.GasLimit(), bl.GasLimit())
 	if gas >= lim {
-		gas = lim - 1
+		gas = lim
 	}
 	if gas < igas {
 		gas = igas
@@ -489,24 +491,8 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 			continue
 		}
 
-		if MyTransmitter.currentBlock == 0 {
-			b, _ := MyTransmitter.client.BlockByNumber(MyTransmitter.ctx, nil)
-			MyTransmitter.currentBlock = b.NumberU64()
-		}
-		// isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
-
-		gas := msg.Gas()
-		// igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
-		// if err != nil {
-		// 	panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
-		// }
-		// gas += igas
-		// if gas > 8000000 {
-		// 	gas = 8000000
-		// }
-
 		gp, _ := MyTransmitter.client.SuggestGasPrice(MyTransmitter.ctx)
-		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, gp, st.Code, false)
+		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), msg.Gas(), gp, st.Code, false)
 
 		fmt.Println("PRE", t.Name, subtest.Fork, subtest.Index, preAccount.Hex(), common.Bytes2Hex(tx.Data()))
 		MyTransmitter.wg.Add(1)
@@ -514,13 +500,12 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 		if err != nil {
 			// fmt.Println("send prestate message ", err)
 			log.Fatal("send prestate message ", err)
-		} else {
-			// regsiter this sent transaction hash to the transaction that we should send when the one we just sent completes.
-			MyTransmitter.mu.Lock()
-			MyTransmitter.wg.Add(1)
-			MyTransmitter.txPendingContracts[txHash] = msg
-			MyTransmitter.mu.Unlock()
 		}
+		// register this sent transaction hash to the transaction that we should send when the one we just sent completes.
+		MyTransmitter.mu.Lock()
+		MyTransmitter.wg.Add(1)
+		MyTransmitter.txPendingContracts[txHash] = msg
+		MyTransmitter.mu.Unlock()
 	}
 
 	if msg.To() == nil {
@@ -529,22 +514,9 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 			MyTransmitter.currentBlock = b.NumberU64()
 		}
 
-		gas := msg.Gas()
-		// isEIP2, _, isEIP2028 := MyTransmitter.currentBlock >= eip2b, MyTransmitter.currentBlock >= eip155b, MyTransmitter.currentBlock >= eip2028b
-
-		// gas := uint64(0)
-		// igas, err := core.IntrinsicGas(msg.Data(), true, isEIP2, isEIP2028)
-		// if err != nil {
-		// 	panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
-		// }
-		// gas += igas
-		// if gas > 8000000 {
-		// 	gas = 8000000
-		// }
-
 		gp, _ := MyTransmitter.client.SuggestGasPrice(MyTransmitter.ctx)
 		fmt.Println("TX", t.Name, subtest.Fork, subtest.Index, common.Bytes2Hex(msg.Data()))
-		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), gas, gp, msg.Data(), false)
+		tx := types.NewMessage(MyTransmitter.sender, nil, 0, new(big.Int), msg.Gas(), gp, msg.Data(), false)
 		MyTransmitter.wg.Add(1)
 		txHash, err := MyTransmitter.SendMessage(tx)
 		if err != nil {
