@@ -84,9 +84,7 @@ func TestState(t *testing.T) {
 		for i, v := range fblocks {
 			if n >= v {
 				name = fnames[i]
-				continue
 			}
-			break
 		}
 		return name
 	}
@@ -206,7 +204,7 @@ func TestState(t *testing.T) {
 					subtest := subtest
 
 					if !forkEnabled(subtest.Fork, MyTransmitter.currentBlock) {
-						t.Logf("Skipping fork (%s > %d)", subtest.Fork, MyTransmitter.currentBlock)
+						t.Logf("Skipping fork (@%s, %s > %d)",fnameForClient(MyTransmitter.currentBlock), subtest.Fork, MyTransmitter.currentBlock)
 						return
 					}
 					if subtest.Fork == "Istanbul" {
