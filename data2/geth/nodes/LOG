@@ -1,0 +1,37 @@
+=============== Jun 29, 2020 (CDT) ===============
+07:55:06.878427 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+07:55:06.884868 db@open opening
+07:55:06.885405 version@stat F·[] S·0B[] Sc·[]
+07:55:06.888588 db@janitor F·2 G·0
+07:55:06.888610 db@open done T·3.724998ms
+08:02:23.587895 db@close closing
+08:02:23.588038 db@close done T·140.294µs
+=============== Jun 29, 2020 (CDT) ===============
+08:02:41.524601 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+08:02:41.524723 version@stat F·[] S·0B[] Sc·[]
+08:02:41.524739 db@open opening
+08:02:41.524769 journal@recovery F·1
+08:02:41.525376 journal@recovery recovering @1
+08:02:41.528728 memdb@flush created L0@2 N·3 S·186B "loc..seq,v3":"version,v1"
+08:02:41.529347 version@stat F·[1] S·186B[186B] Sc·[0.25]
+08:02:41.538416 db@janitor F·3 G·0
+08:02:41.538431 db@open done T·13.686663ms
+08:04:03.392666 db@close closing
+08:04:03.392744 db@close done T·76.356µs
+=============== Jun 29, 2020 (CDT) ===============
+08:04:28.290219 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+08:04:28.290336 version@stat F·[1] S·186B[186B] Sc·[0.25]
+08:04:28.290353 db@open opening
+08:04:28.290392 journal@recovery F·1
+08:04:28.291327 journal@recovery recovering @3
+08:04:28.297670 memdb@flush created L0@5 N·251 S·8KiB "loc..seq,v7":"n:\xf3..ong,v97"
+08:04:28.298132 version@stat F·[2] S·9KiB[9KiB] Sc·[0.50]
+08:04:28.307316 db@janitor F·4 G·0
+08:04:28.307342 db@open done T·16.982546ms
+08:04:37.015583 table@compaction L0·2 -> L1·0 S·9KiB Q·284
+08:04:37.022095 table@build created L1@8 N·234 S·8KiB "loc..seq,v7":"version,v1"
+08:04:37.022141 version@stat F·[0 1] S·8KiB[0B 8KiB] Sc·[0.00 0.00]
+08:04:37.025786 table@compaction committed F-1 S-429B Ke·0 D·20 T·10.169678ms
+08:04:37.025870 table@remove removed @2
+08:05:18.026139 db@close closing
+08:05:18.026328 db@close done T·186.63µs

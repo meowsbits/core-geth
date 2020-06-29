@@ -1889,6 +1889,7 @@ func MakeGenesis(ctx *cli.Context) *genesisT.Genesis {
 }
 
 // MakeChain creates a chain manager from set command line flags.
+// It is used adhoc for chain commands _which are not geth_.
 func MakeChain(ctx *cli.Context, stack *node.Node, readOnly bool) (chain *core.BlockChain, chainDb ethdb.Database) {
 	var err error
 	chainDb = MakeChainDatabase(ctx, stack)

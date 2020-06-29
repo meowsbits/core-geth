@@ -269,6 +269,9 @@ func (t *Transmitter) setNonce() {
 	if err != nil {
 		log.Fatal("pending nonce", err)
 	}
+	if nonceP, err := t.client.PendingNonceAt(t.ctx,  t.sender); err == nil && nonceP > nonce {
+		nonce = nonceP
+	}
 	t.nonce = uint64(nonce)
 	fmt.Println("set transmitter nonce", nonce)
 }
@@ -340,7 +343,6 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
 	gas += igas
-	// lim := bl.GasLimit() + (bl.GasLimit() / vars.GasLimitBoundDivisor)
 	lim := core.CalcGasLimit(bl, bl.GasLimit(), bl.GasLimit())
 	if gas >= lim {
 		gas = lim

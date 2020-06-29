@@ -24,7 +24,6 @@ import (
 	"os"
 	"reflect"
 	"testing"
-	"time"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
@@ -67,6 +66,7 @@ func TestState(t *testing.T) {
 	// if client has met istanbul and we have run tests against it,
 	// then we can exit.
 	metIstanbul := false
+	nextFork := make(chan struct{}, 1)
 
 	forkEnabled := func(name string, num uint64) bool {
 		na := ""
@@ -124,6 +124,7 @@ func TestState(t *testing.T) {
 					if lfn != fn {
 						MyTransmitter.purgePending()
 						lfn = fn
+						nextFork <- struct{}{}
 					}
 					if bl.Transactions().Len() == 0 {
 						zeroTxsN++
@@ -182,8 +183,7 @@ func TestState(t *testing.T) {
 		fname := fnameForClient(MyTransmitter.currentBlock)
 		if lastForkName == fname {
 			fmt.Printf("Finished dirs, same fork (%s) (sleeping)\n", fname)
-			time.Sleep(5 * time.Second)
-			continue
+			<-nextFork
 		}
 		lastForkName = fnameForClient(MyTransmitter.currentBlock)
 
@@ -246,6 +246,7 @@ func TestState(t *testing.T) {
 			// })
 		}
 	}
+	close(nextFork)
 }
 
 // Transactions with gasLimit above this value will not get a VM trace on failure.

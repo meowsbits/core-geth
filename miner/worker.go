@@ -237,7 +237,7 @@ func newWorker(config *Config, chainConfig ctypes.ChainConfigurator, engine cons
 	}
 
 	go worker.mainLoop()
-	log.Info("Starting miner worker", "recommit interval", recommit)
+	log.Info("Starting miner worker", "recommit interval", recommit, "chain config", worker.chainConfig)
 	go worker.newWorkLoop(recommit)
 	go worker.resultLoop()
 	go worker.taskLoop()
