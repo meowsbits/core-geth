@@ -1,12 +1,12 @@
 {
   "config": {
     "chainId": 1,
-    "homesteadBlock": 0,
-    "daoForkBlock": null,
+    "homesteadBlock": 50,
+    "daoForkBlock": 69,
     "daoForkSupport": true,
-    "eip150Block": 0,
-    "eip155Block": 0,
-    "eip158Block": 0,
+    "eip150Block": 100,
+    "eip155Block": 180,
+    "eip158Block": 180,
     "byzantiumBlock": 437,
     "constantinopleBlock": 728,
     "petersburgBlock": 728,

@@ -14,10 +14,9 @@ func TestConfig1(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var g *genesisT.Genesis
+	var g = new(genesisT.Genesis)
 	err = json.Unmarshal(b, g)
 	if err != nil {
 		t.Fatal(err)
 	}
-	
 }
