@@ -626,29 +626,12 @@ func (w *worker) resultLoop() {
 				logs = append(logs, receipt.Logs...)
 			}
 
-			// // Commit block and state to database.
-			// _, err := w.chain.WriteBlockWithState(block, receipts, logs, task.state, true)
-			// if err != nil {
-			// 	log.Error("Failed writing block to chain", "err", err)
-			// 	continue
-			// }
-
-			blocks := types.Blocks{block}
-			_, err := w.chain.InsertChain(blocks)
+			// Commit block and state to database.
+			_, err := w.chain.WriteBlockWithState(block, receipts, logs, task.state, true)
 			if err != nil {
-				log.Error("Failed importing block to chain", "err", err)
+				log.Error("Failed writing block to chain", "err", err)
 				continue
 			}
-
-			// err = w.chain.Validator().ValidateState(block, task.state, receipts, block.GasUsed())
-			// if err != nil {
-			// 	log.Crit("Validation of just-sealed block failed (state=task)", "error", err, "config", w.chain.Config())
-			// }
-
-			// err = w.chain.Validator().ValidateState(block, w.current.state, receipts, block.GasUsed())
-			// if err != nil {
-			// 	log.Crit("Validation of just-sealed block failed (state=current)", "error", err, "config", w.chain.Config())
-			// }
 
 			log.Info("Successfully sealed new block", "number", block.Number(), "sealhash", sealhash, "hash", hash,
 				"elapsed", common.PrettyDuration(time.Since(task.createdAt)))
