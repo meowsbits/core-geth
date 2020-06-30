@@ -30,6 +30,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
@@ -299,7 +300,8 @@ func (t *Transmitter) purgePending() {
 var maxValue = big.NewInt(vars.GWei) // As much as is willing to go into value in transaction.
 
 var fnames = []string{"Frontier", "Homestead", "EIP150", "EIP158", "Byzantium", "Constantinople", "ConstantinopleFix", "Istanbul"}
-var fblocks = []uint64{0, 50, 100, 180, 437, 728, 728, 906}
+// var fblocks = []uint64{0, 115, 250, 300, 877, 957, 957, 1050}
+var fblocks = []uint64{0, 50, 180, 180, 437, 728, 728, 906}
 
 // var fblocks = []uint64{0, 50, 150, 220, 437, 728, 728, 906}
 // var fblocks = []uint64{0, 0, 0, 0, 437, 728, 728, 906}
@@ -330,7 +332,8 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	txhash := common.Hash{}
 	var tx *types.Transaction
 
-	gas := msg.Gas()
+	var gas uint64
+	gas = msg.Gas()
 
 	bl, _ := t.client.BlockByNumber(t.ctx, nil)
 	t.currentBlock = bl.NumberU64()
@@ -343,9 +346,15 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 		panic(fmt.Sprintf("instrinsict gas calc err=%v", err))
 	}
 	gas += igas
-	lim := core.CalcGasLimit(bl, bl.GasLimit(), bl.GasLimit())
+	ceil := uint64(10000000)
+	floor := uint64(8000000)
+	lim := core.CalcGasLimit(bl, floor, ceil)
+	lim = lim - (lim / vars.GasLimitBoundDivisor) - 1
 	if gas >= lim {
 		gas = lim
+	}
+	if gas >= ceil {
+		gas = ceil
 	}
 	if gas < igas {
 		gas = igas
@@ -362,11 +371,35 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 		gp.Set(p)
 	}
 
+	egas, err := t.client.EstimateGas(t.ctx, ethereum.CallMsg{
+		From:     t.sender,
+		To:       msg.To(),
+		Gas:      gas,
+		GasPrice: gp,
+		Value:    val,
+		Data:     msg.Data(),
+	})
+	if err == nil {
+		gas = egas
+	}
+
+	// Always pay fee below new fee cap implemented in light of 2.6M fee for simple transaction seen on ETH in June 2020.
+	fee := new(big.Int).Mul(gp, big.NewInt(int64(gas)))
+	eth := big.NewInt(vars.Ether)
+	if fee.Cmp(eth) > 0 {
+		gp.Div(eth, big.NewInt(int64(gas)))
+	}
+
+	nonce := t.nonce
+	if msg.Nonce() != 0 {
+		nonce = msg.Nonce()
+	}
+
 	if msg.To() == nil {
-		tx = types.NewContractCreation(t.nonce, val, gas, gp, msg.Data())
+		tx = types.NewContractCreation(nonce, val, gas, gp, msg.Data())
 	} else {
 		to := *msg.To()
-		tx = types.NewTransaction(t.nonce, to, val, gas, gp, msg.Data())
+		tx = types.NewTransaction(nonce, to, val, gas, gp, msg.Data())
 
 		// Sanity check.
 		if strings.Contains(to.Hex(), "000000000000000000000000000000000") {
@@ -393,8 +426,8 @@ func (t *Transmitter) SendMessage(msg core.Message) (common.Hash, error) {
 	if err != nil {
 		bal, _ := t.client.BalanceAt(t.ctx, t.sender, nil)
 		return txhash, fmt.Errorf(
-			"send tx err: %v block: %d nonce=%d gas=%d gasPrice=%d value=%d sender.bal=%d eip155=%v chainid=%v",
-			err, bl.NumberU64(), t.nonce, msg.Gas(), msg.GasPrice(), val, bal, isEIP155, t.chainId)
+			"send tx err: %v block: %d nonce=%d msg.gas=%d tx.gas=%d ceil=%d core.gaslim=%d b.gasLimit=%d gasPrice=%d value=%d sender.bal=%d eip155=%v chainid=%v\n",
+			err, bl.NumberU64(), t.nonce, msg.Gas(), tx.Gas(), ceil, lim, bl.GasLimit(), msg.GasPrice(), val, bal, isEIP155, t.chainId)
 	}
 	return signed.Hash(), nil
 }

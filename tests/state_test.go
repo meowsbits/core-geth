@@ -21,12 +21,15 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"math/big"
 	"os"
 	"reflect"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/ethereum/go-ethereum/params/vars"
 )
 
 func TestState(t *testing.T) {
@@ -65,7 +68,6 @@ func TestState(t *testing.T) {
 
 	// if client has met istanbul and we have run tests against it,
 	// then we can exit.
-	metIstanbul := false
 	nextFork := make(chan struct{}, 1)
 
 	forkEnabled := func(name string, num uint64) bool {
@@ -103,7 +105,7 @@ func TestState(t *testing.T) {
 
 	if os.Getenv("AM") != "" {
 		go func() {
-			zeroTxsN := 0
+			// zeroTxsN := 0
 			// didBump := false
 			lfn := ""
 			for {
@@ -119,27 +121,45 @@ func TestState(t *testing.T) {
 					}
 					fn := fnameForClient(bl.NumberU64())
 					if lfn != fn {
-						MyTransmitter.purgePending()
+						// MyTransmitter.purgePending()
 						lfn = fn
+						// zeroTxsN = 0
 						nextFork <- struct{}{}
 					}
-					if bl.Transactions().Len() == 0 {
-						zeroTxsN++
-					} else {
-						zeroTxsN = 0
-					}
-					if zeroTxsN > 10 && len(MyTransmitter.txPendingContracts) > 0 {
-						// if !didBump {
-						// 	to := common.HexToAddress("0xb1355e69c1ba7b401E38c95CdB936727aE88bE76")
-						// 	n, _ := MyTransmitter.client.NonceAt(MyTransmitter.ctx, MyTransmitter.sender, nil)
-						// 	bump := types.NewMessage(MyTransmitter.sender, &to, n, new(big.Int).SetUint64(13), vars.TxGasContractCreation, big.NewInt(vars.GWei), nil, false)
-						// 	MyTransmitter.SendMessage(bump)
-						// 	didBump = true
-						// 	zeroTxsN = 0
-						// } else {
+					txpoolP, _ := MyTransmitter.client.TxpoolPending(MyTransmitter.ctx)
+					txpoolQ, _ := MyTransmitter.client.TxpoolQueued(MyTransmitter.ctx)
+					if bl.Transactions().Len() == 0 && txpoolQ > 0 && txpoolP == 0 {
+						to := common.HexToAddress("0xb1355e69c1ba7b401E38c95CdB936727aE88bE76")
+						n, _ := MyTransmitter.client.NonceAt(MyTransmitter.ctx, MyTransmitter.sender, head.Number)
+						bump := types.NewMessage(MyTransmitter.sender, &to, n, new(big.Int).SetUint64(13), vars.TxGasContractCreation, big.NewInt(vars.GWei), nil, false)
+						fmt.Println("BUMP", "q=", txpoolQ, "nonce=", n, "transmitter.nonce=", MyTransmitter.nonce)
+						MyTransmitter.wg.Add(1)
+						_, err := MyTransmitter.SendMessage(bump)
+						if err != nil {
+							panic(err)
+						}
+					} else if bl.Transactions().Len() == 0 && txpoolQ == 0 && txpoolP == 0 && len(MyTransmitter.txPendingContracts) > 0 {
+						fmt.Println("Purging pending transactions")
 						MyTransmitter.purgePending()
-						// }
 					}
+					// if bl.Transactions().Len() == 0 && len(MyTransmitter.txPendingContracts) > 0  {
+					// 	zeroTxsN++
+					// } else {
+					// 	zeroTxsN = 0
+					// }
+					// if zeroTxsN > 10 && len(MyTransmitter.txPendingContracts) > 0 {
+					// 	if !didBump {
+					// 		to := common.HexToAddress("0xb1355e69c1ba7b401E38c95CdB936727aE88bE76")
+					// 		n, _ := MyTransmitter.client.NonceAt(MyTransmitter.ctx, MyTransmitter.sender, nil)
+					// 		bump := types.NewMessage(MyTransmitter.sender, &to, n, new(big.Int).SetUint64(13), vars.TxGasContractCreation, big.NewInt(vars.GWei), nil, false)
+					// 		MyTransmitter.wg.Add(1)
+					// 		MyTransmitter.SendMessage(bump)
+					// 		didBump = true
+					// 		zeroTxsN = 0
+					// 	} else {
+					// 		MyTransmitter.purgePending()
+					// 	}
+					// }
 					MyTransmitter.currentBlock = bl.NumberU64()
 					fmt.Println("New block head", "num", bl.NumberU64(), "txlen", bl.Transactions().Len(), "hash", bl.Hash().Hex(), "q", len(MyTransmitter.txPendingContracts))
 					for _, tr := range bl.Transactions() {
@@ -184,8 +204,11 @@ func TestState(t *testing.T) {
 
 	// For Istanbul, older tests were moved into LegacyTests
 	lastForkName := ""
-	for !metIstanbul {
-
+	for {
+		if MyTransmitter.currentBlock == 0 {
+			continue
+		}
+		metIstanbul := false
 		fname := fnameForClient(MyTransmitter.currentBlock)
 		if lastForkName == fname {
 			fmt.Printf("Finished dirs, same fork (%s) (waiting)\n", fname)
@@ -204,7 +227,7 @@ func TestState(t *testing.T) {
 					subtest := subtest
 
 					if !forkEnabled(subtest.Fork, MyTransmitter.currentBlock) {
-						t.Logf("Skipping fork (@%s, %s > %d)",fnameForClient(MyTransmitter.currentBlock), subtest.Fork, MyTransmitter.currentBlock)
+						t.Logf("Skipping fork (@%s, %s > %d)", fnameForClient(MyTransmitter.currentBlock), subtest.Fork, MyTransmitter.currentBlock)
 						return
 					}
 					if subtest.Fork == "Istanbul" {
@@ -233,6 +256,7 @@ func TestState(t *testing.T) {
 					// })
 				}
 			})
+			t.Log("Waiting for transmitter...")
 			MyTransmitter.wg.Wait()
 			// t.Run("wait for pending txs", func(t *testing.T) {
 			//	time.Sleep(5*time.Second)
@@ -250,6 +274,9 @@ func TestState(t *testing.T) {
 			//	quit <- true
 			//	close(quit)
 			// })
+		}
+		if metIstanbul {
+			break
 		}
 	}
 	close(nextFork)

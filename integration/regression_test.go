@@ -20,3 +20,12 @@ func TestConfig1(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestGas(t *testing.T) {
+	msgGas := uint64(9214364837600034817)
+	lim := uint64(10000000)
+	if msgGas > lim {
+		msgGas = lim
+	}
+	t.Log(msgGas)
+}
