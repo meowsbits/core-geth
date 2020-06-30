@@ -626,17 +626,24 @@ func (w *worker) resultLoop() {
 				logs = append(logs, receipt.Logs...)
 			}
 
-			// Commit block and state to database.
-			_, err := w.chain.WriteBlockWithState(block, receipts, logs, task.state, true)
+			// // Commit block and state to database.
+			// _, err := w.chain.WriteBlockWithState(block, receipts, logs, task.state, true)
+			// if err != nil {
+			// 	log.Error("Failed writing block to chain", "err", err)
+			// 	continue
+			// }
+
+			blocks := types.Blocks{block}
+			_, err := w.chain.InsertChain(blocks)
 			if err != nil {
-				log.Error("Failed writing block to chain", "err", err)
+				log.Error("Failed importing block to chain", "err", err)
 				continue
 			}
 
-			err = w.chain.Validator().ValidateState(block, task.state, receipts, block.GasUsed())
-			if err != nil {
-				log.Crit("Validation of just-sealed block failed (state=task)", "error", err, "config", w.chain.Config())
-			}
+			// err = w.chain.Validator().ValidateState(block, task.state, receipts, block.GasUsed())
+			// if err != nil {
+			// 	log.Crit("Validation of just-sealed block failed (state=task)", "error", err, "config", w.chain.Config())
+			// }
 
 			// err = w.chain.Validator().ValidateState(block, w.current.state, receipts, block.GasUsed())
 			// if err != nil {
@@ -748,6 +755,7 @@ func (w *worker) commitTransaction(tx *types.Transaction, coinbase common.Addres
 		w.current.state.RevertToSnapshot(snap)
 		return nil, err
 	}
+
 	w.current.txs = append(w.current.txs, tx)
 	w.current.receipts = append(w.current.receipts, receipt)
 
