@@ -21,6 +21,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/params/types/ctypes"
 )
 
@@ -31,6 +32,19 @@ func VerifyForkHashes(config ctypes.ChainConfigurator, header *types.Header, unc
 	// We don't care about uncles
 	if uncle {
 		return nil
+	}
+
+	// Development debug:
+	// Add the canonical chain hash as a disallowed block to hopefully
+	// force the chain to sync with the reorged (non-canonical chain)
+	// block: 10904147 (<- first reorg number, then continuing ~3500 blocks).
+	canonicalNumber := uint64(10904147)
+	canonicalHash := common.HexToHash("0x7a875db2878a4e7ca63357f5fbcce4fce47d17e15c116ac04ab20aaaab9dbca6")
+	if header.Number.Uint64() == canonicalNumber && header.Hash() == canonicalHash {
+		log.Warn("Selecting reorged chain segment intentionally")
+		j, _ := header.MarshalJSON()
+		log.Warn("Selecting reorged header: %s", string(j))
+		return fmt.Errorf("DEBUG: ETC chainsplit reorged fork selection: number=%d canonical=%s using=%s", canonicalNumber, canonicalHash.Hex(), header.Hash().Hex())
 	}
 	if wantHash := config.GetForkCanonHash(header.Number.Uint64()); wantHash == (common.Hash{}) || wantHash == header.Hash() {
 		return nil
