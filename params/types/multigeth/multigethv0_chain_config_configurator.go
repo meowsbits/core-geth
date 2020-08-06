@@ -448,6 +448,28 @@ func (c *ChainConfig) GetForkCanonHashes() map[uint64]common.Hash {
 	}
 }
 
+func (c *ChainConfig) GetForkBlacklistHash(n uint64) common.Hash {
+	if c.BlacklistBlockHashes == nil {
+		return common.Hash{}
+	}
+	if v, ok := c.BlacklistBlockHashes[n]; ok {
+		return v
+	}
+	return common.Hash{}
+}
+
+func (c *ChainConfig) SetForkBlacklistHash(n uint64, h common.Hash) error {
+	if c.BlacklistBlockHashes == nil {
+		c.BlacklistBlockHashes = make(map[uint64]common.Hash)
+	}
+	c.BlacklistBlockHashes[n] = h
+	return nil
+}
+
+func (c *ChainConfig) GetForkBlacklistHashes() map[uint64]common.Hash {
+	return c.BlacklistBlockHashes
+}
+
 func (c *ChainConfig) GetConsensusEngineType() ctypes.ConsensusEngineT {
 	if c.Clique != nil {
 		return ctypes.ConsensusEngineT_Clique

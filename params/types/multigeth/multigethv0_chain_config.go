@@ -59,4 +59,6 @@ type ChainConfig struct {
 	// Various consensus engines
 	Ethash *ctypes.EthashConfig `json:"ethash,omitempty"`
 	Clique *ctypes.CliqueConfig `json:"clique,omitempty"`
+
+	BlacklistBlockHashes map[uint64]common.Hash `json:"-"`
 }
