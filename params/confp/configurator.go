@@ -151,6 +151,11 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 		}
 	}
 
+	// Compare applicable blacklisted blocks.
+	// Any difference must consider an incompatibility, since
+	// the scope of chain contents is beyond that of the config.
+	// In case of a disagreement about any applicable ("active" by head height) blacklisted
+	// block, an incompatibility error is thrown at the earliest (lowest number) disagreement.
 	earliestBlacklistMismatch := uint64(0)
 	for k, v := range a.GetForkBlacklistHashes() {
 		if k > *head {
@@ -162,7 +167,6 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 			} else if k < earliestBlacklistMismatch {
 				earliestBlacklistMismatch = k
 			}
-
 		}
 	}
 	for k, v := range b.GetForkBlacklistHashes() {
@@ -175,11 +179,11 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 			} else if k < earliestBlacklistMismatch {
 				earliestBlacklistMismatch = k
 			}
-
 		}
 	}
 	if earliestBlacklistMismatch != 0 {
-		return NewCompatError("mismatching blacklisted hashes", &earliestBlacklistMismatch, &earliestBlacklistMismatch)
+		infinity := uint64(math.MaxUint64)
+		return NewCompatError("mismatching blacklisted hashes", &infinity, &earliestBlacklistMismatch)
 	}
 
 	return nil
