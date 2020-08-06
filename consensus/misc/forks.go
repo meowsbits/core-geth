@@ -32,6 +32,9 @@ func VerifyForkHashes(config ctypes.ChainConfigurator, header *types.Header, unc
 	if uncle {
 		return nil
 	}
+	if badHash := config.GetForkBlacklistHash(header.Number.Uint64()); badHash == header.Hash() {
+		return fmt.Errorf("verify hash failed (blacklisted), number: %d, hash: %d", header.Number.Uint64(), badHash)
+	}
 	if wantHash := config.GetForkCanonHash(header.Number.Uint64()); wantHash == (common.Hash{}) || wantHash == header.Hash() {
 		return nil
 	} else {

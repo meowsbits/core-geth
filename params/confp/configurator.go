@@ -151,6 +151,9 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 		}
 	}
 
+	// WIP(meowsbits)
+	
+
 	return nil
 }
 
@@ -276,6 +279,9 @@ func Forks(conf ctypes.ChainConfigurator) []uint64 {
 	return forks
 }
 
+// isForkIncompatible returns the bool representing
+// if either of the transitions have been met or exceeded (forked, activated),
+// and the comparative transition levels are not equivalent.
 func isForkIncompatible(a, b, head *uint64) bool {
 	return (isForked(a, head) || isForked(b, head)) && !u2Equal(a, b)
 }
