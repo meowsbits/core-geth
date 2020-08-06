@@ -413,6 +413,28 @@ func (c *CoreGethChainConfig) GetForkCanonHashes() map[uint64]common.Hash {
 	return c.RequireBlockHashes
 }
 
+func (c *CoreGethChainConfig) GetForkBlacklistHash(n uint64) common.Hash {
+	if c.BlacklistBlockHashes == nil {
+		return common.Hash{}
+	}
+	if v, ok := c.BlacklistBlockHashes[n]; ok {
+		return v
+	}
+	return common.Hash{}
+}
+
+func (c *CoreGethChainConfig) SetForkBlacklistHash(n uint64, h common.Hash) error {
+	if c.BlacklistBlockHashes == nil {
+		c.BlacklistBlockHashes = make(map[uint64]common.Hash)
+	}
+	c.BlacklistBlockHashes[n] = h
+	return nil
+}
+
+func (c *CoreGethChainConfig) GetForkBlacklistHashes() map[uint64]common.Hash {
+	return c.BlacklistBlockHashes
+}
+
 func (c *CoreGethChainConfig) GetConsensusEngineType() ctypes.ConsensusEngineT {
 	if c.Ethash != nil {
 		return ctypes.ConsensusEngineT_Ethash

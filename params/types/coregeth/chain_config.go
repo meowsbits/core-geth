@@ -187,7 +187,8 @@ type CoreGethChainConfig struct {
 	DifficultyBombDelaySchedule ctypes.Uint64BigMapEncodesHex `json:"difficultyBombDelays,omitempty"` // JSON tag matches Parity's
 	BlockRewardSchedule         ctypes.Uint64BigMapEncodesHex `json:"blockReward,omitempty"`          // JSON tag matches Parity's
 
-	RequireBlockHashes map[uint64]common.Hash `json:"requireBlockHashes"`
+	RequireBlockHashes   map[uint64]common.Hash `json:"requireBlockHashes"`
+	BlacklistBlockHashes map[uint64]common.Hash `json:"blacklist,omitempty"`
 }
 
 // String implements the fmt.Stringer interface.
