@@ -112,6 +112,8 @@ type ParityChainSpec struct {
 
 		ForkBlock     *ParityU64   `json:"forkBlock,omitempty"`
 		ForkCanonHash *common.Hash `json:"forkCanonHash,omitempty"`
+
+		BlacklistBlockHashes map[uint64]common.Hash `json:"-"`
 	} `json:"params"`
 
 	Genesis struct {

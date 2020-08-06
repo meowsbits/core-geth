@@ -657,6 +657,28 @@ func (spec *ParityChainSpec) GetForkCanonHashes() map[uint64]common.Hash {
 	}
 }
 
+func (spec *ParityChainSpec) GetForkBlacklistHash(n uint64) common.Hash {
+	if spec.Params.BlacklistBlockHashes == nil {
+		return common.Hash{}
+	}
+	if v, ok := spec.Params.BlacklistBlockHashes[n]; ok {
+		return v
+	}
+	return common.Hash{}
+}
+
+func (spec *ParityChainSpec) SetForkBlacklistHash(n uint64, h common.Hash) error {
+	if spec.Params.BlacklistBlockHashes == nil {
+		spec.Params.BlacklistBlockHashes = make(map[uint64]common.Hash)
+	}
+	spec.Params.BlacklistBlockHashes[n] = h
+	return nil
+}
+
+func (spec *ParityChainSpec) GetForkBlacklistHashes() map[uint64]common.Hash {
+	return spec.Params.BlacklistBlockHashes
+}
+
 // GetConsensusEngineType uses select indicator fields to determine if the
 // config is Clique or Ethash. This is an important logic! Read it!
 func (spec *ParityChainSpec) GetConsensusEngineType() ctypes.ConsensusEngineT {
