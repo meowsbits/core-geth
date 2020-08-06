@@ -151,8 +151,36 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 		}
 	}
 
-	// WIP(meowsbits)
-	
+	earliestBlacklistMismatch := uint64(0)
+	for k, v := range a.GetForkBlacklistHashes() {
+		if k > *head {
+			continue // blacklisted block above head, yet unapplied
+		}
+		if v != b.GetForkBlacklistHash(k) {
+			if earliestBlacklistMismatch == 0 {
+				earliestBlacklistMismatch = k
+			} else if k < earliestBlacklistMismatch {
+				earliestBlacklistMismatch = k
+			}
+
+		}
+	}
+	for k, v := range b.GetForkBlacklistHashes() {
+		if k > *head {
+			continue // blacklisted block above head, yet unapplied
+		}
+		if v != a.GetForkBlacklistHash(k) {
+			if earliestBlacklistMismatch == 0 {
+				earliestBlacklistMismatch = k
+			} else if k < earliestBlacklistMismatch {
+				earliestBlacklistMismatch = k
+			}
+
+		}
+	}
+	if earliestBlacklistMismatch != 0 {
+		return NewCompatError("mismatching blacklisted hashes", &earliestBlacklistMismatch, &earliestBlacklistMismatch)
+	}
 
 	return nil
 }
