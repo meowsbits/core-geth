@@ -305,6 +305,11 @@ func NewBlockChain(db ethdb.Database, cacheConfig *CacheConfig, chainConfig ctyp
 			log.Warn("Truncated ancient chain", "from", previous, "to", low)
 		}
 	}
+	// Apply config's blacklisted number:hashes to the global BadHashes
+	// set. This allows us to piggy-back the existing check logic below.
+	for _, v := range bc.Config().GetForkBlacklistHashes() {
+		BadHashes[v] = true
+	}
 	// Check the current state of the block hashes and make sure that we do not have any of the bad blocks in our chain
 	for hash := range BadHashes {
 		if header := bc.GetHeaderByHash(hash); header != nil {

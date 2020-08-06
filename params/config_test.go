@@ -21,6 +21,7 @@ import (
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/params/confp"
 	"github.com/ethereum/go-ethereum/params/types/coregeth"
 	"github.com/ethereum/go-ethereum/params/types/ctypes"
@@ -277,6 +278,69 @@ func TestCheckCompatible(t *testing.T) {
 			new:     ClassicChainConfig,
 			head:    9700000,
 			wantErr: nil,
+		},
+		{
+			stored: func() ctypes.ChainConfigurator {
+				c := &coregeth.CoreGethChainConfig{}
+				*c = *ClassicChainConfig
+				c.SetForkBlacklistHash(100, common.Hash{}) // ensure value is "unset"; zero value
+				return c
+			}(),
+			new: func() ctypes.ChainConfigurator {
+				c := &coregeth.CoreGethChainConfig{}
+				*c = *ClassicChainConfig
+				c.SetForkBlacklistHash(100, common.HexToHash("0xdeadface"))
+				return c
+			}(),
+			head: 100,
+			wantErr: &confp.ConfigCompatError{
+				What:         "blacklist",
+				StoredConfig: uint64P(math.MaxUint64),
+				NewConfig:    uint64P(100),
+				RewindTo:     99,
+			},
+		},
+		{
+			stored: func() ctypes.ChainConfigurator {
+				c := &coregeth.CoreGethChainConfig{}
+				*c = *ClassicChainConfig
+				c.SetForkBlacklistHash(100, common.Hash{}) // ensure value is "unset"; zero value
+				return c
+			}(),
+			new: func() ctypes.ChainConfigurator {
+				c := &coregeth.CoreGethChainConfig{}
+				*c = *ClassicChainConfig
+				c.SetForkBlacklistHash(100, common.HexToHash("0xdeadface"))
+				return c
+			}(),
+			head: 101,
+			wantErr: &confp.ConfigCompatError{
+				What:         "blacklist",
+				StoredConfig: uint64P(math.MaxUint64),
+				NewConfig:    uint64P(100),
+				RewindTo:     99,
+			},
+		},
+		{
+			stored: func() ctypes.ChainConfigurator {
+				c := &goethereum.ChainConfig{}
+				*c = *MainnetChainConfig
+				c.SetForkBlacklistHash(1920000, common.Hash{}) // ensure value is "unset"; zero value
+				return c
+			}(),
+			new: func() ctypes.ChainConfigurator {
+				c := &goethereum.ChainConfig{}
+				*c = *MainnetChainConfig
+				c.SetForkBlacklistHash(1920000, common.HexToHash("0xdeadface"))
+				return c
+			}(),
+			head: 1920001,
+			wantErr: &confp.ConfigCompatError{
+				What:         "blacklist",
+				StoredConfig: uint64P(math.MaxUint64),
+				NewConfig:    uint64P(1920000),
+				RewindTo:     1919999,
+			},
 		},
 	}
 

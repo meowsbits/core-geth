@@ -32,6 +32,13 @@ func VerifyForkHashes(config ctypes.ChainConfigurator, header *types.Header, unc
 	if uncle {
 		return nil
 	}
+
+	// If badHash is "unset", ie a zero value, then if will not be equivalent to the incoming header hash,
+	// since a header's hash will never be 'empty'. Only non-zero-value blacklisted hashes will be earnestly
+	// compared against header hashes.
+	if badHash := config.GetForkBlacklistHash(header.Number.Uint64()); badHash == header.Hash() {
+		return fmt.Errorf("verify hash failed (blacklisted), number: %d, hash: %d", header.Number.Uint64(), badHash)
+	}
 	if wantHash := config.GetForkCanonHash(header.Number.Uint64()); wantHash == (common.Hash{}) || wantHash == header.Hash() {
 		return nil
 	} else {

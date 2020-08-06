@@ -151,6 +151,41 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 		}
 	}
 
+	// Compare applicable blacklisted blocks.
+	// Any difference must consider an incompatibility, since
+	// the scope of chain contents is beyond that of the config.
+	// In case of a disagreement about any applicable ("active" by head height) blacklisted
+	// block, an incompatibility error is thrown at the earliest (lowest number) disagreement.
+	earliestBlacklistMismatch := uint64(0)
+	for k, v := range a.GetForkBlacklistHashes() {
+		if k > *head {
+			continue // blacklisted block above head, yet unapplied
+		}
+		if v != b.GetForkBlacklistHash(k) {
+			if earliestBlacklistMismatch == 0 {
+				earliestBlacklistMismatch = k
+			} else if k < earliestBlacklistMismatch {
+				earliestBlacklistMismatch = k
+			}
+		}
+	}
+	for k, v := range b.GetForkBlacklistHashes() {
+		if k > *head {
+			continue // blacklisted block above head, yet unapplied
+		}
+		if v != a.GetForkBlacklistHash(k) {
+			if earliestBlacklistMismatch == 0 {
+				earliestBlacklistMismatch = k
+			} else if k < earliestBlacklistMismatch {
+				earliestBlacklistMismatch = k
+			}
+		}
+	}
+	if earliestBlacklistMismatch != 0 {
+		infinity := uint64(math.MaxUint64)
+		return NewCompatError("mismatching blacklisted hashes", &infinity, &earliestBlacklistMismatch)
+	}
+
 	return nil
 }
 
@@ -276,6 +311,9 @@ func Forks(conf ctypes.ChainConfigurator) []uint64 {
 	return forks
 }
 
+// isForkIncompatible returns the bool representing
+// if either of the transitions have been met or exceeded (forked, activated),
+// and the comparative transition levels are not equivalent.
 func isForkIncompatible(a, b, head *uint64) bool {
 	return (isForked(a, head) || isForked(b, head)) && !u2Equal(a, b)
 }

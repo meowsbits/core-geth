@@ -142,6 +142,12 @@ type Forker interface {
 	GetForkCanonHash(n uint64) common.Hash
 	SetForkCanonHash(n uint64, h common.Hash) error
 	GetForkCanonHashes() map[uint64]common.Hash
+
+	// ForkBlacklistHash yields arbitrary number/hash pairs.
+	// These values are used to blacklist blocks/headers
+	GetForkBlacklistHash(n uint64) common.Hash
+	SetForkBlacklistHash(n uint64, h common.Hash) error
+	GetForkBlacklistHashes() map[uint64]common.Hash
 }
 
 type ConsensusEnginator interface {

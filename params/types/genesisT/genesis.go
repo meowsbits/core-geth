@@ -560,6 +560,18 @@ func (g *Genesis) GetForkCanonHashes() map[uint64]common.Hash {
 	return g.Config.GetForkCanonHashes()
 }
 
+func (g *Genesis) GetForkBlacklistHash(n uint64) common.Hash {
+	return g.Config.GetForkBlacklistHash(n)
+}
+
+func (g *Genesis) SetForkBlacklistHash(n uint64, h common.Hash) error {
+	return g.Config.SetForkBlacklistHash(n, h)
+}
+
+func (g *Genesis) GetForkBlacklistHashes() map[uint64]common.Hash {
+	return g.Config.GetForkBlacklistHashes()
+}
+
 func (g *Genesis) GetConsensusEngineType() ctypes.ConsensusEngineT {
 	return g.Config.GetConsensusEngineType()
 }
