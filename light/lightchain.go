@@ -107,6 +107,11 @@ func NewLightChain(odr OdrBackend, config ctypes.ChainConfigurator, engine conse
 	if err := bc.loadLastState(); err != nil {
 		return nil, err
 	}
+	// Apply config's blacklisted number:hashes to the global BadHashes
+	// set. This allows us to piggy-back the existing check logic below.
+	for _, v := range bc.Config().GetForkBlacklistHashes() {
+		core.BadHashes[v] = true
+	}
 	// Check the current state of the block hashes and make sure that we do not have any of the bad blocks in our chain
 	for hash := range core.BadHashes {
 		if header := bc.GetHeaderByHash(hash); header != nil {
