@@ -45,6 +45,19 @@ import (
 )
 
 var (
+	unclesCommand = cli.Command{
+		Action:    utils.MigrateFlags(unclesCmd),
+		Name:      "uncles",
+		Usage:     "Print uncle rates by interval",
+		ArgsUsage: "",
+		Flags: []cli.Flag{
+			utils.DataDirFlag,
+		},
+		Category: "BLOCKCHAIN COMMANDS",
+		Description: `
+Prints uncle rates by interval in CSV format.
+`,
+	}
 	initCommand = cli.Command{
 		Action:    utils.MigrateFlags(initGenesis),
 		Name:      "init",
@@ -233,6 +246,32 @@ Use "ethereum dump 0" to dump the genesis block.`,
 		Category: "BLOCKCHAIN COMMANDS",
 	}
 )
+
+func unclesCmd(ctx *cli.Context) error {
+	stack := makeFullNode(ctx)
+	defer stack.Close()
+
+	chain, db := utils.MakeChain(ctx, stack, false)
+	defer db.Close()
+
+	interval := uint64(10_000)
+
+	var tally = make(map[int]int)
+
+	fmt.Println("block,uncles_zero,uncles_one,uncles_two")
+
+	cb := chain.CurrentBlock()
+	for i := uint64(0); i <= cb.Number().Uint64(); i++ {
+		bl := chain.GetBlockByNumber(i)
+		tally[len(bl.Uncles())]++
+
+		if i > 0 && i%interval == 0 {
+			fmt.Printf("%d,%d,%d,%d\n", i, tally[0], tally[1], tally[2])
+			tally = make(map[int]int)
+		}
+	}
+	return nil
+}
 
 // initGenesis will initialise the given JSON format genesis file and writes it as
 // the zero'd block (i.e. genesis) or will fail hard if it can't succeed.
