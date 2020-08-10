@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math/big"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -43,21 +42,22 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/params/types/genesisT"
 	"github.com/ethereum/go-ethereum/trie"
+	"github.com/montanaflynn/stats"
 	"gopkg.in/urfave/cli.v1"
 )
 
 var (
 	unclesCommand = cli.Command{
-		Action:    utils.MigrateFlags(unclesCmd),
-		Name:      "uncles",
-		Usage:     "Print uncle rates by interval",
+		Action:    utils.MigrateFlags(statsCmd),
+		Name:      "stats",
+		Usage:     "Print stats by 10,000-block interval",
 		ArgsUsage: "",
 		Flags: []cli.Flag{
 			utils.DataDirFlag,
 		},
 		Category: "BLOCKCHAIN COMMANDS",
 		Description: `
-Prints uncle rates by interval in CSV format.
+Prints stats by interval in CSV format.
 `,
 	}
 	initCommand = cli.Command{
@@ -249,7 +249,7 @@ Use "ethereum dump 0" to dump the genesis block.`,
 	}
 )
 
-func unclesCmd(ctx *cli.Context) error {
+func statsCmd(ctx *cli.Context) error {
 	stack := makeFullNode(ctx)
 	defer stack.Close()
 
@@ -259,18 +259,29 @@ func unclesCmd(ctx *cli.Context) error {
 	interval := uint64(10_000)
 
 	var unclesTally = make(map[int]int)
-	var difficultySum = big.NewInt(0)
-	var blocktimeSum = uint64(0)
+	var difficultyStatsSet = []float64{}
+	var timedeltaStatsSet = []float64{}
+
+	// stats.Median(difficultyStatsSet)
 
 	writer := csv.NewWriter(os.Stdout)
 
 	writer.Write([]string{"block",
 		"uncles_zero", "uncles_one", "uncles_two",
-		"difficulty_avg",
-		"blocktime_avg",
+
+		"difficulty_median",
+		"difficulty_mean",
+		"difficulty_p1", "difficulty_p5", "difficulty_p25", "difficulty_p50", "difficulty_p75", "difficulty_p95", "difficulty_p99",
+
+		"timedelta_median",
+		"timedelta_mean",
+		"timedelta_p1", "timedelta_p5", "timedelta_p25", "timedelta_p50", "timedelta_p75", "timedelta_p95", "timedelta_p99",
 	})
 
-	toS := func(v interface{}) string {
+	toS := func(v interface{}, err error) string {
+		if err != nil {
+			utils.Fatalf("%v: %v", v, err)
+		}
 		return fmt.Sprintf("%v", v)
 	}
 
@@ -280,26 +291,36 @@ func unclesCmd(ctx *cli.Context) error {
 		bl := chain.GetBlockByNumber(i)
 
 		unclesTally[len(bl.Uncles())]++
-		difficultySum.Add(difficultySum, bl.Difficulty())
-		if i == 0 {
-			parentTime = bl.Time()
-		} else {
-			relTime := bl.Time() - parentTime
-			parentTime = bl.Time()
-			blocktimeSum += relTime
+
+		difficultyStatsSet = append(difficultyStatsSet, float64(bl.Difficulty().Uint64()))
+
+		if i > 1 {
+			deltaTime := bl.Time() - parentTime
+			timedeltaStatsSet = append(timedeltaStatsSet, float64(deltaTime))
 		}
+		parentTime = bl.Time()
 
 		if i > 0 && i%interval == 0 {
-			writer.Write([]string{toS(i),
-				toS(unclesTally[0]), toS(unclesTally[1]), toS(unclesTally[2]),
-				toS(difficultySum.Div(difficultySum, new(big.Int).SetUint64(interval))),
-				toS(blocktimeSum / interval),
+			writer.Write([]string{toS(i, nil),
+				toS(unclesTally[0], nil), toS(unclesTally[1], nil), toS(unclesTally[2], nil),
+
+				toS(stats.Median(difficultyStatsSet)),
+				toS(stats.Mean(difficultyStatsSet)),
+				toS(stats.Percentile(difficultyStatsSet, 01)), toS(stats.Percentile(difficultyStatsSet, 05)), toS(stats.Percentile(difficultyStatsSet, 25)),
+				toS(stats.Percentile(difficultyStatsSet, 50)),
+				toS(stats.Percentile(difficultyStatsSet, 75)), toS(stats.Percentile(difficultyStatsSet, 95)), toS(stats.Percentile(difficultyStatsSet, 99)),
+
+				toS(stats.Median(timedeltaStatsSet)),
+				toS(stats.Mean(timedeltaStatsSet)),
+				toS(stats.Percentile(timedeltaStatsSet, 01)), toS(stats.Percentile(timedeltaStatsSet, 05)), toS(stats.Percentile(timedeltaStatsSet, 25)),
+				toS(stats.Percentile(timedeltaStatsSet, 50)),
+				toS(stats.Percentile(timedeltaStatsSet, 75)), toS(stats.Percentile(timedeltaStatsSet, 95)), toS(stats.Percentile(timedeltaStatsSet, 99)),
 			})
 			writer.Flush()
 
 			unclesTally = make(map[int]int)
-			difficultySum = new(big.Int)
-			blocktimeSum = 0
+			difficultyStatsSet = []float64{}
+			timedeltaStatsSet = []float64{}
 		}
 	}
 	return nil
