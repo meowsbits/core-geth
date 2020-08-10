@@ -17,9 +17,11 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -251,23 +253,53 @@ func unclesCmd(ctx *cli.Context) error {
 	stack := makeFullNode(ctx)
 	defer stack.Close()
 
-	chain, db := utils.MakeChain(ctx, stack, false)
+	chain, db := utils.MakeChain(ctx, stack, true)
 	defer db.Close()
 
 	interval := uint64(10_000)
 
-	var tally = make(map[int]int)
+	var unclesTally = make(map[int]int)
+	var difficultySum = big.NewInt(0)
+	var blocktimeSum = uint64(0)
 
-	fmt.Println("block,uncles_zero,uncles_one,uncles_two")
+	writer := csv.NewWriter(os.Stdout)
+
+	writer.Write([]string{"block",
+		"uncles_zero", "uncles_one", "uncles_two",
+		"difficulty_avg",
+		"blocktime_avg",
+	})
+
+	toS := func(v interface{}) string {
+		return fmt.Sprintf("%v", v)
+	}
 
 	cb := chain.CurrentBlock()
+	var parentTime uint64
 	for i := uint64(0); i <= cb.Number().Uint64(); i++ {
 		bl := chain.GetBlockByNumber(i)
-		tally[len(bl.Uncles())]++
+
+		unclesTally[len(bl.Uncles())]++
+		difficultySum.Add(difficultySum, bl.Difficulty())
+		if i == 0 {
+			parentTime = bl.Time()
+		} else {
+			relTime := bl.Time() - parentTime
+			parentTime = bl.Time()
+			blocktimeSum += relTime
+		}
 
 		if i > 0 && i%interval == 0 {
-			fmt.Printf("%d,%d,%d,%d\n", i, tally[0], tally[1], tally[2])
-			tally = make(map[int]int)
+			writer.Write([]string{toS(i),
+				toS(unclesTally[0]), toS(unclesTally[1]), toS(unclesTally[2]),
+				toS(difficultySum.Div(difficultySum, new(big.Int).SetUint64(interval))),
+				toS(blocktimeSum / interval),
+			})
+			writer.Flush()
+
+			unclesTally = make(map[int]int)
+			difficultySum = new(big.Int)
+			blocktimeSum = 0
 		}
 	}
 	return nil
