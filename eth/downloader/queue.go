@@ -358,6 +358,9 @@ func (q *queue) Results(block bool) []*fetchResult {
 		closed = q.closed
 		q.lock.Unlock()
 	}
+
+	// processed=68638801
+	// processed=19025313
 	// Regardless if closed or not, we can still deliver whatever we have
 	results := q.resultCache.GetCompleted(maxResultsProcess)
 	for _, result := range results {

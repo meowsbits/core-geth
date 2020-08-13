@@ -228,6 +228,7 @@ func init() {
 	app.Copyright = "Copyright 2013-2020 The core-geth and go-ethereum Authors"
 	app.Commands = []cli.Command{
 		// See chaincmd.go:
+		unclesCommand,
 		initCommand,
 		importCommand,
 		exportCommand,

@@ -17,6 +17,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -41,10 +42,24 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/params/types/genesisT"
 	"github.com/ethereum/go-ethereum/trie"
+	"github.com/montanaflynn/stats"
 	"gopkg.in/urfave/cli.v1"
 )
 
 var (
+	unclesCommand = cli.Command{
+		Action:    utils.MigrateFlags(statsCmd),
+		Name:      "stats",
+		Usage:     "Print stats by 10,000-block interval",
+		ArgsUsage: "",
+		Flags: []cli.Flag{
+			utils.DataDirFlag,
+		},
+		Category: "BLOCKCHAIN COMMANDS",
+		Description: `
+Prints stats by interval in CSV format.
+`,
+	}
 	initCommand = cli.Command{
 		Action:    utils.MigrateFlags(initGenesis),
 		Name:      "init",
@@ -233,6 +248,88 @@ Use "ethereum dump 0" to dump the genesis block.`,
 		Category: "BLOCKCHAIN COMMANDS",
 	}
 )
+
+func statsCmd(ctx *cli.Context) error {
+	stack := makeFullNode(ctx)
+	defer stack.Close()
+
+	chain, db := utils.MakeChain(ctx, stack, true)
+	defer db.Close()
+
+	interval := uint64(10_000)
+
+	var unclesTally = make(map[int]int)
+	var difficultyStatsSet = []float64{}
+	var timedeltaStatsSet = []float64{}
+
+	// stats.Median(difficultyStatsSet)
+
+	writer := csv.NewWriter(os.Stdout)
+
+	writer.Write([]string{"block",
+		"uncles_zero", "uncles_one", "uncles_two",
+
+		"difficulty_median",
+		"difficulty_mean",
+		"difficulty_p1", "difficulty_p5", "difficulty_p25", "difficulty_p50", "difficulty_p75", "difficulty_p95", "difficulty_p99",
+
+		"timedelta_median",
+		"timedelta_mean",
+		"timedelta_p1", "timedelta_p5", "timedelta_p25", "timedelta_p50", "timedelta_p75", "timedelta_p95", "timedelta_p99",
+
+		"block_timestamp_date", "block_timestamp_time",
+	})
+
+	toS := func(v interface{}, err error) string {
+		if err != nil {
+			utils.Fatalf("%v: %v", v, err)
+		}
+		return fmt.Sprintf("%v", v)
+	}
+
+	cb := chain.CurrentBlock()
+	var parentTime uint64
+	for i := uint64(0); i <= cb.Number().Uint64(); i++ {
+		bl := chain.GetBlockByNumber(i)
+
+		unclesTally[len(bl.Uncles())]++
+
+		difficultyStatsSet = append(difficultyStatsSet, float64(bl.Difficulty().Uint64()))
+
+		if i > 1 {
+			deltaTime := bl.Time() - parentTime
+			timedeltaStatsSet = append(timedeltaStatsSet, float64(deltaTime))
+		}
+		parentTime = bl.Time()
+
+		if i > 0 && i%interval == 0 {
+			writer.Write([]string{toS(i, nil),
+				toS(unclesTally[0], nil), toS(unclesTally[1], nil), toS(unclesTally[2], nil),
+
+				toS(stats.Median(difficultyStatsSet)),
+				toS(stats.Mean(difficultyStatsSet)),
+				toS(stats.Percentile(difficultyStatsSet, 01)), toS(stats.Percentile(difficultyStatsSet, 05)), toS(stats.Percentile(difficultyStatsSet, 25)),
+				toS(stats.Percentile(difficultyStatsSet, 50)),
+				toS(stats.Percentile(difficultyStatsSet, 75)), toS(stats.Percentile(difficultyStatsSet, 95)), toS(stats.Percentile(difficultyStatsSet, 99)),
+
+				toS(stats.Median(timedeltaStatsSet)),
+				toS(stats.Mean(timedeltaStatsSet)),
+				toS(stats.Percentile(timedeltaStatsSet, 01)), toS(stats.Percentile(timedeltaStatsSet, 05)), toS(stats.Percentile(timedeltaStatsSet, 25)),
+				toS(stats.Percentile(timedeltaStatsSet, 50)),
+				toS(stats.Percentile(timedeltaStatsSet, 75)), toS(stats.Percentile(timedeltaStatsSet, 95)), toS(stats.Percentile(timedeltaStatsSet, 99)),
+
+				toS(time.Unix(int64(bl.Time()), 0).UTC().Format("2006-01-02"), nil),
+				toS(time.Unix(int64(bl.Time()), 0).UTC().Format("15:04:05"), nil),
+			})
+			writer.Flush()
+
+			unclesTally = make(map[int]int)
+			difficultyStatsSet = []float64{}
+			timedeltaStatsSet = []float64{}
+		}
+	}
+	return nil
+}
 
 // initGenesis will initialise the given JSON format genesis file and writes it as
 // the zero'd block (i.e. genesis) or will fail hard if it can't succeed.
