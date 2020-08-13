@@ -184,6 +184,8 @@ func (ethash *Ethash) VerifyUncles(chain consensus.ChainReader, block *types.Blo
 	uncles, ancestors := mapset.NewSet(), make(map[common.Hash]*types.Header)
 
 	number, parent := block.NumberU64()-1, block.ParentHash()
+	// 0, 1, 2, 3, 4, 5, 6
+	// parent:0, grandparent:1, ...
 	for i := 0; i < 7; i++ {
 		ancestor := chain.GetBlock(parent, number)
 		if ancestor == nil {
@@ -594,15 +596,33 @@ func accumulateRewards(config ctypes.ChainConfigurator, state *state.StateDB, he
 	blockReward := ctypes.EthashBlockReward(config, header.Number)
 
 	// Accumulate the rewards for the miner and any included uncles
-	reward := new(big.Int).Set(blockReward)
+	reward := new(big.Int).Set(blockReward) // eg. 5, 3, 2
 	r := new(big.Int)
+
+	// Can be 1 or 2 uncles.
 	for _, uncle := range uncles {
+
+		// header.Number = 10_000_45
+
+		// a. 10_000_038 + 8 => 10_000_046 (uncles are limited to latest 7 blocks)
+		// b. 10_000_044 + 8 => 10_000_52
 		r.Add(uncle.Number, big8)
+
+		// a. 10_000_046 - 10_000_45 => 1
+		// b. 10_000_52 - 10_000_45 => 7
 		r.Sub(r, header.Number)
+
+		// a. 1 * 2 => 2
+		// b. 7 * 2 => 14
 		r.Mul(r, blockReward)
+
+		// a. 2 / 8 => 0.25 ETH / uncle for uncle-miner
+		// b. 14 / 8 => 1.75 ETH / uncle for uncle-miner
 		r.Div(r, big8)
+
 		state.AddBalance(uncle.Coinbase, r)
 
+		// 2 / 32 => 1/16 =~> 0.0625 ETH (bonus for winner miner for including uncle)
 		r.Div(blockReward, big32)
 		reward.Add(reward, r)
 	}

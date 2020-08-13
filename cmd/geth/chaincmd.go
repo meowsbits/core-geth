@@ -276,6 +276,8 @@ func statsCmd(ctx *cli.Context) error {
 		"timedelta_median",
 		"timedelta_mean",
 		"timedelta_p1", "timedelta_p5", "timedelta_p25", "timedelta_p50", "timedelta_p75", "timedelta_p95", "timedelta_p99",
+
+		"block_timestamp_date", "block_timestamp_time",
 	})
 
 	toS := func(v interface{}, err error) string {
@@ -315,6 +317,9 @@ func statsCmd(ctx *cli.Context) error {
 				toS(stats.Percentile(timedeltaStatsSet, 01)), toS(stats.Percentile(timedeltaStatsSet, 05)), toS(stats.Percentile(timedeltaStatsSet, 25)),
 				toS(stats.Percentile(timedeltaStatsSet, 50)),
 				toS(stats.Percentile(timedeltaStatsSet, 75)), toS(stats.Percentile(timedeltaStatsSet, 95)), toS(stats.Percentile(timedeltaStatsSet, 99)),
+
+				toS(time.Unix(int64(bl.Time()), 0).UTC().Format("2006-01-02"), nil),
+				toS(time.Unix(int64(bl.Time()), 0).UTC().Format("15:04:05"), nil),
 			})
 			writer.Flush()
 
