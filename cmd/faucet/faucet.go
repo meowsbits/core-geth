@@ -77,6 +77,8 @@ var (
 	rinkebyFlag     = flag.Bool("chain.rinkeby", false, "Configure genesis and bootnodes for rinkeby chain defaults")
 	goerliFlag      = flag.Bool("chain.goerli", false, "Configure genesis and bootnodes for goerli chain defaults")
 
+	fastFlag = flag.Bool("fast", false, "Use fast syncmode=fast instead of LES")
+
 	genesisFlag = flag.String("genesis", "", "Genesis json file to seed the chain with")
 	apiPortFlag = flag.Int("apiport", 8080, "Listener port for the HTTP API connection")
 	ethPortFlag = flag.Int("ethport", 30303, "Listener port for the devp2p connection")
@@ -347,7 +349,7 @@ func newFaucet(genesis *genesisT.Genesis, port int, enodes []*discv5.Node, netwo
 		DataDir: faucetDirFromConfig(genesis.Config),
 		P2P: p2p.Config{
 			NAT:              nat.Any(),
-			NoDiscovery:      true,
+			// NoDiscovery:      true,
 			DiscoveryV5:      true,
 			ListenAddr:       fmt.Sprintf(":%d", port),
 			MaxPeers:         25,
@@ -361,6 +363,10 @@ func newFaucet(genesis *genesisT.Genesis, port int, enodes []*discv5.Node, netwo
 	// Assemble the Ethereum light client protocol
 	cfg := eth.DefaultConfig
 	cfg.SyncMode = downloader.LightSync
+	if *fastFlag {
+		cfg.SyncMode = downloader.FastSync
+		cfg.ProtocolVersions = eth.DefaultProtocolVersions
+	}
 	cfg.NetworkId = network
 	cfg.Genesis = genesis
 	switch genesis {
@@ -373,15 +379,30 @@ func newFaucet(genesis *genesisT.Genesis, port int, enodes []*discv5.Node, netwo
 	default:
 		utils.SetDNSDiscoveryDefaults(&cfg, core.GenesisToBlock(genesis, nil).Hash())
 	}
-	lesBackend, err := les.New(stack, &cfg)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to register the Ethereum service: %w", err)
+	var lesBackend *les.LightEthereum
+	var fastBackend *eth.Ethereum
+	if *fastFlag {
+		fastBackend, err = eth.New(stack, &cfg)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to register the Ethereum service: %w", err)
+		}
+	} else {
+		lesBackend, err = les.New(stack, &cfg)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to register the Ethereum service: %w", err)
+		}
 	}
 
 	// Assemble the ethstats monitoring and reporting service'
 	if stats != "" {
-		if err := ethstats.New(stack, lesBackend.ApiBackend, lesBackend.Engine(), stats); err != nil {
-			return nil, err
+		if *fastFlag {
+			if err := ethstats.New(stack, fastBackend.APIBackend, fastBackend.Engine(), stats); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := ethstats.New(stack, lesBackend.ApiBackend, lesBackend.Engine(), stats); err != nil {
+				return nil, err
+			}
 		}
 	}
 	// Boot up the client and ensure it connects to bootnodes
