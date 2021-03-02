@@ -27,4 +27,4 @@ jobs:
       - GO111MODULE=on
     script:
       - go run build/ci.go install -dlgo
-      - travis_wait 60 go test -short ./...
+      - travis_wait 60 go run build/ci.go test $TEST_PACKAGES
