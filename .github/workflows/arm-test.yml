@@ -1,0 +1,31 @@
+name: ARM Tests
+
+on:
+  push:
+    branches:
+      - '"'
+
+jobs:
+  build:
+    name: Test ARM
+    runs-on: ubuntu-18.04
+    steps:
+      
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        id: go
+        with:
+          go-version: ^1.16
+
+      - uses: actions/checkout@v2.1.0
+        with:
+          submodules: 'recursive'
+
+      - uses: uraimo/run-on-arch-action@v2.0.5
+        name: Run Tests
+        id: runtests
+        with:
+          arch: armv7
+          distro: ubuntu18.04
+          run: |
+            go run build/ci.go test $TEST_PACKAGES
