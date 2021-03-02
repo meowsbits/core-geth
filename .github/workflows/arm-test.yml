@@ -27,5 +27,11 @@ jobs:
         with:
           arch: armv7
           distro: ubuntu18.04
+          install: |
+            curl -O https://golang.org/dl/go1.16.linux-amd64.tar.gz
+            tar -C /usr/local -xzf go1.16.linux-amd64.tar.gz
+            export PATH=$PATH:/usr/local/go/bin
+            go version
+
           run: |
             go run build/ci.go test -coverage ./...
