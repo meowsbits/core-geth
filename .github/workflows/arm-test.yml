@@ -3,14 +3,14 @@ name: ARM Tests
 on:
   push:
     branches:
-      - '"'
+      - '*'
 
 jobs:
   build:
     name: Test ARM
     runs-on: ubuntu-18.04
     steps:
-      
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         id: go
