@@ -4,18 +4,6 @@ sudo: false
 jobs:
   include:
 
-  # Run linter check. Only test code linters on latest version of Go.
-  - stage: lint
-    os: linux
-    dist: xenial
-    go: 1.15.x
-    env:
-      - lint
-    git:
-      submodules: false
-    script:
-      - make lint
-
   # Run build and tests on ARM64 on Pull Requests.
   - stage: build
     name: "ARM64/Go1.15.x: make test"
