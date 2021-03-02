@@ -25,7 +25,7 @@ jobs:
         name: Run Tests
         id: runtests
         with:
-          arch: armv5
+          arch: armv7
           distro: ubuntu18.04
           run: |
             go run build/ci.go test -coverage ./...
