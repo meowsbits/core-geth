@@ -11,12 +11,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
 
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        id: go
-        with:
-          go-version: ^1.16
-
       - uses: actions/checkout@v2.1.0
         with:
           submodules: 'recursive'
@@ -26,7 +20,7 @@ jobs:
         id: runtests
         with:
           arch: armv6
-          distro: ubuntu18.04
+          distro: alpine_latest
           install: |
             curl -O https://golang.org/dl/go1.16.linux-armv6l.tar.gz
             tar -C /usr/local -xzf go1.16.linux-armv6l.tar.gz
