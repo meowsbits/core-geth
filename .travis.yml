@@ -24,7 +24,7 @@ jobs:
     env:
       - GO111MODULE=on
     script:
-      - go run build/ci.go test $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum/||g' | cut -d'/' -f1 | grep -v github.com | uniq | grep -E '^[f-z]'))
+      - go run build/ci.go test $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum/||g' | cut -d'/' -f1 | grep -v github.com | uniq | grep -E '^[h-z]'))
 
 ### This works.
 ##
