@@ -13,8 +13,10 @@ jobs:
     go: 1.16.x
     env:
       - GO111MODULE=on
+    git:
+      submodules: false
     script:
-      - go test -count 1 -run 'Test[A-M]+' ./...
+      - go test -run 'Test[A-M]+' ./...
   - stage: build
     name: "Tests N-Z"
     os: linux
@@ -23,8 +25,20 @@ jobs:
     go: 1.16.x
     env:
       - GO111MODULE=on
+    git:
+      submodules: false
     script:
-      - go test -count 1 -run 'Test[N-Z]+' ./...
+      - go test -run 'Test[N-Z]+' ./...
+  - stage: build
+    name: "Tests /tests"
+    os: linux
+    arch: arm64
+    dist: bionic
+    go: 1.16.x
+    env:
+      - GO111MODULE=on
+    script:
+      - go test ./tests
 
 ### This works.
 ##
