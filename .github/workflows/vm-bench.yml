@@ -23,6 +23,10 @@ jobs:
           go get -v -t -d ./...
           go get golang.org/x/perf/cmd/...
           git submodule update --init --recursive
+          suite_compressor() {
+            while read -r line; do if grep -q '/op' <<< "$line"; then echo "$(dirname $(echo ${line} | cut -d' ' -f1)) $(echo $line | cut -d' ' -f2-)";fi; done
+          }
+          export -f suite_compressor
 
       - name: Benchmark etclabscore/core-geth
         run: |
@@ -39,6 +43,7 @@ jobs:
 
       - name: "Analyze Results (ethereum/go-ethereum vs. etclabscore/core-geth)"
         run: |
+          benchstat <(suite_compressor < vm-go-ethereum-bench.out) <(suite_compressor < vm-core-geth-bench.out)
           benchstat -delta-test=none vm-go-ethereum-bench.out vm-core-geth-bench.out
 
       - name: Prepare EVMC Benches
@@ -61,6 +66,7 @@ jobs:
 
       - name: "Analyze Results (etclabscore/core-geth vs. ewasm/hera)"
         run: |
+          benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-hera-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-hera-bench.out
 
       - name: "Benchmark EVM (EWASM): SSVM-EVMC"
@@ -69,6 +75,7 @@ jobs:
 
       - name: "Analyze Results (etclabscore/core-geth vs. ssvm/ssvm-evmc)"
         run: |
+          benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-ssvm-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-ssvm-bench.out
 
       - name: "Benchmark EVM: EVMOne"
@@ -77,6 +84,7 @@ jobs:
 
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/evmone)"
         run: |
+          benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-evmone-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-evmone-bench.out
 
       - name: "Benchmark EVM: Aleth"
@@ -85,4 +93,5 @@ jobs:
 
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/aleth)"
         run: |
+          benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-aleth-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-aleth-bench.out
