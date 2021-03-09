@@ -102,7 +102,7 @@ func makeMapFromTestFuncB(f interface{}) reflect.Value {
 	testingT := reflect.TypeOf((*testing.B)(nil))
 	ftyp := reflect.TypeOf(f)
 	if ftyp.Kind() != reflect.Func || ftyp.NumIn() != 3 || ftyp.NumOut() != 0 || ftyp.In(0) != testingT || ftyp.In(1) != stringT {
-		panic(fmt.Sprintf("bad test function type: want func(*testing.T, string, <TestType>), have %s", ftyp))
+		panic(fmt.Sprintf("bad test function type: want func(*testing.B, string, <TestType>), have %s", ftyp))
 	}
 	testType := ftyp.In(2)
 	mp := reflect.New(reflect.MapOf(stringT, testType))
