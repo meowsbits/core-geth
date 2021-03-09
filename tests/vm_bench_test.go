@@ -19,9 +19,9 @@ func BenchmarkVM(b *testing.B) {
 	vmt.walkB(b, vmTestDir, func(b *testing.B, name string, test *VMTest) {
 		withVMConfigB(b, test.json.Exec.GasLimit, func(vmconfig vm.Config) error {
 			// return test.Run(vmconfig, false)
-			_, statedb := MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
+				_, statedb := MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
 				test.exec(statedb, vmconfig)
 			}
 			return nil
