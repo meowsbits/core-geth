@@ -38,6 +38,6 @@ jobs:
 
       - name: Analyze Results
         run: |
-          go get -u golang.org/x/tools/...
+          go get golang.org/x/perf/cmd/...
           benchstat vm-go-ethereum-bench.out vm-core-geth-bench.out
 
