@@ -1,0 +1,43 @@
+name: VM Benchmark
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  bench:
+    name: VM Benchmarking
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          git submodule update --init --recursive
+
+      - name: Benchmark etclabscore/core-geth
+        run: |
+          go test -timeout 90m -run NONE -bench=VM -v ./tests |& tee vm-core-geth-bench.out
+
+      - name: Benchmark ethereum/go-ethereum
+        run: |
+          git remote add foundation https://github.com/ethereum/go-ethereum.git
+          git fetch foundation
+          git checkout foundation/master
+          git submodule update
+          git checkout master -- tests/vm_bench_test.go
+          go test -timeout 90m -run NONE -bench=VM -v ./tests |& tee vm-go-ethereum-bench.out
+
+      - name: Analyze Results
+        run: |
+          go get -u golang.org/x/tools/...
+          benchcmp vm-go-ethereum-bench.out vm-core-geth-bench.out
+
