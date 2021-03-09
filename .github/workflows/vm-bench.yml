@@ -21,11 +21,12 @@ jobs:
       - name: Get dependencies
         run: |
           go get -v -t -d ./...
+          go get golang.org/x/perf/cmd/...
           git submodule update --init --recursive
 
       - name: Benchmark etclabscore/core-geth
         run: |
-          go test -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v ./tests |& tee vm-core-geth-bench.out
+          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v |& tee vm-core-geth-bench.out
 
       - name: Benchmark ethereum/go-ethereum
         run: |
@@ -33,11 +34,55 @@ jobs:
           git fetch foundation
           git checkout v1.9.25
           git submodule update
-          git checkout master -- tests/vm_bench_test.go
-          go test -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v ./tests |& tee vm-go-ethereum-bench.out
+          git checkout $GITHUB_SHA -- tests/vm_bench_test.go
+          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v |& tee vm-go-ethereum-bench.out
 
-      - name: Analyze Results
+      - name: "Analyze Results (ethereum/go-ethereum vs. etclabscore/core-geth)"
         run: |
-          go get golang.org/x/perf/cmd/...
           benchstat vm-go-ethereum-bench.out vm-core-geth-bench.out
 
+      - name: Prepare EVMC Benches
+        run: |
+          git checkout $GITHUB_SHA
+          git submodule update
+
+      - name: Install EVMC Deps
+        run: |
+          go get golang.org/x/mobile/cmd/gomobile
+          gomobile init
+          make hera
+          make ssvm
+          make evmone
+          make aleth-interpreter
+
+      - name: "Benchmark EVM (EWASM): Hera"
+        run: |
+          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/hera/build/src/libhera.so |& tee vm-evmc-hera-bench.out
+
+      - name: "Analyze Results (etclabscore/core-geth vs. ewasm/hera)"
+        run: |
+          benchstat vm-core-geth-bench.out vm-evmc-hera-bench.out
+
+      - name: "Benchmark EVM (EWASM): SSVM-EVMC"
+        run: |
+          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/SSVM/build/tools/ssvm-evmc/libssvmEVMC.so |& tee vm-evmc-ssvm-bench.out
+
+      - name: "Analyze Results (etclabscore/core-geth vs. ssvm/ssvm-evmc)"
+        run: |
+          benchstat vm-core-geth-bench.out vm-evmc-ssvm-bench.out
+
+      - name: "Benchmark EVM: EVMOne"
+        run: |
+          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/evmone/lib/libevmone.so |& tee vm-evmc-evmone-bench.out
+
+      - name: "Analyze Results (etclabscore/core-geth vs. ethereum/evmone)"
+        run: |
+          benchstat vm-core-geth-bench.out vm-evmc-evmone-bench.out
+
+      - name: "Benchmark EVM: Aleth"
+        run: |
+          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/aleth/lib/libaleth-interpreter.so |& tee vm-evmc-aleth-bench.out
+
+      - name: "Analyze Results (etclabscore/core-geth vs. ethereum/aleth)"
+        run: |
+          benchstat vm-core-geth-bench.out vm-evmc-aleth-bench.out
