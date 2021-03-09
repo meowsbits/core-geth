@@ -21,7 +21,9 @@ jobs:
       - name: Get dependencies
         run: |
           go get -v -t -d ./...
+          cd ..
           go get golang.org/x/perf/cmd/...
+          cd -
           git submodule update --init --recursive
           suite_compressor() {
             while read -r line; do if grep -q '/op' <<< "$line"; then echo "$(dirname $(echo ${line} | cut -d' ' -f1)) $(echo $line | cut -d' ' -f2-)";fi; done
