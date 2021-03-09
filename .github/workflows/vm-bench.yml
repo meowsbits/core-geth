@@ -25,7 +25,7 @@ jobs:
 
       - name: Benchmark etclabscore/core-geth
         run: |
-          go test -timeout 90m -run NONE -bench=VM -v ./tests |& tee vm-core-geth-bench.out
+          go test -timeout 30m -run NONE -bench=VM -v ./tests |& tee vm-core-geth-bench.out
 
       - name: Benchmark ethereum/go-ethereum
         run: |
@@ -34,7 +34,7 @@ jobs:
           git checkout foundation/v1.9.25
           git submodule update
           git checkout master -- tests/vm_bench_test.go
-          go test -timeout 90m -run NONE -bench=VM -v ./tests |& tee vm-go-ethereum-bench.out
+          go test -timeout 30m -run NONE -bench=VM -v ./tests |& tee vm-go-ethereum-bench.out
 
       - name: Analyze Results
         run: |
