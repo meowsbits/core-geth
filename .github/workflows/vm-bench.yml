@@ -56,6 +56,7 @@ jobs:
       - name: "Analyze Results (ethereum/go-ethereum vs. etclabscore/core-geth)"
         run: |
           benchstat <(suite_compressor < vm-go-ethereum-bench.out) <(suite_compressor < vm-core-geth-bench.out)
+          wait
           benchstat -delta-test=none vm-go-ethereum-bench.out vm-core-geth-bench.out
 
       - name: Prepare EVMC Benches
