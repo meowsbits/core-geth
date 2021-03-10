@@ -20,26 +20,24 @@ func BenchmarkVM(b *testing.B) {
 	vmt.whitelist("vmPerformance")
 	vmt.walkB(b, vmTestDir, func(b *testing.B, name string, test *VMTest) {
 		withVMConfigB(b, test.json.Exec.GasLimit, func(vmconfig vm.Config) error {
-			b.Run(name, func(b *testing.B) {
-				// return test.Run(vmconfig, false)
-				b.ReportAllocs()
-				start := time.Now()
-				b.ResetTimer()
-				for i := 0; i < b.N; i++ {
-					_, statedb := MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
-					test.exec(statedb, vmconfig)
+			// return test.Run(vmconfig, false)
+			b.ReportAllocs()
+			start := time.Now()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				_, statedb := MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
+				test.exec(statedb, vmconfig)
+			}
+			b.StopTimer()
+			if test.json.GasRemaining != nil {
+				gasUsed := test.json.Exec.GasLimit - uint64(*test.json.GasRemaining)
+				elapsed := uint64(time.Since(start))
+				if elapsed < 1 {
+					elapsed = 1
 				}
-				b.StopTimer()
-				if test.json.GasRemaining != nil {
-					gasUsed := test.json.Exec.GasLimit - uint64(*test.json.GasRemaining)
-					elapsed := uint64(time.Since(start))
-					if elapsed < 1 {
-						elapsed = 1
-					}
-					mgasps := (100 * 1000 * gasUsed) / elapsed
-					b.ReportMetric(float64(mgasps)/100, "mgas/s")
-				}
-			})
+				mgasps := (100 * 1000 * gasUsed) / elapsed
+				b.ReportMetric(float64(mgasps)/100, "mgas/s")
+			}
 			return nil
 		})
 	})
