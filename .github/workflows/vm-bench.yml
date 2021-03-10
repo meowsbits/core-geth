@@ -40,6 +40,7 @@ jobs:
         # For now, I care mostly only about core-geth vs. go-ethereum, so I'm going to skip those.
         run: |
           echo "bench_evmc=off" >> $GITHUB_ENV
+          echo "goethereum_version=v1.9.25" >> $GITHUB_ENV
 
       - name: Benchmark etclabscore/core-geth
         run: |
@@ -48,8 +49,8 @@ jobs:
       - name: Benchmark ethereum/go-ethereum
         run: |
           git remote add foundation https://github.com/ethereum/go-ethereum.git
-          git fetch foundation
-          git checkout v1.9.25
+          git fetch foundation ${{ env.goethereum_version }}
+          git checkout ${{ env.goethereum_version }}
           git submodule update
           git checkout $GITHUB_SHA -- tests/vm_bench_test.go
           go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v |& tee vm-go-ethereum-bench.out
