@@ -54,10 +54,28 @@ type operation struct {
 // JumpTable contains the EVM opcodes supported at a given fork.
 type JumpTable [256]*operation
 
+type instructionSetCache struct {
+	blockNumber  *big.Int
+	instructions JumpTable
+}
+
+var instructionSetCached = instructionSetCache{
+	blockNumber: big.NewInt(-1),
+}
+
 // instructionSetForConfig determines an instruction set for the vm using
 // the chain config params and a current block number
 func instructionSetForConfig(config ctypes.ChainConfigurator, bn *big.Int) JumpTable {
+	if instructionSetCached.blockNumber.Cmp(bn) == 0 {
+		return instructionSetCached.instructions
+	}
 	instructionSet := newBaseInstructionSet()
+	defer func() {
+		instructionSetCached = instructionSetCache{
+			blockNumber:  bn,
+			instructions: instructionSet,
+		}
+	}()
 
 	// Homestead
 	if config.IsEnabled(config.GetEIP7Transition, bn) {
