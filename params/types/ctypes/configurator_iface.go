@@ -241,3 +241,111 @@ type Accounter interface {
 	ForEachAccount(fn func(address common.Address, bal *big.Int, nonce uint64, code []byte, storage map[common.Hash]common.Hash) error) error
 	UpdateAccount(address common.Address, bal *big.Int, nonce uint64, code []byte, storage map[common.Hash]common.Hash) error
 }
+
+// normalizeUint64P normalizes the uint64 reference for use in ProtocolRules.
+func normalizeUint64P(n *uint64) uint64 {
+	if n == nil {
+		return 0
+	}
+	return *n
+}
+
+// normalizeBigInt normalizes the big.Int reference for use in ProtocolRules.
+func normalizeBigInt(n *big.Int) *big.Int {
+	out := new(big.Int)
+	return out.Set(n)
+}
+
+func GetProtocolRules(cc ChainConfigurator, blockNum *big.Int) ProtocolRules {
+	return ProtocolRules{
+		AccountStartNonce:    normalizeUint64P(cc.GetAccountStartNonce()),
+		MaximumExtraDataSize: normalizeUint64P(cc.GetMaximumExtraDataSize()),
+		MinGasLimit:          normalizeUint64P(cc.GetMinGasLimit()),
+		GasLimitBoundDivisor: normalizeUint64P(cc.GetGasLimitBoundDivisor()),
+		NetworkID:            normalizeUint64P(cc.GetNetworkID()),
+		ChainID:              normalizeBigInt(cc.GetChainID()),
+		MaxCodeSize:          normalizeUint64P(cc.GetMaxCodeSize()),
+
+		EIP2Transition_Enabled:           cc.IsEnabled(cc.GetEIP2Transition, blockNum),
+		EIP7Transition_Enabled:           cc.IsEnabled(cc.GetEIP7Transition, blockNum),
+		EIP150Transition_Enabled:         cc.IsEnabled(cc.GetEIP150Transition, blockNum),
+		EIP152Transition_Enabled:         cc.IsEnabled(cc.GetEIP152Transition, blockNum),
+		EIP160Transition_Enabled:         cc.IsEnabled(cc.GetEIP160Transition, blockNum),
+		EIP161abcTransition_Enabled:      cc.IsEnabled(cc.GetEIP161abcTransition, blockNum),
+		EIP161dTransition_Enabled:        cc.IsEnabled(cc.GetEIP161dTransition, blockNum),
+		EIP170Transition_Enabled:         cc.IsEnabled(cc.GetEIP170Transition, blockNum),
+		EIP155Transition_Enabled:         cc.IsEnabled(cc.GetEIP155Transition, blockNum),
+		EIP140Transition_Enabled:         cc.IsEnabled(cc.GetEIP140Transition, blockNum),
+		EIP198Transition_Enabled:         cc.IsEnabled(cc.GetEIP198Transition, blockNum),
+		EIP211Transition_Enabled:         cc.IsEnabled(cc.GetEIP211Transition, blockNum),
+		EIP212Transition_Enabled:         cc.IsEnabled(cc.GetEIP212Transition, blockNum),
+		EIP213Transition_Enabled:         cc.IsEnabled(cc.GetEIP213Transition, blockNum),
+		EIP214Transition_Enabled:         cc.IsEnabled(cc.GetEIP214Transition, blockNum),
+		EIP658Transition_Enabled:         cc.IsEnabled(cc.GetEIP658Transition, blockNum),
+		EIP145Transition_Enabled:         cc.IsEnabled(cc.GetEIP145Transition, blockNum),
+		EIP1014Transition_Enabled:        cc.IsEnabled(cc.GetEIP1014Transition, blockNum),
+		EIP1052Transition_Enabled:        cc.IsEnabled(cc.GetEIP1052Transition, blockNum),
+		EIP1283Transition_Enabled:        cc.IsEnabled(cc.GetEIP1283Transition, blockNum),
+		EIP1283DisableTransition_Enabled: cc.IsEnabled(cc.GetEIP1283DisableTransition, blockNum),
+		EIP1108Transition_Enabled:        cc.IsEnabled(cc.GetEIP1108Transition, blockNum),
+		EIP2200Transition_Enabled:        cc.IsEnabled(cc.GetEIP2200Transition, blockNum),
+		EIP2200DisableTransition_Enabled: cc.IsEnabled(cc.GetEIP2200DisableTransition, blockNum),
+		EIP1344Transition_Enabled:        cc.IsEnabled(cc.GetEIP1344Transition, blockNum),
+		EIP1884Transition_Enabled:        cc.IsEnabled(cc.GetEIP1884Transition, blockNum),
+		EIP2028Transition_Enabled:        cc.IsEnabled(cc.GetEIP2028Transition, blockNum),
+		ECIP1080Transition_Enabled:       cc.IsEnabled(cc.GetECIP1080Transition, blockNum),
+		EIP1706Transition_Enabled:        cc.IsEnabled(cc.GetEIP1706Transition, blockNum),
+		EIP2537Transition_Enabled:        cc.IsEnabled(cc.GetEIP2537Transition, blockNum),
+		ECBP1100Transition_Enabled:       cc.IsEnabled(cc.GetECBP1100Transition, blockNum),
+		EIP2315Transition_Enabled:        cc.IsEnabled(cc.GetEIP2315Transition, blockNum),
+		EIP2929Transition_Enabled:        cc.IsEnabled(cc.GetEIP2929Transition, blockNum),
+	}
+}
+
+type ProtocolRules struct {
+	AccountStartNonce    uint64
+	MaximumExtraDataSize uint64
+	MinGasLimit          uint64
+	GasLimitBoundDivisor uint64
+	NetworkID            uint64
+	ChainID              *big.Int
+	MaxCodeSize          uint64
+
+	// Be careful with EIP2.
+	// It is a messy EIP, specifying diverse changes, like difficulty, intrinsic gas costs for contract creation,
+	// txpool management, and contract OoG handling.
+	// It is both Ethash-specific and _not_.
+	EIP2Transition_Enabled           bool
+	EIP7Transition_Enabled           bool
+	EIP150Transition_Enabled         bool
+	EIP152Transition_Enabled         bool
+	EIP160Transition_Enabled         bool
+	EIP161abcTransition_Enabled      bool
+	EIP161dTransition_Enabled        bool
+	EIP170Transition_Enabled         bool
+	EIP155Transition_Enabled         bool
+	EIP140Transition_Enabled         bool
+	EIP198Transition_Enabled         bool
+	EIP211Transition_Enabled         bool
+	EIP212Transition_Enabled         bool
+	EIP213Transition_Enabled         bool
+	EIP214Transition_Enabled         bool
+	EIP658Transition_Enabled         bool
+	EIP145Transition_Enabled         bool
+	EIP1014Transition_Enabled        bool
+	EIP1052Transition_Enabled        bool
+	EIP1283Transition_Enabled        bool
+	EIP1283DisableTransition_Enabled bool
+	EIP1108Transition_Enabled        bool
+	EIP2200Transition_Enabled        bool
+	EIP2200DisableTransition_Enabled bool
+	EIP1344Transition_Enabled        bool
+	EIP1884Transition_Enabled        bool
+	EIP2028Transition_Enabled        bool
+	ECIP1080Transition_Enabled       bool
+	EIP1706Transition_Enabled        bool
+	EIP2537Transition_Enabled        bool
+	ECBP1100Transition_Enabled       bool
+	EIP2315Transition_Enabled        bool
+	EIP2929Transition_Enabled        bool
+}

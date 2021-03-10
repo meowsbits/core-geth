@@ -110,6 +110,11 @@ type EVM struct {
 
 	// chainConfig contains information about the current chain
 	chainConfig ctypes.ChainConfigurator
+
+	// chainConfigRules is a one-time-use struct containing mostly boolean
+	// information about feature activation at a single block height.
+	chainConfigRules ctypes.ProtocolRules
+
 	// virtual machine configuration options used to initialise the
 	// evm.
 	vmConfig Config
