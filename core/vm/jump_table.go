@@ -92,13 +92,11 @@ func (cache instructionSetCache) set(config ctypes.ChainConfigurator, bn *big.In
 // instructionSetForConfig determines an instruction set for the vm using
 // the chain config params and a current block number
 func instructionSetForConfig(config ctypes.ChainConfigurator, bn *big.Int) JumpTable {
-	if false && instructionSetCached.eq(config, bn) {
+	if instructionSetCached.eq(config, bn) {
 		return instructionSetCached.instructions
 	}
 	instructionSet := newBaseInstructionSet()
-	if false {
-		defer instructionSetCached.set(config, bn, instructionSet)
-	}
+	defer instructionSetCached.set(config, bn, instructionSet)
 
 	// Homestead
 	if config.IsEnabled(config.GetEIP7Transition, bn) {
