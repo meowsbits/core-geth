@@ -25,11 +25,10 @@ jobs:
           go get golang.org/x/perf/cmd/...
           cd -
           git submodule update --init --recursive
-          mkdir -p /usr/local/bin
-          echo "/usr/local/bin" >> $GITHUB_PATH
-          cat <<EOF > /usr/local/bin/suite_compressor
+          mkdir -p bin
+          echo "$(pwd)/bin" >> $GITHUB_PATH
+          cat <<EOF > ./bin/suite_compressor
             while read -r line; do if grep -q '/op' <<< "$line"; then echo "$(dirname $(echo ${line} | cut -d' ' -f1)) $(echo $line | cut -d' ' -f2-)";fi; done
-          }
           EOF
 
       - name: Benchmark etclabscore/core-geth
