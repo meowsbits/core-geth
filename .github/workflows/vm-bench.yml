@@ -43,7 +43,7 @@ jobs:
 
       - name: Benchmark etclabscore/core-geth
         run: |
-          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v |& tee vm-core-geth-bench.out
+          go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v |& tee vm-core-geth-bench.out
 
       - name: Benchmark ethereum/go-ethereum
         run: |
@@ -52,7 +52,7 @@ jobs:
           git checkout v1.9.25
           git submodule update
           git checkout $GITHUB_SHA -- tests/vm_bench_test.go
-          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v |& tee vm-go-ethereum-bench.out
+          go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v |& tee vm-go-ethereum-bench.out
 
       - name: "Analyze Results (ethereum/go-ethereum vs. etclabscore/core-geth)"
         run: |
@@ -79,7 +79,7 @@ jobs:
       - name: "Benchmark EVM (EWASM): Hera"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
-          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/hera/build/src/libhera.so |& tee vm-evmc-hera-bench.out
+          go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/hera/build/src/libhera.so |& tee vm-evmc-hera-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ewasm/hera)"
         if: ${{ env.bench_evmc == 'on' }}
@@ -90,7 +90,7 @@ jobs:
       - name: "Benchmark EVM (EWASM): SSVM-EVMC"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
-          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/SSVM/build/tools/ssvm-evmc/libssvmEVMC.so |& tee vm-evmc-ssvm-bench.out
+          go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/SSVM/build/tools/ssvm-evmc/libssvmEVMC.so |& tee vm-evmc-ssvm-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ssvm/ssvm-evmc)"
         if: ${{ env.bench_evmc == 'on' }}
@@ -101,7 +101,7 @@ jobs:
       - name: "Benchmark EVM: EVMOne"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
-          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/evmone/lib/libevmone.so |& tee vm-evmc-evmone-bench.out
+          go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/evmone/lib/libevmone.so |& tee vm-evmc-evmone-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/evmone)"
         if: ${{ env.bench_evmc == 'on' }}
@@ -112,7 +112,7 @@ jobs:
       - name: "Benchmark EVM: Aleth"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
-          go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/aleth/lib/libaleth-interpreter.so |& tee vm-evmc-aleth-bench.out
+          go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/aleth/lib/libaleth-interpreter.so |& tee vm-evmc-aleth-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/aleth)"
         if: ${{ env.bench_evmc == 'on' }}
