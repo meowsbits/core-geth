@@ -55,31 +55,48 @@ type operation struct {
 type JumpTable [256]*operation
 
 type instructionSetCache struct {
+	chainID      *big.Int
 	blockNumber  *big.Int
 	instructions JumpTable
 }
 
-var instructionSetCached = instructionSetCache{
-	blockNumber: big.NewInt(-1),
+var instructionSetCached = instructionSetCache{}
+
+func (cache instructionSetCache) eq(config ctypes.ChainConfigurator, bn *big.Int) bool {
+	if v := cache.instructions[STOP]; v == nil {
+		return false
+	}
+	if bn == nil || cache.blockNumber == nil {
+		return false
+	}
+	if bn.Cmp(cache.blockNumber) != 0 {
+		return false
+	}
+	confChainID := config.GetChainID()
+	if confChainID == nil || cache.chainID == nil {
+		return false
+	}
+	return confChainID.Cmp(cache.chainID) == 0
+}
+
+func (cache instructionSetCache) set(config ctypes.ChainConfigurator, bn *big.Int, jt JumpTable) {
+	blockNumber := bn
+	if blockNumber == nil {
+		blockNumber = big.NewInt(-1)
+	}
+	cache.chainID = config.GetChainID()
+	cache.blockNumber = blockNumber
+	cache.instructions = jt
 }
 
 // instructionSetForConfig determines an instruction set for the vm using
 // the chain config params and a current block number
 func instructionSetForConfig(config ctypes.ChainConfigurator, bn *big.Int) JumpTable {
-	if bn != nil && instructionSetCached.blockNumber.Cmp(bn) == 0 {
+	if instructionSetCached.eq(config, bn) {
 		return instructionSetCached.instructions
 	}
 	instructionSet := newBaseInstructionSet()
-	defer func() {
-		blockNumber := bn
-		if blockNumber == nil {
-			blockNumber = big.NewInt(-1)
-		}
-		instructionSetCached = instructionSetCache{
-			blockNumber:  bn,
-			instructions: instructionSet,
-		}
-	}()
+	defer instructionSetCached.set(config, bn, instructionSet)
 
 	// Homestead
 	if config.IsEnabled(config.GetEIP7Transition, bn) {
