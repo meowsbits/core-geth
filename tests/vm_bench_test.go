@@ -15,9 +15,9 @@ import (
 
 func BenchmarkVM(b *testing.B) {
 	vmt := new(testMatcher)
-	// vmt.slow("^vmPerformance")
-	// vmt.skipLoad("^vmSystemOperationsTest.json")
-	vmt.whitelist("vmIOandFlow")
+	vmt.slow("^vmPerformance")
+	vmt.skipLoad("^vmSystemOperationsTest.json")
+	// vmt.whitelist("vmIOandFlow")
 	vmt.walkB(b, vmTestDir, func(b *testing.B, name string, test *VMTest) {
 		withVMConfigB(b, test.json.Exec.GasLimit, func(vmconfig vm.Config) error {
 			// return test.Run(vmconfig, false)
