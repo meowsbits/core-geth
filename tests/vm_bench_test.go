@@ -35,7 +35,7 @@ func BenchmarkVM(b *testing.B) {
 				if elapsed < 1 {
 					elapsed = 1
 				}
-				mgasps := (100 * 1000 * gasUsed) / elapsed
+				mgasps := (100 * 1000 * gasUsed * uint64(b.N)) / elapsed
 				b.ReportMetric(float64(mgasps)/100, "mgas/s")
 			}
 			return nil
