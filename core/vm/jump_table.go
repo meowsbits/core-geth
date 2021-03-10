@@ -66,11 +66,15 @@ var instructionSetCached = instructionSetCache{
 // instructionSetForConfig determines an instruction set for the vm using
 // the chain config params and a current block number
 func instructionSetForConfig(config ctypes.ChainConfigurator, bn *big.Int) JumpTable {
-	if instructionSetCached.blockNumber.Cmp(bn) == 0 {
+	if bn != nil && instructionSetCached.blockNumber.Cmp(bn) == 0 {
 		return instructionSetCached.instructions
 	}
 	instructionSet := newBaseInstructionSet()
 	defer func() {
+		blockNumber := bn
+		if blockNumber == nil {
+			blockNumber = big.NewInt(-1)
+		}
 		instructionSetCached = instructionSetCache{
 			blockNumber:  bn,
 			instructions: instructionSet,
