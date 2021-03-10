@@ -34,6 +34,12 @@ jobs:
           EOF
           chmod +x ./bin/suite_compressor
 
+      - name: Setup Env
+        # This can be configured in other ways to toggle the full EVMC suite benchmarks.
+        # For now, I care mostly only about core-geth vs. go-ethereum, so I'm going to skip those.
+        run: |
+          echo "bench_evmc=off" >> $GITHUB_ENV
+
       - name: Benchmark etclabscore/core-geth
         run: |
           go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v |& tee vm-core-geth-bench.out
@@ -53,11 +59,13 @@ jobs:
           benchstat -delta-test=none vm-go-ethereum-bench.out vm-core-geth-bench.out
 
       - name: Prepare EVMC Benches
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           git checkout $GITHUB_SHA
           git submodule update
 
       - name: Install EVMC Deps
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           go get golang.org/x/mobile/cmd/gomobile
           gomobile init
@@ -67,37 +75,45 @@ jobs:
           make aleth-interpreter
 
       - name: "Benchmark EVM (EWASM): Hera"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/hera/build/src/libhera.so |& tee vm-evmc-hera-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ewasm/hera)"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-hera-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-hera-bench.out
 
       - name: "Benchmark EVM (EWASM): SSVM-EVMC"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.ewasm=$(pwd)/build/_workspace/SSVM/build/tools/ssvm-evmc/libssvmEVMC.so |& tee vm-evmc-ssvm-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ssvm/ssvm-evmc)"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-ssvm-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-ssvm-bench.out
 
       - name: "Benchmark EVM: EVMOne"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/evmone/lib/libevmone.so |& tee vm-evmc-evmone-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/evmone)"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-evmone-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-evmone-bench.out
 
       - name: "Benchmark EVM: Aleth"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           go test ./tests -count 1 -p 1 -timeout 30m -run NONE -bench=VM -v -evmc.evm=$(pwd)/build/_workspace/aleth/lib/libaleth-interpreter.so |& tee vm-evmc-aleth-bench.out
 
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/aleth)"
+        if: ${{ env.bench_evmc == 'on' }}
         run: |
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-aleth-bench.out)
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-aleth-bench.out
