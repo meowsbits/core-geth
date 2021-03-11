@@ -1,0 +1,56 @@
+name: Core Benchmark
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+
+  bench:
+    name: Core Benchmarking
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          cd ..
+          go get golang.org/x/perf/cmd/...
+          cd -
+          git submodule update --init --recursive
+          mkdir -p bin
+          echo "$(pwd)/bin" >> $GITHUB_PATH
+
+      - name: Setup Env
+        run: |
+          echo "goethereum_tag=v1.9.25" >> $GITHUB_ENV
+
+      - name: Benchmark etclabscore/core-geth
+        run: |
+          go test ./core -count 1 -p 1 -timeout 120m -run NONE -bench=. |& tee core-bench-core-geth.out
+
+      - name: Benchmark ethereum/go-ethereum
+        run: |
+          git remote add foundation https://github.com/ethereum/go-ethereum.git
+          git fetch foundation
+          git checkout ${{ env.goethereum_tag }}
+          git submodule update
+          git checkout $GITHUB_SHA -- tests/vm_bench_test.go
+          go test ./core -count 1 -p 1 -timeout 120m -run NONE -bench=. |& tee core-bench-go-ethereum.out
+
+      - name: "Analyze Results (ethereum/go-ethereum vs. etclabscore/core-geth)"
+        run: |
+          echo "=== DEFAULT DELTA ==="
+          benchstat core-bench-go-ethereum.out core-bench-core-geth.out
+          echo "=== RAW DELTA ==="
+          benchstat -delta-test=none core-bench-go-ethereum.out core-bench-core-geth.out
