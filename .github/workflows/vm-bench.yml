@@ -30,6 +30,24 @@ jobs:
           git submodule update --init --recursive
           mkdir -p bin
           echo "$(pwd)/bin" >> $GITHUB_PATH
+
+          # suite_compressor is intended for use with the tests/ suite.
+          # It strips the filename from a benchmark test result line.
+          # This generalization causes the benchstat util to treat each file as a rerun of a single
+          # test, which yields a more generalized statistic including almost believable p values.
+          #
+          # Eg.
+          #
+          # BenchmarkVM/vmArithmeticTest/addmod1_overflow2.json-12             35870             36298 ns/op                24.27 mgas/s       21434 B/op     311 allocs/op
+          # BenchmarkVM/vmArithmeticTest/addmod1_overflow3.json-12             29626             37401 ns/op               102.9 mgas/s        22371 B/op     315 allocs/op
+          # BenchmarkVM/vmArithmeticTest/addmod1_overflow4.json-12             30820             37519 ns/op               103.2 mgas/s        22382 B/op     315 allocs/op
+          #
+          # becomes:
+          #
+          # BenchmarkVM/vmArithmeticTest             35870             36298 ns/op                24.27 mgas/s       21434 B/op     311 allocs/op
+          # BenchmarkVM/vmArithmeticTest             29626             37401 ns/op               102.9 mgas/s        22371 B/op     315 allocs/op
+          # BenchmarkVM/vmArithmeticTest             30820             37519 ns/op               103.2 mgas/s        22382 B/op     315 allocs/op
+          #
           cat <<EOF > ./bin/suite_compressor
             while read -r line; do if grep -q '/op' <<< "$line"; then echo "$(dirname $(echo ${line} | cut -d' ' -f1)) $(echo $line | cut -d' ' -f2-)";fi; done
           EOF
@@ -57,8 +75,10 @@ jobs:
 
       - name: "Analyze Results (ethereum/go-ethereum vs. etclabscore/core-geth)"
         run: |
+          echo "=== COMPRESSED ==="
           benchstat <(suite_compressor < vm-go-ethereum-bench.out) <(suite_compressor < vm-core-geth-bench.out)
           wait
+          echo "=== RAW DELTA ==="
           benchstat -delta-test=none vm-go-ethereum-bench.out vm-core-geth-bench.out
 
       - name: Prepare EVMC Benches
@@ -85,7 +105,10 @@ jobs:
       - name: "Analyze Results (etclabscore/core-geth vs. ewasm/hera)"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
+          echo "=== COMPRESSED ==="
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-hera-bench.out)
+          wait
+          echo "=== RAW DELTA ==="
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-hera-bench.out
 
       - name: "Benchmark EVM (EWASM): SSVM-EVMC"
@@ -96,7 +119,10 @@ jobs:
       - name: "Analyze Results (etclabscore/core-geth vs. ssvm/ssvm-evmc)"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
+          echo "=== COMPRESSED ==="
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-ssvm-bench.out)
+          wait
+          echo "=== RAW DELTA ==="
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-ssvm-bench.out
 
       - name: "Benchmark EVM: EVMOne"
@@ -107,7 +133,10 @@ jobs:
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/evmone)"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
+          echo "=== COMPRESSED ==="
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-evmone-bench.out)
+          wait
+          echo "=== RAW DELTA ==="
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-evmone-bench.out
 
       - name: "Benchmark EVM: Aleth"
@@ -118,5 +147,8 @@ jobs:
       - name: "Analyze Results (etclabscore/core-geth vs. ethereum/aleth)"
         if: ${{ env.bench_evmc == 'on' }}
         run: |
+          echo "=== COMPRESSED ==="
           benchstat <(suite_compressor < vm-core-geth-bench.out) <(suite_compressor < vm-evmc-aleth-bench.out)
+          wait
+          echo "=== RAW DELTA ==="
           benchstat -delta-test=none vm-core-geth-bench.out vm-evmc-aleth-bench.out
