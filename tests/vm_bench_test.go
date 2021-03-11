@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/core/rawdb"
+	"github.com/ethereum/go-ethereum/core/state"
 	"github.com/ethereum/go-ethereum/core/vm"
 )
 
@@ -17,36 +18,31 @@ func BenchmarkVM(b *testing.B) {
 	vmt := new(testMatcher)
 	vmt.slow("^vmPerformance")
 	vmt.skipLoad("^vmSystemOperationsTest.json")
-	// vmt.whitelist("vmIOandFlow")
 	vmt.walkB(b, vmTestDir, func(b *testing.B, name string, test *VMTest) {
-		withVMConfigB(b, test.json.Exec.GasLimit, func(vmconfig vm.Config) error {
-			// return test.Run(vmconfig, false)
-			b.ReportAllocs()
-			start := time.Now()
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				_, statedb := MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
-				test.exec(statedb, vmconfig)
-			}
+		b.ReportAllocs()
+		vmconfig := vm.Config{EVMInterpreter: *testEVM, EWASMInterpreter: *testEWASM}
+		var statedb *state.StateDB
+		_, statedb = MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
+		start := time.Now()
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			test.exec(statedb, vmconfig)
 			b.StopTimer()
-			if test.json.GasRemaining != nil {
-				gasUsed := test.json.Exec.GasLimit - uint64(*test.json.GasRemaining)
-				elapsed := uint64(time.Since(start))
-				if elapsed < 1 {
-					elapsed = 1
-				}
-				mgasps := (100 * 1000 * gasUsed * uint64(b.N)) / elapsed
-				b.ReportMetric(float64(mgasps)/100, "mgas/s")
-			}
-			return nil
-		})
+			_, statedb = MakePreState(rawdb.NewMemoryDatabase(), test.json.Pre, false)
+			b.StartTimer()
+		}
+		b.StopTimer()
+		gasUsed := uint64(0)
+		if test.json.GasRemaining != nil {
+			gasUsed = test.json.Exec.GasLimit - uint64(*test.json.GasRemaining)
+		}
+		elapsed := uint64(time.Since(start))
+		if elapsed < 1 {
+			elapsed = 1
+		}
+		mgasps := (100 * 1000 * gasUsed * uint64(b.N)) / elapsed
+		b.ReportMetric(float64(mgasps)/100, "mgas/s")
 	})
-}
-
-func withVMConfigB(b *testing.B, gasLimit uint64, test func(vm.Config) error) {
-	// Use config from command line arguments.
-	config := vm.Config{EVMInterpreter: *testEVM, EWASMInterpreter: *testEWASM}
-	test(config)
 }
 
 // walk invokes its runTest argument for all subtests in the given directory.
