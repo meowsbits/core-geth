@@ -32,10 +32,11 @@ func BenchmarkVM(b *testing.B) {
 			b.StartTimer()
 		}
 		b.StopTimer()
-		gasUsed := uint64(0)
+		gasRemaining := uint64(0)
 		if test.json.GasRemaining != nil {
-			gasUsed = test.json.Exec.GasLimit - uint64(*test.json.GasRemaining)
+			gasRemaining = uint64(*test.json.GasRemaining)
 		}
+		gasUsed := test.json.Exec.GasLimit - gasRemaining
 		elapsed := uint64(time.Since(start))
 		if elapsed < 1 {
 			elapsed = 1
