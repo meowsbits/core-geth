@@ -49,8 +49,8 @@ jobs:
       - name: Benchmark ethereum/go-ethereum
         run: |
           git remote add foundation https://github.com/ethereum/go-ethereum.git
-          git fetch foundation ${{ env.goethereum_tag }}
-          git checkout tags/${{ env.goethereum_tag }} -b foundation-${{ env.goethereum_tag }}
+          git fetch foundation
+          git checkout ${{ env.goethereum_tag }}
           git submodule update
           git checkout $GITHUB_SHA -- tests/vm_bench_test.go
           go test ./tests -count 1 -p 1 -timeout 60m -run NONE -bench=VM -v |& tee vm-go-ethereum-bench.out
