@@ -104,7 +104,7 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 			t.Fatalf("test %d: failed to write genesis file: %v", test, err)
 		}
 		get := runGeth(t, "--datadir", datadir, "init", json)
-		get.WaitExit()
+		get.ExpectExit()
 		if get.Err != nil {
 			t.Fatal(get.Err)
 		}
@@ -112,12 +112,12 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 	// Force chain initialization
 	args := []string{"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none", "--ipcdisable", "--datadir", datadir}
 	get := runGeth(t, append(args, []string{"--exec", "2+2", "console"}...)...)
-	get.WaitExit()
+	get.ExpectExit()
 	if get.Err != nil {
 		t.Fatal(get.Err)
 	}
 
-	time.Sleep(30 * time.Second)
+	time.Sleep(time.Second)
 	// Retrieve the DAO config flag from the database
 	path := filepath.Join(datadir, "geth", "chaindata")
 	db, err := rawdb.NewLevelDBDatabase(path, 128, 1024, "")
