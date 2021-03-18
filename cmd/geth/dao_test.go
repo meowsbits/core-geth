@@ -108,15 +108,15 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 		if get.Err != nil {
 			t.Fatal(get.Err)
 		}
-	} else {
-		// Force chain initialization
-		args := []string{"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none", "--ipcdisable", "--datadir", datadir}
-		get := runGeth(t, append(args, []string{"--exec", "2+2", "console"}...)...)
-		get.WaitExit()
-		if get.Err != nil {
-			t.Fatal(get.Err)
-		}
 	}
+	// Force chain initialization
+	args := []string{"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none", "--ipcdisable", "--datadir", datadir}
+	get := runGeth(t, append(args, []string{"--exec", "2+2", "console"}...)...)
+	get.WaitExit()
+	if get.Err != nil {
+		t.Fatal(get.Err)
+	}
+
 	time.Sleep(time.Second)
 	// Retrieve the DAO config flag from the database
 	path := filepath.Join(datadir, "geth", "chaindata")
