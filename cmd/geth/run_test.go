@@ -61,7 +61,7 @@ func TestMain(m *testing.M) {
 	if reexec.Init() {
 		return
 	}
-	m.Run()
+	os.Exit(m.Run())
 }
 
 // spawns geth with the given command line args. If the args don't set --datadir, the
