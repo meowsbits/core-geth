@@ -17,10 +17,12 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
@@ -84,7 +86,9 @@ func TestDAOForkBlockNewChain(t *testing.T) {
 		// test DAO Default Pro Fork Privnet
 		{daoProForkGenesis, &daoGenesisForkBlock, true},
 	} {
-		testDAOForkBlockNewChain(t, i, arg.genesis, arg.expectBlock, arg.expectVote)
+		t.Run(fmt.Sprintf("testDAOForkBlockNewChain-%d", i), func(t *testing.T) {
+			testDAOForkBlockNewChain(t, i, arg.genesis, arg.expectBlock, arg.expectVote)
+		})
 	}
 }
 
@@ -99,12 +103,21 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 		if err := ioutil.WriteFile(json, []byte(genesis), 0600); err != nil {
 			t.Fatalf("test %d: failed to write genesis file: %v", test, err)
 		}
-		runGeth(t, "--datadir", datadir, "init", json).WaitExit()
+		get := runGeth(t, "--datadir", datadir, "init", json)
+		get.WaitExit()
+		if get.Err != nil {
+			t.Fatal(get.Err)
+		}
 	} else {
 		// Force chain initialization
 		args := []string{"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none", "--ipcdisable", "--datadir", datadir}
-		runGeth(t, append(args, []string{"--exec", "2+2", "console"}...)...).WaitExit()
+		get := runGeth(t, append(args, []string{"--exec", "2+2", "console"}...)...)
+		get.WaitExit()
+		if get.Err != nil {
+			t.Fatal(get.Err)
+		}
 	}
+	time.Sleep(time.Second)
 	// Retrieve the DAO config flag from the database
 	path := filepath.Join(datadir, "geth", "chaindata")
 	db, err := rawdb.NewLevelDBDatabase(path, 0, 0, "")
