@@ -18,11 +18,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
 	"time"
 
+	"github.com/docker/docker/pkg/reexec"
 	"github.com/ethereum/go-ethereum/internal/cmdtest"
 	"github.com/ethereum/go-ethereum/rpc"
 )
@@ -43,22 +45,22 @@ type testgeth struct {
 	Etherbase string
 }
 
-// func init() {
-// 	// Run the app if we've been exec'd as "geth-test" in runGeth.
-// 	reexec.Register("geth-test", func() {
-// 		if err := app.Run(os.Args); err != nil {
-// 			fmt.Fprintln(os.Stderr, err)
-// 			os.Exit(1)
-// 		}
-// 		os.Exit(0)
-// 	})
-// }
+func init() {
+	// Run the app if we've been exec'd as "geth-test" in runGeth.
+	reexec.Register("geth-test", func() {
+		if err := app.Run(os.Args); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	})
+}
 
 func TestMain(m *testing.M) {
 	// check if we have been reexec'd
-	// if reexec.Init() {
-	// 	return
-	// }
+	if reexec.Init() {
+		return
+	}
 	os.Exit(m.Run())
 }
 
