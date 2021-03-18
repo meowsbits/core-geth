@@ -82,9 +82,9 @@ func TestDAOForkBlockNewChain(t *testing.T) {
 		// test DAO Init Old Privnet
 		//{daoOldGenesis, nil, false},
 		// test DAO Default No Fork Privnet
-		{daoNoForkGenesis, nil, false},
+		// {daoNoForkGenesis, nil, false},
 		// test DAO Default Pro Fork Privnet
-		{daoProForkGenesis, &daoGenesisForkBlock, true},
+		// {daoProForkGenesis, &daoGenesisForkBlock, true},
 	} {
 		t.Run(fmt.Sprintf("testDAOForkBlockNewChain-%d", i), func(t *testing.T) {
 			testDAOForkBlockNewChain(t, i, arg.genesis, arg.expectBlock, arg.expectVote)
