@@ -26,6 +26,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
+	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/params/confp/generic"
 )
 
@@ -77,13 +78,13 @@ func TestDAOForkBlockNewChain(t *testing.T) {
 		expectVote  bool
 	}{
 		// Test DAO Default Mainnet
-		// {"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
+		{"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
 		// test DAO Init Old Privnet
-		//{daoOldGenesis, nil, false},
+		// {daoOldGenesis, nil, false},
 		// test DAO Default No Fork Privnet
 		{daoNoForkGenesis, nil, false},
 		// test DAO Default Pro Fork Privnet
-		// {daoProForkGenesis, &daoGenesisForkBlock, true},
+		{daoProForkGenesis, &daoGenesisForkBlock, true},
 	} {
 		t.Run(fmt.Sprintf("testDAOForkBlockNewChain-%d", i), func(t *testing.T) {
 			testDAOForkBlockNewChain(t, i, arg.genesis, arg.expectBlock, arg.expectVote)
@@ -99,7 +100,7 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 	// Start a Geth instance with the requested flags set and immediately terminate
 	if genesis != "" {
 		json := filepath.Join(datadir, "genesis.json")
-		if err := ioutil.WriteFile(json, []byte(genesis), 0600); err != nil {
+		if err := ioutil.WriteFile(json, []byte(genesis), os.ModePerm); err != nil {
 			t.Fatalf("test %d: failed to write genesis file: %v", test, err)
 		}
 		get := runGeth(t, "--datadir", datadir, "init", json)
