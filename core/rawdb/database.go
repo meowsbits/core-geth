@@ -327,7 +327,9 @@ func NewLevelDBDatabaseWithFreezer(file string, cache int, handles int, freezer 
 	}
 	frdb, err := NewDatabaseWithFreezer(kvdb, freezer, namespace)
 	if err != nil {
-		kvdb.Close()
+		if kvdb != nil {
+			kvdb.Close()
+		}
 		return nil, err
 	}
 	return frdb, nil
