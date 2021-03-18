@@ -117,7 +117,7 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 		t.Fatal(get.Err)
 	}
 
-	time.Sleep(time.Second)
+	time.Sleep(30 * time.Second)
 	// Retrieve the DAO config flag from the database
 	path := filepath.Join(datadir, "geth", "chaindata")
 	db, err := rawdb.NewLevelDBDatabase(path, 128, 1024, "")
