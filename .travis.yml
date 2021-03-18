@@ -9,7 +9,7 @@ jobs:
   # exceeds Travis' time limit (~60m) and were consistently causing timeouts.
   - stage: build
     name: "ARM64/Go1.15.x: make test [A-G]"
-    if: type = pull_request
+    if: type = push
     os: linux
     arch: arm64
     dist: xenial
@@ -21,7 +21,7 @@ jobs:
 
   - stage: build
     name: "ARM64/Go1.15.x: make test [A-G]"
-    if: type = pull_request
+    if: type = push
     os: linux
     arch: arm64
     dist: xenial
@@ -33,7 +33,7 @@ jobs:
 
   - stage: build
     name: "ARM64/Go1.15.x: make test [A-G]"
-    if: type = pull_request
+    if: type = push
     os: linux
     arch: arm64
     dist: xenial
@@ -45,7 +45,7 @@ jobs:
 
   - stage: build
     name: "ARM64/Go1.15.x: make test [A-G]"
-    if: type = pull_request
+    if: type = push
     os: linux
     arch: arm64
     dist: xenial
