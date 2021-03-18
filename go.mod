@@ -3,7 +3,7 @@ module github.com/ethereum/go-ethereum
 go 1.13
 
 require (
-	github.com/Azure/azure-storage-blob-go v0.13.0
+	github.com/Azure/azure-storage-blob-go v0.7.0
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
 	github.com/VictoriaMetrics/fastcache v1.5.8
 	github.com/alecthomas/jsonschema v0.0.0-20210301060011-54c507b6f074
@@ -11,14 +11,14 @@ require (
 	github.com/aws/aws-sdk-go v1.37.33
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/cespare/cp v0.1.0
-	github.com/cloudflare/cloudflare-go v0.14.0
+	github.com/cloudflare/cloudflare-go v0.10.2-0.20190916151808-a80f83b9add9
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.7.1
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/docker/docker v20.10.5+incompatible
 	github.com/dop251/goja v0.0.0-20210317175251-bb14c2267b76
 	github.com/edsrzf/mmap-go v1.0.0
-	github.com/etclabscore/go-openrpc-reflect v0.0.36
+	github.com/etclabscore/go-openrpc-reflect v0.0.35
 	github.com/fatih/color v1.10.0
 	github.com/fjl/memsize v0.0.0-20190710130421-bcb5799ab5e5
 	github.com/gballet/go-libpcsclite v0.0.0-20191108122812-4678299bea08
