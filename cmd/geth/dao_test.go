@@ -26,7 +26,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/params/confp/generic"
 )
 
@@ -77,14 +76,14 @@ func TestDAOForkBlockNewChain(t *testing.T) {
 		expectBlock *uint64
 		expectVote  bool
 	}{
-		// Test DAO Default Mainnet
-		{"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
-		// test DAO Init Old Privnet
-		// {daoOldGenesis, nil, false},
-		// test DAO Default No Fork Privnet
-		{daoNoForkGenesis, nil, false},
-		// test DAO Default Pro Fork Privnet
-		{daoProForkGenesis, &daoGenesisForkBlock, true},
+		// // Test DAO Default Mainnet
+		// {"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
+		// // test DAO Init Old Privnet
+		// // {daoOldGenesis, nil, false},
+		// // test DAO Default No Fork Privnet
+		// {daoNoForkGenesis, nil, false},
+		// // test DAO Default Pro Fork Privnet
+		// {daoProForkGenesis, &daoGenesisForkBlock, true},
 	} {
 		t.Run(fmt.Sprintf("testDAOForkBlockNewChain-%d", i), func(t *testing.T) {
 			testDAOForkBlockNewChain(t, i, arg.genesis, arg.expectBlock, arg.expectVote)
