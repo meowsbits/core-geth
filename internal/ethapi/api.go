@@ -1238,7 +1238,8 @@ type RPCMarshalBlockTIR struct {
 // This exists to avoid a circular reference when overriding the json marshaling interface.
 type RPCMarshalUncleTIR struct {
 	*RPCMarshalHeaderT
-	Uncles []common.Hash `json:"uncles"`
+	Transactions []interface{} `json:"transactions,omitempty"`
+	Uncles       []common.Hash `json:"uncles"`
 
 	Error string `json:"error,omitempty"`
 
@@ -1253,10 +1254,9 @@ func (b *RPCMarshalBlockT) MarshalJSON() ([]byte, error) {
 	if b.Error != "" {
 		return json.Marshal(map[string]interface{}{"error": b.Error})
 	}
-	if b.inclTx {
-		ir := &RPCMarshalBlockTIR{
+	if !b.inclTx {
+		ir := &RPCMarshalUncleTIR{
 			RPCMarshalHeaderT: b.RPCMarshalHeaderT,
-			Transactions:      b.Transactions,
 			Uncles:            b.Uncles,
 			Error:             "",
 			inclTx:            b.inclTx,
@@ -1264,8 +1264,9 @@ func (b *RPCMarshalBlockT) MarshalJSON() ([]byte, error) {
 		}
 		return json.Marshal(ir)
 	}
-	ir := &RPCMarshalUncleTIR{
+	ir := &RPCMarshalBlockTIR{
 		RPCMarshalHeaderT: b.RPCMarshalHeaderT,
+		Transactions:      b.Transactions,
 		Uncles:            b.Uncles,
 		Error:             "",
 		inclTx:            b.inclTx,
