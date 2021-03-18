@@ -26,7 +26,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/params/confp/generic"
 )
 
@@ -78,11 +77,11 @@ func TestDAOForkBlockNewChain(t *testing.T) {
 		expectVote  bool
 	}{
 		// Test DAO Default Mainnet
-		{"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
+		// {"", params.MainnetChainConfig.GetEthashEIP779Transition(), true},
 		// test DAO Init Old Privnet
 		//{daoOldGenesis, nil, false},
 		// test DAO Default No Fork Privnet
-		// {daoNoForkGenesis, nil, false},
+		{daoNoForkGenesis, nil, false},
 		// test DAO Default Pro Fork Privnet
 		// {daoProForkGenesis, &daoGenesisForkBlock, true},
 	} {
@@ -120,7 +119,7 @@ func testDAOForkBlockNewChain(t *testing.T, test int, genesis string, expectBloc
 	time.Sleep(time.Second)
 	// Retrieve the DAO config flag from the database
 	path := filepath.Join(datadir, "geth", "chaindata")
-	db, err := rawdb.NewLevelDBDatabase(path, 0, 0, "")
+	db, err := rawdb.NewLevelDBDatabase(path, 128, 1024, "")
 	if err != nil {
 		t.Fatalf("test %d: failed to open test database: %v", test, err)
 	}
