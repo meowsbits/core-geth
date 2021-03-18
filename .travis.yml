@@ -8,7 +8,7 @@ jobs:
   # These tests are divided in half because their aggregate typical runtime
   # exceeds Travis' time limit (~60m) and were consistently causing timeouts.
   - stage: build
-    name: "ARM64/Go1.15.x: make test [A-G]"
+    name: "ARM64/Go1.16.2: make test [A-G]"
     if: type = push
     os: linux
     arch: arm64
@@ -20,7 +20,7 @@ jobs:
       - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
 
   - stage: build
-    name: "ARM64/Go1.15.x: make test [A-G]"
+    name: "ARM64/Go1.16.1: make test [A-G]"
     if: type = push
     os: linux
     arch: arm64
@@ -32,7 +32,7 @@ jobs:
       - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
 
   - stage: build
-    name: "ARM64/Go1.15.x: make test [A-G]"
+    name: "ARM64/Go1.16.0: make test [A-G]"
     if: type = push
     os: linux
     arch: arm64
@@ -44,7 +44,7 @@ jobs:
       - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
 
   - stage: build
-    name: "ARM64/Go1.15.x: make test [A-G]"
+    name: "ARM64/Go1.15.10: make test [A-G]"
     if: type = push
     os: linux
     arch: arm64
@@ -58,10 +58,10 @@ jobs:
     # Run build and tests with environment-aware possible artifact deployment.
   - stage: build
     if: type = push
-    name: "Go1.16.x: make test"
+    name: "Go1.16.2: make test"
     os: linux
     dist: xenial
-    go: 1.16.x
+    go: 1.16.2
     script:
     - go run build/ci.go install -dlgo
     - travis_wait 60 go run build/ci.go test -coverage ./...
