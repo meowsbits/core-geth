@@ -70,6 +70,7 @@ var daoGenesisForkBlock = uint64(314)
 // TestDAOForkBlockNewChain tests that the DAO hard-fork number and the nodes support/opposition is correctly
 // set in the database after various initialization procedures and invocations.
 func TestDAOForkBlockNewChain(t *testing.T) {
+	t.Skip("SKIP as hypothetical cause of http://github.com/etclabscore/core-geth/issues/346")
 	for i, arg := range []struct {
 		genesis     string
 		expectBlock *uint64
