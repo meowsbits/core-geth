@@ -30,7 +30,7 @@ import (
 )
 
 func tmpdir(t *testing.T) string {
-	dir, err := ioutil.TempDir("", "geth-test")
+	dir, err := ioutil.TempDir(os.TempDir(), "geth-test")
 	if err != nil {
 		t.Fatal(err)
 	}
