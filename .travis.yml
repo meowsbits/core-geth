@@ -7,48 +7,72 @@ jobs:
   # Run build and tests on ARM64 on Pull Requests.
   # These tests are divided in half because their aggregate typical runtime
   # exceeds Travis' time limit (~60m) and were consistently causing timeouts.
-  - stage: build
-    name: "Go1.16.2: make test [A-G]"
+  - stage: hypo
+    name: "Go1.16.2: make test [A-G] (w/o cmd/geth)"
     if: type = push
     os: linux
     arch: arm64
-    dist: xenial
+    dist: bionic
     go: 1.16.2
     env:
       - GO111MODULE=on
     script:
-      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
+      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]' | grep -v 'cmd/geth'))
 
-  - stage: build
-    name: "Go1.16.1: make test [A-G]"
+  - stage: hypo
+    name: "Go1.16.2: make test cmd/geth"
     if: type = push
     os: linux
     arch: arm64
-    dist: xenial
-    go: 1.16.1
+    dist: bionic
+    go: 1.16.2
     env:
       - GO111MODULE=on
     script:
-      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
+      - go run build/ci.go test -coverage ./cmd/geth/...
 
-  - stage: build
-    name: "Go1.16: make test [A-G]"
+  - stage: hypo
+    name: "Go1.16.2: make test cmd/geth"
     if: type = push
-    os: linux
+    os: osx
     arch: arm64
-    dist: xenial
-    go: 1.16
+    dist: bionic
+    go: 1.16.2
     env:
       - GO111MODULE=on
     script:
-      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
+      - go run build/ci.go test -coverage ./cmd/geth/...
 
-  - stage: build
+#  - stage: build
+#    name: "Go1.16.1: make test [A-G]"
+#    if: type = push
+#    os: linux
+#    arch: arm64
+#    dist: xenial
+#    go: 1.16.1
+#    env:
+#      - GO111MODULE=on
+#    script:
+#      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
+#
+#  - stage: build
+#    name: "Go1.16: make test [A-G]"
+#    if: type = push
+#    os: linux
+#    arch: arm64
+#    dist: xenial
+#    go: 1.16
+#    env:
+#      - GO111MODULE=on
+#    script:
+#      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
+
+  - stage: control
     name: "Go1.15.10: make test [A-G]"
     if: type = push
     os: linux
     arch: arm64
-    dist: xenial
+    dist: bionic
     go: 1.15.10
     env:
       - GO111MODULE=on
@@ -56,11 +80,11 @@ jobs:
       - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
 
     # Run build and tests with environment-aware possible artifact deployment.
-  - stage: build
+  - stage: control
     if: type = push
     name: "Go1.16.2: make test"
     os: linux
-    dist: xenial
+    dist: bionic
     go: 1.16.2
     script:
     - go run build/ci.go install -dlgo
