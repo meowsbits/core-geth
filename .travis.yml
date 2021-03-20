@@ -43,18 +43,6 @@ jobs:
     script:
       - go run build/ci.go test -coverage ./cmd/geth/...
 
-  - stage: hypo
-    name: "Go1.16.2: make test cmd/geth"
-    if: type = push
-    os: osx
-    arch: arm64
-    dist: bionic
-    go: 1.16.2
-    env:
-      - GO111MODULE=on
-    script:
-      - go run build/ci.go test -coverage ./cmd/geth/...
-
 #  - stage: build
 #    name: "Go1.16.1: make test [A-G]"
 #    if: type = push
@@ -78,6 +66,16 @@ jobs:
 #      - GO111MODULE=on
 #    script:
 #      - go run build/ci.go test -coverage $(printf './%s/... ' $(go list ./... | sed 's|github.com/ethereum/go-ethereum||g' | cut -d'/' -f2 | uniq | grep -E '^[a-g]'))
+
+  - stage: control
+    name: "Go1.16.2: make test cmd/geth"
+    if: type = push
+    os: osx
+    go: 1.16.2
+    env:
+      - GO111MODULE=on
+    script:
+      - go run build/ci.go test -coverage ./cmd/geth/...
 
   - stage: control
     name: "Go1.16.2: make test [A-G] (w/o cmd/geth)"
