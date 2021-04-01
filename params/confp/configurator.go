@@ -35,6 +35,8 @@ var (
 		"ECBP", // "Ethereum Classic Best Practice"
 		"EBP",  // "Ethereum Best Practice"
 	}
+
+	disableWord = "Disable"
 )
 
 func nameSignalsCompatibility(name string) bool {
@@ -159,6 +161,55 @@ func compatible(head *uint64, a, b ctypes.ChainConfigurator) *ConfigCompatError 
 		}
 		if err := func(c1, c2, head *uint64) *ConfigCompatError {
 			if isForkIncompatible(c1, c2, head) {
+
+				// TODO(ia):
+				// Below is an unfinished sketch of handling the general case
+				// for -Disable method pairs.
+				//
+				// name := aNames[i]
+				//
+				// if name == "GetEIP1283Transition" || name == "GetEIP1283DisableTransition" {
+				//
+				// }
+				//
+				// // Check for exception indicated by -Disable features, eg. 1283, 1283Disable
+				// // In these cases, we need to consider
+				// // 1283 = nil && 1283Disable = nil (eq) 1283 = anyX && 1283Disable == anyX
+				// //
+				// // Because disabling a feature at the same value it would be enabled at
+				// // is equivalent to not enabling it at all.
+				// // A special case is also true where disabling a feature which is not ever
+				// // enabled is also equivalent to not enabling it at all (and disable-at is essentially equal to nil).
+				// //
+				// // So that if (1283 = x && 1283Disable = x) then this is equivalent to
+				// // (1283 = nil && 1283Disable = nil) OR (1283 = nil && 1283Disable = any).
+				//
+				// if strings.Contains(name, disableWord) {
+				// 	disableMethod := name // an easy-to-read alias
+				//
+				// 	// Get the paired "unDisable", ie. "enable"/activation method.
+				// 	// We MUST be able to find this.
+				// 	// If we cannot, then the -Disable method is mysteriously missing its enabling method.
+				// 	enableMethodName := strings.Replace(name, disableWord, "", 1)
+				// 	enableMethodFnIndex := -1
+				//
+				// 	for j, methodName := range aNames {
+				// 		if methodName == enableMethodName {
+				// 			enableMethodFnIndex = j
+				// 			break
+				// 		}
+				// 	}
+				// 	if enableMethodFnIndex < 0 {
+				// 		// Something went wrong and we could not determine the reflected function index.
+				// 		// This -Disable method seems not to a pair?
+				// 		return NewCompatError("(missing -Disable pair) incompatible fork value: "+aNames[i], c1, c2)
+				// 	}
+				//
+				// 	enableMethodA := aFns[enableMethodFnIndex]
+				// 	enableMethodB := bFns[enableMethodFnIndex]
+				//
+				// }
+
 				return NewCompatError("incompatible fork value: "+aNames[i], c1, c2)
 			}
 			return nil
