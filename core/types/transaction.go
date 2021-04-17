@@ -42,6 +42,8 @@ var (
 const (
 	LegacyTxType = iota
 	AccessListTxType
+
+	ChainID2TxType = 0x3d // augments AccessListTxType with ChainID2 field
 )
 
 // Transaction is an Ethereum transaction.
