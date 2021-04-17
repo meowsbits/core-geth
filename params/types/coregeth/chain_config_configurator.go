@@ -417,6 +417,15 @@ func (c *CoreGethChainConfig) SetEIP2930Transition(n *uint64) error {
 	return nil
 }
 
+func (c *CoreGethChainConfig) GetIIP9999Transition() *uint64 {
+	return bigNewU64(c.IIP9999FBlock)
+}
+
+func (c *CoreGethChainConfig) SetIIP9999Transition(n *uint64) error {
+	c.IIP9999FBlock = setBig(c.IIP9999FBlock, n)
+	return nil
+}
+
 func (c *CoreGethChainConfig) GetEIP2565Transition() *uint64 {
 	return bigNewU64(c.EIP2565FBlock)
 }

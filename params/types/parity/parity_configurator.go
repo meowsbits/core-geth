@@ -1012,6 +1012,14 @@ func (spec *ParityChainSpec) SetEIP2930Transition(n *uint64) error {
 	return nil
 }
 
+func (spec *ParityChainSpec) GetIIP9999Transition() *uint64 {
+	return nil
+}
+
+func (spec *ParityChainSpec) SetIIP9999Transition(n *uint64) error {
+	return ctypes.ErrUnsupportedConfig{}
+}
+
 func (spec *ParityChainSpec) GetEIP2565Transition() *uint64 {
 	return spec.Params.EIP2565Transition.Uint64P()
 }

@@ -151,6 +151,10 @@ type ProtocolSpecifier interface {
 	// Defines a transaction type (Type=1) with optional access list (uses EIP2718 Type Transaction envelopes).
 	GetEIP2930Transition() *uint64
 	SetEIP2930Transition(n *uint64) error
+
+	// GetIIP9999Transition defines a transaction type extending EIP2930 with a segment ID.
+	GetIIP9999Transition() *uint64
+	SetIIP9999Transition(n *uint64) error
 }
 
 type Forker interface {

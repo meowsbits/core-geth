@@ -193,6 +193,8 @@ type CoreGethChainConfig struct {
 	// TODO: Document me.
 	EIP2930FBlock *big.Int `json:"eip2930FBlock,omitempty"`
 
+	IIP9999FBlock *big.Int `json:"iip9999FBlock,omitempty"`
+
 	DisposalBlock *big.Int `json:"disposalBlock,omitempty"` // Bomb disposal HF block
 
 	// Various consensus engines

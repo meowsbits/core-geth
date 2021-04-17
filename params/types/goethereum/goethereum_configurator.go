@@ -440,6 +440,14 @@ func (c *ChainConfig) SetEIP2930Transition(n *uint64) error {
 	return nil
 }
 
+func (c *ChainConfig) GetIIP9999Transition() *uint64 {
+	return nil
+}
+
+func (c *ChainConfig) SetIIP9999Transition(n *uint64) error {
+	return ctypes.ErrUnsupportedConfig{}
+}
+
 func (c *ChainConfig) GetEIP2565Transition() *uint64 {
 	return bigNewU64Min(c.YoloV3Block, c.BerlinBlock)
 }
