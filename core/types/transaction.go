@@ -251,6 +251,13 @@ func (tx *Transaction) ChainId() *big.Int {
 	return tx.inner.chainID()
 }
 
+// SegmentID retursn the IIP9999 segment ID of the transaction. The return value will always be
+// non-nil. For legacy transactions which are not replay-protected, the return value is
+// zero.
+func (tx *Transaction) SegmentID() *big.Int {
+	return tx.inner.segmentID()
+}
+
 // Data returns the input data of the transaction.
 func (tx *Transaction) Data() []byte { return tx.inner.data() }
 
