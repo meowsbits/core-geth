@@ -156,7 +156,6 @@ type Signer interface {
 	// given signature.
 	SignatureValues(tx *Transaction, sig []byte) (r, s, v *big.Int, err error)
 	ChainID() *big.Int
-	SegmentID() *big.Int
 
 	// Hash returns 'signature hash', i.e. the transaction hash that is signed by the
 	// private key. This hash does not uniquely identify the transaction.
@@ -166,40 +165,24 @@ type Signer interface {
 	Equal(Signer) bool
 }
 
-// ---
-
-// iip9999Signer is Isaac Improvement Proposal 9999.
-// This defines a transaction type which uses a SegmentID (a corollary of ChainID)
-// that associates a transaction not just with a canonical chain
-// but with a segment of that chain (usually a segment from genesis..height).
-type iip9999Signer struct {
-	eip2930Signer
-	segmentId *big.Int
-}
+type eip2930Signer struct{ EIP155Signer }
 
 // NewEIP2930Signer returns a signer that accepts EIP-2930 access list transactions,
 // EIP-155 replay protected transactions, and legacy Homestead transactions.
-func NewIIP999Signer(chainId, segmentId *big.Int) Signer {
-	if segmentId == nil {
-		segmentId = new(big.Int)
-	}
-	return iip9999Signer{NewEIP2930Signer(chainId).(eip2930Signer), segmentId}
+func NewEIP2930Signer(chainId *big.Int) Signer {
+	return eip2930Signer{NewEIP155Signer(chainId)}
 }
 
-func (s iip9999Signer) ChainID() *big.Int {
+func (s eip2930Signer) ChainID() *big.Int {
 	return s.chainId
 }
 
-func (s iip9999Signer) SegmentID() *big.Int {
-	return s.segmentId
+func (s eip2930Signer) Equal(s2 Signer) bool {
+	x, ok := s2.(eip2930Signer)
+	return ok && x.chainId.Cmp(s.chainId) == 0
 }
 
-func (s iip9999Signer) Equal(s2 Signer) bool {
-	iip9999, ok := s2.(iip9999Signer)
-	return ok && iip9999.chainId.Cmp(s.chainId) == 0 && iip9999.segmentId.Cmp(s.segmentId) == 0
-}
-
-func (s iip9999Signer) Sender(tx *Transaction) (common.Address, error) {
+func (s eip2930Signer) Sender(tx *Transaction) (common.Address, error) {
 	V, R, S := tx.RawSignatureValues()
 	switch tx.Type() {
 	case LegacyTxType:
@@ -222,7 +205,7 @@ func (s iip9999Signer) Sender(tx *Transaction) (common.Address, error) {
 	return recoverPlain(s.Hash(tx), R, S, V, true)
 }
 
-func (s iip9999Signer) SignatureValues(tx *Transaction, sig []byte) (R, S, V *big.Int, err error) {
+func (s eip2930Signer) SignatureValues(tx *Transaction, sig []byte) (R, S, V *big.Int, err error) {
 	switch txdata := tx.inner.(type) {
 	case *LegacyTx:
 		return s.EIP155Signer.SignatureValues(tx, sig)
@@ -235,120 +218,6 @@ func (s iip9999Signer) SignatureValues(tx *Transaction, sig []byte) (R, S, V *bi
 		R, S, _ = decodeSignature(sig)
 		V = big.NewInt(int64(sig[64]))
 	case *AccessListSegmentIDTx:
-		// Check that chain ID of tx matches the signer. We also accept ID zero here,
-		// because it indicates that the chain ID was not specified in the tx.
-		if txdata.ChainID.Sign() != 0 && txdata.ChainID.Cmp(s.chainId) != 0 {
-			return nil, nil, nil, ErrInvalidChainId
-		}
-		R, S, _ = decodeSignature(sig)
-		V = big.NewInt(int64(sig[64]))
-	default:
-		return nil, nil, nil, ErrTxTypeNotSupported
-	}
-	return R, S, V, nil
-}
-
-// Hash returns the hash to be signed by the sender.
-// It does not uniquely identify the transaction.
-func (s iip9999Signer) Hash(tx *Transaction) common.Hash {
-	switch tx.Type() {
-	case LegacyTxType:
-		return rlpHash([]interface{}{
-			tx.Nonce(),
-			tx.GasPrice(),
-			tx.Gas(),
-			tx.To(),
-			tx.Value(),
-			tx.Data(),
-			s.chainId, uint(0), uint(0),
-		})
-	case AccessListTxType:
-		return prefixedRlpHash(
-			tx.Type(),
-			[]interface{}{
-				s.chainId,
-				tx.Nonce(),
-				tx.GasPrice(),
-				tx.Gas(),
-				tx.To(),
-				tx.Value(),
-				tx.Data(),
-				tx.AccessList(),
-			})
-	case AccessListSegmentIDTxType:
-		return prefixedRlpHash(
-			tx.Type(),
-			[]interface{}{
-				s.chainId,
-				s.segmentId,
-				tx.Nonce(),
-				tx.GasPrice(),
-				tx.Gas(),
-				tx.To(),
-				tx.Value(),
-				tx.Data(),
-				tx.AccessList(),
-			})
-
-	default:
-		// This _should_ not happen, but in case someone sends in a bad
-		// json struct via RPC, it's probably more prudent to return an
-		// empty hash instead of killing the node with a panic
-		return common.Hash{}
-	}
-}
-
-// ---
-
-type eip2930Signer struct{ EIP155Signer }
-
-// NewEIP2930Signer returns a signer that accepts EIP-2930 access list transactions,
-// EIP-155 replay protected transactions, and legacy Homestead transactions.
-func NewEIP2930Signer(chainId *big.Int) Signer {
-	return eip2930Signer{NewEIP155Signer(chainId)}
-}
-
-func (s eip2930Signer) ChainID() *big.Int {
-	return s.chainId
-}
-
-func (s eip2930Signer) SegmentID() *big.Int {
-	return nil
-}
-
-func (s eip2930Signer) Equal(s2 Signer) bool {
-	x, ok := s2.(eip2930Signer)
-	return ok && x.chainId.Cmp(s.chainId) == 0
-}
-
-func (s eip2930Signer) Sender(tx *Transaction) (common.Address, error) {
-	V, R, S := tx.RawSignatureValues()
-	switch tx.Type() {
-	case LegacyTxType:
-		if !tx.Protected() {
-			return HomesteadSigner{}.Sender(tx)
-		}
-		V = new(big.Int).Sub(V, s.chainIdMul)
-		V.Sub(V, big8)
-	case AccessListTxType:
-		// ACL txs are defined to use 0 and 1 as their recovery id, add
-		// 27 to become equivalent to unprotected Homestead signatures.
-		V = new(big.Int).Add(V, big.NewInt(27))
-
-	default:
-		return common.Address{}, ErrTxTypeNotSupported
-	}
-	if tx.ChainId().Cmp(s.chainId) != 0 {
-		return common.Address{}, fmt.Errorf("%w: want: %d, got: %d", ErrInvalidChainId, s.chainId, tx.ChainId())
-	}
-	return recoverPlain(s.Hash(tx), R, S, V, true)
-}
-
-func (s eip2930Signer) SignatureValues(tx *Transaction, sig []byte) (R, S, V *big.Int, err error) {
-	switch txdata := tx.inner.(type) {
-	case *LegacyTx:
-		return s.EIP155Signer.SignatureValues(tx, sig)
-	case *AccessListTx:
 		// Check that chain ID of tx matches the signer. We also accept ID zero here,
 		// because it indicates that the chain ID was not specified in the tx.
 		if txdata.ChainID.Sign() != 0 && txdata.ChainID.Cmp(s.chainId) != 0 {
@@ -381,6 +250,20 @@ func (s eip2930Signer) Hash(tx *Transaction) common.Hash {
 			tx.Type(),
 			[]interface{}{
 				s.chainId,
+				tx.Nonce(),
+				tx.GasPrice(),
+				tx.Gas(),
+				tx.To(),
+				tx.Value(),
+				tx.Data(),
+				tx.AccessList(),
+			})
+	case AccessListSegmentIDTxType:
+		return prefixedRlpHash(
+			tx.Type(),
+			[]interface{}{
+				s.chainId,
+				tx.SegmentID(),
 				tx.Nonce(),
 				tx.GasPrice(),
 				tx.Gas(),
@@ -470,19 +353,11 @@ func (s EIP155Signer) Hash(tx *Transaction) common.Hash {
 	})
 }
 
-func (s EIP155Signer) SegmentID() *big.Int {
-	return nil
-}
-
 // HomesteadTransaction implements TransactionInterface using the
 // homestead rules.
 type HomesteadSigner struct{ FrontierSigner }
 
 func (s HomesteadSigner) ChainID() *big.Int {
-	return nil
-}
-
-func (s HomesteadSigner) SegmentID() *big.Int {
 	return nil
 }
 
@@ -508,10 +383,6 @@ func (hs HomesteadSigner) Sender(tx *Transaction) (common.Address, error) {
 type FrontierSigner struct{}
 
 func (s FrontierSigner) ChainID() *big.Int {
-	return nil
-}
-
-func (s FrontierSigner) SegmentID() *big.Int {
 	return nil
 }
 
