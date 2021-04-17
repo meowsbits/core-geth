@@ -135,21 +135,22 @@ type ProtocolSpecifier interface {
 	GetEIP2315Transition() *uint64
 	SetEIP2315Transition(n *uint64) error
 
-	// ModExp gas cost
+	// GetEIP2565Transition defines ModExp gas cost.
 	GetEIP2565Transition() *uint64
 	SetEIP2565Transition(n *uint64) error
 
-	// Gas cost increases for state access opcodes
+	// GetEIP2718Transition defines typed transaction envelopes.
+	GetEIP2718Transition() *uint64
+	SetEIP2718Transition(n *uint64) error
+
+	// GetEIP2929Transition defines gas cost increases for state access opcodes.
 	GetEIP2929Transition() *uint64
 	SetEIP2929Transition(n *uint64) error
 
-	// Optional access lists
+	// GetEIP2930Transition
+	// Defines a transaction type (Type=1) with optional access list (uses EIP2718 Type Transaction envelopes).
 	GetEIP2930Transition() *uint64
 	SetEIP2930Transition(n *uint64) error
-
-	// Typed transaction envelope
-	GetEIP2718Transition() *uint64
-	SetEIP2718Transition(n *uint64) error
 }
 
 type Forker interface {

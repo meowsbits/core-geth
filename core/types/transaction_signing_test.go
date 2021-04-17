@@ -136,3 +136,17 @@ func TestChainId(t *testing.T) {
 		t.Error("expected no error")
 	}
 }
+
+func TestSegmentID_HashBigConversion(t *testing.T) {
+	blockHash := common.HexToHash("0xae7c0fb3bb61f875add695aa6b735bbf87837bb25da54e886f80577d39611ed8")
+	blockHashBig := blockHash.Big()
+	// convert from hash -> big
+
+	blockHashOut := common.BigToHash(blockHashBig)
+	// convert from big -> hash
+
+	t.Logf("Big: %v\nHashOrg: %v\nHashOut: %v", blockHashBig, blockHash.Hex(), blockHashOut.Hex())
+	if blockHash != blockHashOut {
+		t.Fatal("un-equivalent conversion")
+	}
+}

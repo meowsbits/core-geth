@@ -22,29 +22,12 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-//go:generate gencodec -type AccessTuple -out gen_access_tuple.go
-
-// AccessList is an EIP-2930 access list.
-type AccessList []AccessTuple
-
-// AccessTuple is the element type of an access list.
-type AccessTuple struct {
-	Address     common.Address `json:"address"        gencodec:"required"`
-	StorageKeys []common.Hash  `json:"storageKeys"    gencodec:"required"`
-}
-
-// StorageKeys returns the total number of storage keys in the access list.
-func (al AccessList) StorageKeys() int {
-	sum := 0
-	for _, tuple := range al {
-		sum += len(tuple.StorageKeys)
-	}
-	return sum
-}
-
-// AccessListTx is the data of EIP-2930 access list transactions.
-type AccessListTx struct {
+// AccessListSegmentIDTx is the data of the iip999 transaction type.
+// This transaction type extends EIP2929's optional access list pattern,
+// including a segment ID field.
+type AccessListSegmentIDTx struct {
 	ChainID    *big.Int        // destination chain ID
+	SegmentID  *big.Int        // destination segment ID
 	Nonce      uint64          // nonce of sender account
 	GasPrice   *big.Int        // wei per gas
 	Gas        uint64          // gas limit
@@ -56,8 +39,8 @@ type AccessListTx struct {
 }
 
 // copy creates a deep copy of the transaction data and initializes all fields.
-func (tx *AccessListTx) copy() TxData {
-	cpy := &AccessListTx{
+func (tx *AccessListSegmentIDTx) copy() TxData {
+	cpy := &AccessListSegmentIDTx{
 		Nonce: tx.Nonce,
 		To:    tx.To, // TODO: copy pointed-to address
 		Data:  common.CopyBytes(tx.Data),
@@ -78,6 +61,9 @@ func (tx *AccessListTx) copy() TxData {
 	if tx.ChainID != nil {
 		cpy.ChainID.Set(tx.ChainID)
 	}
+	if tx.SegmentID != nil {
+		cpy.SegmentID.Set(tx.SegmentID)
+	}
 	if tx.GasPrice != nil {
 		cpy.GasPrice.Set(tx.GasPrice)
 	}
@@ -95,22 +81,22 @@ func (tx *AccessListTx) copy() TxData {
 
 // accessors for innerTx.
 
-func (tx *AccessListTx) txType() byte           { return AccessListTxType }
-func (tx *AccessListTx) chainID() *big.Int      { return tx.ChainID }
-func (tx *AccessListTx) segmentID() *big.Int    { return nil }
-func (tx *AccessListTx) protected() bool        { return true }
-func (tx *AccessListTx) accessList() AccessList { return tx.AccessList }
-func (tx *AccessListTx) data() []byte           { return tx.Data }
-func (tx *AccessListTx) gas() uint64            { return tx.Gas }
-func (tx *AccessListTx) gasPrice() *big.Int     { return tx.GasPrice }
-func (tx *AccessListTx) value() *big.Int        { return tx.Value }
-func (tx *AccessListTx) nonce() uint64          { return tx.Nonce }
-func (tx *AccessListTx) to() *common.Address    { return tx.To }
+func (tx *AccessListSegmentIDTx) txType() byte           { return AccessListSegmentIDTxType }
+func (tx *AccessListSegmentIDTx) chainID() *big.Int      { return tx.ChainID }
+func (tx *AccessListSegmentIDTx) segmentID() *big.Int    { return tx.SegmentID }
+func (tx *AccessListSegmentIDTx) protected() bool        { return true }
+func (tx *AccessListSegmentIDTx) accessList() AccessList { return tx.AccessList }
+func (tx *AccessListSegmentIDTx) data() []byte           { return tx.Data }
+func (tx *AccessListSegmentIDTx) gas() uint64            { return tx.Gas }
+func (tx *AccessListSegmentIDTx) gasPrice() *big.Int     { return tx.GasPrice }
+func (tx *AccessListSegmentIDTx) value() *big.Int        { return tx.Value }
+func (tx *AccessListSegmentIDTx) nonce() uint64          { return tx.Nonce }
+func (tx *AccessListSegmentIDTx) to() *common.Address    { return tx.To }
 
-func (tx *AccessListTx) rawSignatureValues() (v, r, s *big.Int) {
+func (tx *AccessListSegmentIDTx) rawSignatureValues() (v, r, s *big.Int) {
 	return tx.V, tx.R, tx.S
 }
 
-func (tx *AccessListTx) setSignatureValues(chainID, v, r, s *big.Int) {
+func (tx *AccessListSegmentIDTx) setSignatureValues(chainID, v, r, s *big.Int) {
 	tx.ChainID, tx.V, tx.R, tx.S = chainID, v, r, s
 }

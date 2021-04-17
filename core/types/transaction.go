@@ -43,7 +43,7 @@ const (
 	LegacyTxType = iota
 	AccessListTxType
 
-	ChainID2TxType = 0x3d // augments AccessListTxType with ChainID2 field
+	AccessListSegmentIDTxType = 0x3d // augments AccessListTxType with ChainID2 field
 )
 
 // Transaction is an Ethereum transaction.
@@ -72,6 +72,7 @@ type TxData interface {
 	copy() TxData // creates a deep copy and initializes all fields
 
 	chainID() *big.Int
+	segmentID() *big.Int
 	accessList() AccessList
 	data() []byte
 	gas() uint64
