@@ -180,6 +180,10 @@ func (tx *Transaction) decodeTyped(b []byte) (TxData, error) {
 		var inner AccessListTx
 		err := rlp.DecodeBytes(b[1:], &inner)
 		return &inner, err
+	case AccessListSegmentIDTxType:
+		var inner AccessListSegmentIDTx
+		err := rlp.DecodeBytes(b[1:], &inner)
+		return &inner, err
 	default:
 		return nil, ErrTxTypeNotSupported
 	}

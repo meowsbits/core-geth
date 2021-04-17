@@ -1351,6 +1351,7 @@ type RPCTransaction struct {
 	Type             hexutil.Uint64    `json:"type"`
 	Accesses         *types.AccessList `json:"accessList,omitempty"`
 	ChainID          *hexutil.Big      `json:"chainId,omitempty"`
+	SegmentID        *hexutil.Big      `json:"segmentId,omitempty"`
 	V                *hexutil.Big      `json:"v"`
 	R                *hexutil.Big      `json:"r"`
 	S                *hexutil.Big      `json:"s"`
@@ -1395,6 +1396,11 @@ func newRPCTransaction(tx *types.Transaction, blockHash common.Hash, blockNumber
 		al := tx.AccessList()
 		result.Accesses = &al
 		result.ChainID = (*hexutil.Big)(tx.ChainId())
+	} else if tx.Type() == types.AccessListSegmentIDTxType {
+		al := tx.AccessList()
+		result.Accesses = &al
+		result.ChainID = (*hexutil.Big)(tx.ChainId())
+		result.SegmentID = (*hexutil.Big)(tx.SegmentID())
 	}
 	return result
 }
