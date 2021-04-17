@@ -97,6 +97,12 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 	txContext := NewEVMTxContext(msg)
 	evm.Reset(txContext, statedb)
 
+	if config.IsEnabled(config.GetIIP9999Transition, header.Number) && msg.SegmentID() != nil && msg.SegmentID().Sign() > 0 {
+		if found := bc.GetHeaderByHash(common.BigToHash(msg.SegmentID())); found == nil {
+			return nil, types.ErrInvalidSegmentId
+		}
+	}
+
 	// Apply the transaction to the current state (included in the env).
 	result, err := ApplyMessage(evm, msg, gp)
 	if err != nil {

@@ -33,6 +33,9 @@ type ChainContext interface {
 
 	// GetHeader returns the hash corresponding to their hash.
 	GetHeader(common.Hash, uint64) *types.Header
+
+	// GetHeaderByHash returns the header corresponding to a hash, if any.
+	GetHeaderByHash(common.Hash) *types.Header
 }
 
 // NewEVMBlockContext creates a new context for use in the EVM.

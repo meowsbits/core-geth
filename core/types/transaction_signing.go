@@ -28,6 +28,7 @@ import (
 )
 
 var ErrInvalidChainId = errors.New("invalid chain id for signer")
+var ErrInvalidSegmentId = errors.New("invalid segment id for transaction")
 
 // sigCache is used to cache the derived sender and contains
 // the signer used to derive it.

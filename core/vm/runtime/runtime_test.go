@@ -245,6 +245,24 @@ func (d *dummyChain) GetHeader(h common.Hash, n uint64) *types.Header {
 	return fakeHeader(n, parentHash)
 }
 
+// GetHeaderByHash returns the hash corresponding to their hash.
+// THIS IS A MOCK METHOD TO SATISFY THE CHAINCONTEXT INTERFACE.
+// It is not used in these tests and won't work if you try it.
+func (d *dummyChain) GetHeaderByHash(h common.Hash) *types.Header {
+	d.counter++
+
+	return &types.Header{
+		Coinbase:   common.HexToAddress("0x00000000000000000000000000000000deadbeef"),
+		Number:     big.NewInt(int64(42)),
+		ParentHash: common.Hash{},
+		Time:       1000,
+		Nonce:      types.BlockNonce{0x1},
+		Extra:      []byte{},
+		Difficulty: big.NewInt(0),
+		GasLimit:   100000,
+	}
+}
+
 // TestBlockhash tests the blockhash operation. It's a bit special, since it internally
 // requires access to a chain reader.
 func TestBlockhash(t *testing.T) {
