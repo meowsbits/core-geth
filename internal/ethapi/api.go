@@ -757,6 +757,7 @@ type CallArgs struct {
 	Value      *hexutil.Big      `json:"value"`
 	Data       *hexutil.Bytes    `json:"data"`
 	AccessList *types.AccessList `json:"accessList"`
+	SegmentID  *hexutil.Big      `json:"segmentId"`
 }
 
 // ToMessage converts CallArgs to the Message type used by the core evm
@@ -795,8 +796,12 @@ func (args *CallArgs) ToMessage(globalGasCap uint64) types.Message {
 	if args.AccessList != nil {
 		accessList = *args.AccessList
 	}
+	segmentID := new(big.Int)
+	if args.SegmentID != nil {
+		segmentID = args.SegmentID.ToInt()
+	}
 
-	msg := types.NewMessage(addr, args.To, 0, value, gas, gasPrice, data, accessList, nil, false)
+	msg := types.NewMessage(addr, args.To, 0, value, gas, gasPrice, data, accessList, segmentID, false)
 	return msg
 }
 
@@ -1495,6 +1500,7 @@ func AccessList(ctx context.Context, b Backend, blockNrOrHash rpc.BlockNumberOrH
 	} else if args.Data != nil {
 		input = *args.Data
 	}
+
 	// Retrieve the precompiles since they don't need to be added to the access list
 	precompileMap := vm.PrecompiledContractsForConfig(b.ChainConfig(), header.Number)
 	precompiles := make([]common.Address, len(precompileMap))
@@ -1523,7 +1529,7 @@ func AccessList(ctx context.Context, b Backend, blockNrOrHash rpc.BlockNumberOrH
 		}
 		// Copy the original db so we don't modify it
 		statedb := db.Copy()
-		msg := types.NewMessage(args.From, args.To, uint64(*args.Nonce), args.Value.ToInt(), uint64(*args.Gas), args.GasPrice.ToInt(), input, accessList, nil, false)
+		msg := types.NewMessage(args.From, args.To, uint64(*args.Nonce), args.Value.ToInt(), uint64(*args.Gas), args.GasPrice.ToInt(), input, accessList, args.SegmentID.ToInt(), false)
 
 		// Apply the transaction with the access list tracer
 		tracer := vm.NewAccessListTracer(accessList, args.From, to, precompiles)
@@ -1743,6 +1749,7 @@ type SendTxArgs struct {
 	// For non-legacy transactions
 	AccessList *types.AccessList `json:"accessList,omitempty"`
 	ChainID    *hexutil.Big      `json:"chainId,omitempty"`
+	SegmentID  *hexutil.Big      `json:"segmentId,omitempty"`
 }
 
 // setDefaults fills in default values for unspecified tx fields.
@@ -1806,6 +1813,9 @@ func (args *SendTxArgs) setDefaults(ctx context.Context, b Backend) error {
 	if args.ChainID == nil {
 		id := (*hexutil.Big)(b.ChainConfig().GetChainID())
 		args.ChainID = id
+	}
+	if args.SegmentID == nil {
+		args.SegmentID = (*hexutil.Big)(new(big.Int))
 	}
 	return nil
 }

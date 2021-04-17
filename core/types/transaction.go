@@ -502,6 +502,7 @@ type Message struct {
 	gasPrice   *big.Int
 	data       []byte
 	accessList AccessList
+	segmentID  *big.Int
 	checkNonce bool
 }
 
@@ -515,6 +516,7 @@ func NewMessage(from common.Address, to *common.Address, nonce uint64, amount *b
 		gasPrice:   gasPrice,
 		data:       data,
 		accessList: accessList,
+		segmentID:  segmentID,
 		checkNonce: checkNonce,
 	}
 }
@@ -529,6 +531,7 @@ func (tx *Transaction) AsMessage(s Signer) (Message, error) {
 		amount:     tx.Value(),
 		data:       tx.Data(),
 		accessList: tx.AccessList(),
+		segmentID:  tx.SegmentID(),
 		checkNonce: true,
 	}
 
@@ -545,4 +548,5 @@ func (m Message) Gas() uint64            { return m.gasLimit }
 func (m Message) Nonce() uint64          { return m.nonce }
 func (m Message) Data() []byte           { return m.data }
 func (m Message) AccessList() AccessList { return m.accessList }
+func (m Message) SegmentID() *big.Int    { return m.segmentID }
 func (m Message) CheckNonce() bool       { return m.checkNonce }

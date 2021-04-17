@@ -130,6 +130,7 @@ type stTransaction struct {
 	To          string              `json:"to"`
 	Data        []string            `json:"data"`
 	AccessLists []*types.AccessList `json:"accessLists,omitempty"`
+	SegmentID   *big.Int            `json:"segmentId,omitempty"`
 	GasLimit    []uint64            `json:"gasLimit"`
 	Value       []string            `json:"value"`
 	PrivateKey  []byte              `json:"secretKey"`
@@ -376,7 +377,11 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 	if tx.AccessLists != nil && tx.AccessLists[ps.Indexes.Data] != nil {
 		accessList = *tx.AccessLists[ps.Indexes.Data]
 	}
-	msg := types.NewMessage(from, to, tx.Nonce, value, gasLimit, tx.GasPrice, data, accessList, nil, true)
+	segmentID := new(big.Int)
+	if tx.SegmentID != nil {
+		segmentID.Set(tx.SegmentID)
+	}
+	msg := types.NewMessage(from, to, tx.Nonce, value, gasLimit, tx.GasPrice, data, accessList, segmentID, true)
 	return msg, nil
 }
 
