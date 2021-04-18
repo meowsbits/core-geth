@@ -97,9 +97,25 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 	txContext := NewEVMTxContext(msg)
 	evm.Reset(txContext, statedb)
 
-	if config.IsEnabled(config.GetIIP9999Transition, header.Number) && msg.SegmentID() != nil && msg.SegmentID().Sign() > 0 {
-		if found := bc.GetHeaderByHash(common.BigToHash(msg.SegmentID())); found == nil {
-			return nil, types.ErrInvalidSegmentId
+	if bc != nil /* DEBUG */ && config.IsEnabled(config.GetIIP9999Transition, header.Number) && msg.SegmentID() != nil && msg.SegmentID().Sign() > 0 {
+
+		// DEVELOPMENT
+		/*
+			We probably don't want to use Header Hash => Big Int as the segment id.
+			When we look up a block by hash, we won't be able to easily differentiate canonical from non-canonical blocks,
+			and segment ids demand canonical assertion.
+
+			We probably want Number+Hash.
+			We may be able to truncate the information (and/or encoding),
+			eg. 0x42abcdef
+			where 42 is block number
+			where abcdef is the first 12 bytes of the block hash. Might be enough.
+
+			Anyways, this contemplation is for the spec to handle.
+		*/
+		wantHash := common.BigToHash(msg.SegmentID())
+		if found := bc.GetHeaderByHash(wantHash); found == nil {
+			return nil, fmt.Errorf("%w: want hash: %v", types.ErrInvalidSegmentId, wantHash.Hex())
 		}
 	}
 

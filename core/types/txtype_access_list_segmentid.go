@@ -49,6 +49,7 @@ func (tx *AccessListSegmentIDTx) copy() TxData {
 		AccessList: make(AccessList, len(tx.AccessList)),
 		Value:      new(big.Int),
 		ChainID:    new(big.Int),
+		SegmentID:  new(big.Int),
 		GasPrice:   new(big.Int),
 		V:          new(big.Int),
 		R:          new(big.Int),

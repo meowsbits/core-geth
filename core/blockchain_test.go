@@ -37,6 +37,8 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/params"
+	"github.com/ethereum/go-ethereum/params/confp"
+	"github.com/ethereum/go-ethereum/params/types/coregeth"
 	"github.com/ethereum/go-ethereum/params/types/genesisT"
 	"github.com/ethereum/go-ethereum/params/types/goethereum"
 	"github.com/ethereum/go-ethereum/params/vars"
@@ -3117,5 +3119,255 @@ func TestEIP2718Transition(t *testing.T) {
 	if block.GasUsed() != expected {
 		t.Fatalf("incorrect amount of gas spent: expected %d, got %d", expected, block.GasUsed())
 
+	}
+}
+
+// TestIIP9999Transition tests that an IIP-9999 transaction will be accepted
+// after the fork block has passed. This is verified by sending an IIP-9999
+// access list + segmentID transaction, which specifies a single slot access, and then
+// checking that the gas usage of a hot SLOAD and a cold SLOAD are calculated
+// correctly. It also checks that segment id works OK.
+func TestIIP9999Transition(t *testing.T) {
+	var (
+		aa = common.HexToAddress("0x000000000000000000000000000000000000aaaa")
+
+		// Generate a canonical chain to act as the main dataset
+		engine = ethash.NewFaker()
+		db     = rawdb.NewMemoryDatabase()
+
+		// A sender who makes transactions, has some funds
+		key, _  = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")
+		address = crypto.PubkeyToAddress(key.PublicKey)
+		funds   = big.NewInt(1000000000)
+		gspec   = &genesisT.Genesis{
+			Config: params.YoloV3ChainConfig,
+			Alloc: genesisT.GenesisAlloc{
+				address: {Balance: funds},
+				// The address 0xAAAA sloads 0x00 and 0x01
+				aa: {
+					Code: []byte{
+						byte(vm.PC),
+						byte(vm.PC),
+						byte(vm.SLOAD),
+						byte(vm.SLOAD),
+					},
+					Nonce:   0,
+					Balance: big.NewInt(0),
+				},
+			},
+		}
+	)
+
+	// Anything you can do I can do better.
+	realChainConfig := &coregeth.CoreGethChainConfig{}
+	err := confp.Convert(gspec.Config, realChainConfig)
+	if err != nil {
+		t.Fatalf("convert chain config error: %v", err)
+	}
+	gspec.Config = realChainConfig
+
+	// Activate IIP9999 transition.
+	zero := uint64(0)
+	if err := gspec.SetIIP9999Transition(&zero); err != nil {
+		t.Fatalf("set iip9999 error: %v", err)
+	}
+
+	var genesis = MustCommitGenesis(db, gspec)
+
+	// Set up the database and chain.
+	// We need the blockchain reference to pass to AddTxWithChain.
+	// This differs from the EIP2718 test above this one.
+	// Just a different order of operations, no logic change.
+	diskdb := rawdb.NewMemoryDatabase()
+	MustCommitGenesis(diskdb, gspec)
+	chain, err := NewBlockChain(diskdb, nil, gspec.Config, engine, vm.Config{}, nil, nil)
+	if err != nil {
+		t.Fatalf("failed to create tester chain: %v", err)
+	}
+
+	// We have to loop through the block gen -> insert in blockchain
+	// because we can't "generate" blocks out of sync with the blockchain reference.
+	lastBlock := 5 /* 1 */
+	allBlocks := []*types.Block{genesis}
+	for i := 0; i < lastBlock; i++ {
+		blocks, _ := GenerateChain(gspec.Config, allBlocks[len(allBlocks)-1], engine, db, 1, func(ii int, b *BlockGen) {
+			b.SetCoinbase(common.Address{1})
+
+			// Transaction for address list tests.
+			// One transaction to 0xAAAA
+			signer := types.LatestSigner(gspec.Config)
+			tx, _ := types.SignNewTx(key, signer, &types.AccessListSegmentIDTx{
+				ChainID: gspec.Config.GetChainID(),
+
+				// This will reference the genesis block. This is a noop, or equivalent with ChainID.
+				// But we want to make sure that a zero-value still works as expected.
+				SegmentID: big.NewInt(0),
+
+				Nonce:    0,
+				To:       &aa,
+				Gas:      30000,
+				GasPrice: big.NewInt(1),
+				AccessList: types.AccessList{{
+					Address:     aa,
+					StorageKeys: []common.Hash{{0}},
+				}},
+			})
+			if i == 1-1 {
+				b.AddTxWithChain(chain, tx)
+			}
+
+			// Transaction for segment ID tests.
+			to := common.HexToAddress("deadbeef")
+			tx, _ = types.SignNewTx(key, signer, &types.AccessListSegmentIDTx{
+				ChainID: gspec.Config.GetChainID(),
+
+				// Reference the parent (block 4).
+				SegmentID: b.parent.Hash().Big(),
+
+				Nonce:      1,
+				To:         &to,
+				Gas:        30000,
+				GasPrice:   big.NewInt(1),
+				AccessList: types.AccessList{},
+			})
+			if i == lastBlock-1 {
+				b.AddTxWithChain(chain, tx)
+			}
+		})
+		// See how this is nested in the for loop?
+		if n, err := chain.InsertChain(blocks); err != nil {
+			t.Fatalf("block %d: failed to insert into chain: %v", n, err)
+		}
+		allBlocks = append(allBlocks, blocks...)
+	}
+
+	// Tests for the access list type.
+	block := chain.GetBlockByNumber(1)
+
+	// Expected gas is intrinsic + 2 * pc + hot load + cold load, since only one load is in the access list
+	expected := vars.TxGas + vars.TxAccessListAddressGas + vars.TxAccessListStorageKeyGas + vm.GasQuickStep*2 + vm.WarmStorageReadCostEIP2929 + vm.ColdSloadCostEIP2929
+	if block.GasUsed() != expected {
+		t.Fatalf("incorrect amount of gas spent: expected %d, got %d", expected, block.GasUsed())
+	}
+
+	block = chain.GetBlockByNumber(uint64(lastBlock))
+
+	if got := block.Transactions().Len(); got != 1 {
+		t.Fatalf("want: 1, got: %v", got)
+	}
+}
+
+// TestIIP9999Transition_NegativeOutcome is like its sister TestIIP9999Transition,
+// except that it will attempt a transaction with an invalid segment id.
+func TestIIP9999Transition_NegativeOutcome(t *testing.T) {
+	var (
+		aa = common.HexToAddress("0x000000000000000000000000000000000000aaaa")
+
+		// Generate a canonical chain to act as the main dataset
+		engine = ethash.NewFaker()
+		db     = rawdb.NewMemoryDatabase()
+
+		// A sender who makes transactions, has some funds
+		key, _  = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")
+		address = crypto.PubkeyToAddress(key.PublicKey)
+		funds   = big.NewInt(1000000000)
+		gspec   = &genesisT.Genesis{
+			Config: params.YoloV3ChainConfig,
+			Alloc: genesisT.GenesisAlloc{
+				address: {Balance: funds},
+				// The address 0xAAAA sloads 0x00 and 0x01
+				aa: {
+					Code: []byte{
+						byte(vm.PC),
+						byte(vm.PC),
+						byte(vm.SLOAD),
+						byte(vm.SLOAD),
+					},
+					Nonce:   0,
+					Balance: big.NewInt(0),
+				},
+			},
+		}
+	)
+
+	// Anything you can do I can do better.
+	realChainConfig := &coregeth.CoreGethChainConfig{}
+	err := confp.Convert(gspec.Config, realChainConfig)
+	if err != nil {
+		t.Fatalf("convert chain config error: %v", err)
+	}
+	gspec.Config = realChainConfig
+
+	// Activate IIP9999 transition.
+	zero := uint64(0)
+	if err := gspec.SetIIP9999Transition(&zero); err != nil {
+		t.Fatalf("set iip9999 error: %v", err)
+	}
+
+	var genesis = MustCommitGenesis(db, gspec)
+
+	// Set up the database and chain.
+	// We need the blockchain reference to pass to AddTxWithChain.
+	// This differs from the EIP2718 test above this one.
+	// Just a different order of operations, no logic change.
+	diskdb := rawdb.NewMemoryDatabase()
+	MustCommitGenesis(diskdb, gspec)
+	chain, err := NewBlockChain(diskdb, nil, gspec.Config, engine, vm.Config{}, nil, nil)
+	if err != nil {
+		t.Fatalf("failed to create tester chain: %v", err)
+	}
+
+	// We have to loop through the block gen -> insert in blockchain
+	// because we can't "generate" blocks out of sync with the blockchain reference.
+	lastBlock := 5 /* 1 */
+	allBlocks := []*types.Block{genesis}
+	for i := 0; i < lastBlock; i++ {
+		blocks, _ := GenerateChain(gspec.Config, allBlocks[len(allBlocks)-1], engine, db, 1, func(ii int, b *BlockGen) {
+			b.SetCoinbase(common.Address{1})
+
+			// Transaction for address list tests.
+			// One transaction to 0xAAAA
+			signer := types.LatestSigner(gspec.Config)
+
+			// Transaction for segment ID tests.
+			to := common.HexToAddress("deadbeef")
+			tx, _ := types.SignNewTx(key, signer, &types.AccessListSegmentIDTx{
+				ChainID: gspec.Config.GetChainID(),
+
+				SegmentID: common.HexToHash("0xbadface").Big(), // Expect invalid segment id.
+
+				Nonce:      0,
+				To:         &to,
+				Gas:        30000,
+				GasPrice:   big.NewInt(1),
+				AccessList: types.AccessList{},
+			})
+			if i == lastBlock-1 {
+				// We have to force the tx in there without Applying the transaction first.
+				b.AddUncheckedTx(tx)
+			}
+		})
+		// See how this is nested in the for loop?
+		if n, err := chain.InsertChain(blocks); err != nil && i < lastBlock-1 {
+
+			// For all blocks expect the one with the should-fail test transaction, we expect them
+			// to be inserted properly.
+			t.Fatalf("block %d: failed to insert into chain: %v", n, err)
+		} else if i == lastBlock-1 && !errors.Is(err, types.ErrInvalidSegmentId) {
+
+			// But for the target block with the should-fail transaction, we need to assert that
+			// the error is indeed returned and that the error is of the proper type.
+			t.Fatalf("block %d: should have failed to insert into chain", n)
+		}
+		allBlocks = append(allBlocks, blocks...)
+	}
+
+	if ch := chain.CurrentHeader(); ch == nil || ch.Number.Uint64() != uint64(lastBlock)-1 {
+		t.Fatalf("unexpected chain head, should be one below the expected-failure block containing tx with invalid segment id")
+	}
+
+	block := chain.GetBlockByNumber(uint64(lastBlock))
+	if block != nil {
+		t.Fatalf("the bad block should not have been inserted, and should be nil when queried")
 	}
 }
