@@ -107,12 +107,12 @@ func (context *chainContext) GetHeader(hash common.Hash, number uint64) *types.H
 	return header
 }
 
-func (context *chainContext) GetHeaderByHash(hash common.Hash) *types.Header {
-	header, err := context.api.backend.HeaderByHash(context.ctx, hash)
+func (context *chainContext) GetCanonicalHash(number uint64) common.Hash {
+	header, err := context.api.backend.HeaderByNumber(context.ctx, rpc.BlockNumber(number))
 	if err != nil {
-		return nil
+		return common.Hash{}
 	}
-	return header
+	return header.Hash()
 }
 
 // chainContext construts the context reader which is used by the evm for reading

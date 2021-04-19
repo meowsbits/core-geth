@@ -17,8 +17,10 @@
 package core
 
 import (
+	"encoding/binary"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/consensus"
 	"github.com/ethereum/go-ethereum/core/state"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -138,4 +140,18 @@ func CalcGasLimit(parent *types.Block, gasFloor, gasCeil uint64) uint64 {
 		}
 	}
 	return limit
+}
+
+func GetSegmentID(number uint64, hash common.Hash) []byte {
+	out := [12]byte{}
+	binary.LittleEndian.PutUint64(out[0:8], number)
+	copy(out[8:], hash.Bytes()[:4])
+	return out[:]
+}
+
+func SegmentIDToNumberAndHashPrefix(segmentID []byte) (n uint64, prefix []byte, err error) {
+	if len(segmentID) != 12 {
+		return 0, nil, fmt.Errorf("segment ID is invalid (want 12 bytes length, got: %d)", len(segmentID))
+	}
+	return binary.LittleEndian.Uint64(segmentID[:8]), segmentID[10:12], nil
 }

@@ -17,6 +17,7 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -113,9 +114,16 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 
 			Anyways, this contemplation is for the spec to handle.
 		*/
-		wantHash := common.BytesToHash(msg.SegmentID())
-		if found := bc.GetHeaderByHash(wantHash); found == nil {
-			return nil, fmt.Errorf("%w: want hash: %v", types.ErrInvalidSegmentId, wantHash.Hex())
+
+		// This is the development iteration with block number + some truncated version of block hash.
+		wantNum, hashPrefix, err := SegmentIDToNumberAndHashPrefix(msg.SegmentID())
+		if err != nil {
+			return nil, err
+		}
+
+		if found := bc.GetCanonicalHash(wantNum); found == (common.Hash{}) ||
+			!bytes.HasPrefix(found.Bytes(), hashPrefix) {
+			return nil, fmt.Errorf("%w: want hash: %x, got: %v", types.ErrInvalidSegmentId, hashPrefix, found.Hex())
 		}
 	}
 

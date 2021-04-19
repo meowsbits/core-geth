@@ -3222,7 +3222,7 @@ func TestIIP9999Transition(t *testing.T) {
 				ChainID: gspec.Config.GetChainID(),
 
 				// Reference the parent (block 4).
-				SegmentID: b.parent.Hash().Bytes(),
+				SegmentID: GetSegmentID(b.parent.NumberU64(), b.parent.Hash()),
 
 				Nonce:      1,
 				To:         &to,
@@ -3334,7 +3334,7 @@ func TestIIP9999Transition_NegativeOutcome(t *testing.T) {
 			tx, _ := types.SignNewTx(key, signer, &types.AccessListSegmentIDTx{
 				ChainID: gspec.Config.GetChainID(),
 
-				SegmentID: []byte("0xbadface"), // Expect invalid segment id.
+				SegmentID: []byte("0xbadfacefeed5"), // Expect invalid segment id.
 
 				Nonce:      0,
 				To:         &to,
@@ -3357,7 +3357,7 @@ func TestIIP9999Transition_NegativeOutcome(t *testing.T) {
 
 			// But for the target block with the should-fail transaction, we need to assert that
 			// the error is indeed returned and that the error is of the proper type.
-			t.Fatalf("block %d: should have failed to insert into chain", n)
+			t.Fatalf("block %d: should have failed to insert into chain, err: %v", n, err)
 		}
 		allBlocks = append(allBlocks, blocks...)
 	}

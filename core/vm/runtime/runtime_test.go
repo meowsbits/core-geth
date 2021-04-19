@@ -245,22 +245,12 @@ func (d *dummyChain) GetHeader(h common.Hash, n uint64) *types.Header {
 	return fakeHeader(n, parentHash)
 }
 
-// GetHeaderByHash returns the hash corresponding to their hash.
+// GetCanonicalHash returns the hash corresponding to the number.
 // THIS IS A MOCK METHOD TO SATISFY THE CHAINCONTEXT INTERFACE.
-// It is not used in these tests and won't work if you try it.
-func (d *dummyChain) GetHeaderByHash(h common.Hash) *types.Header {
+// It is not used in these tests and won't (or may not?) work if you try it. No guarantees.
+func (d *dummyChain) GetCanonicalHash(number uint64) common.Hash {
 	d.counter++
-
-	return &types.Header{
-		Coinbase:   common.HexToAddress("0x00000000000000000000000000000000deadbeef"),
-		Number:     big.NewInt(int64(42)),
-		ParentHash: common.Hash{},
-		Time:       1000,
-		Nonce:      types.BlockNonce{0x1},
-		Extra:      []byte{},
-		Difficulty: big.NewInt(0),
-		GasLimit:   100000,
-	}
+	return common.BytesToHash(common.LeftPadBytes(big.NewInt(int64(number)).Bytes(), 32))
 }
 
 // TestBlockhash tests the blockhash operation. It's a bit special, since it internally
