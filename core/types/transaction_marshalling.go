@@ -25,9 +25,9 @@ type txJSON struct {
 	To       *common.Address `json:"to"`
 
 	// Access list transaction fields:
-	ChainID    *hexutil.Big `json:"chainId,omitempty"`
-	SegmentID  *hexutil.Big `json:"segmentId,omitempty"`
-	AccessList *AccessList  `json:"accessList,omitempty"`
+	ChainID    *hexutil.Big   `json:"chainId,omitempty"`
+	SegmentID  *hexutil.Bytes `json:"segmentId,omitempty"`
+	AccessList *AccessList    `json:"accessList,omitempty"`
 
 	// Only used for encoding:
 	Hash common.Hash `json:"hash"`
@@ -66,7 +66,7 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 		enc.S = (*hexutil.Big)(tx.S)
 	case *AccessListSegmentIDTx:
 		enc.ChainID = (*hexutil.Big)(tx.ChainID)
-		enc.SegmentID = (*hexutil.Big)(tx.SegmentID)
+		enc.SegmentID = (*hexutil.Bytes)(&tx.SegmentID)
 		enc.AccessList = &tx.AccessList
 		enc.Nonce = (*hexutil.Uint64)(&tx.Nonce)
 		enc.Gas = (*hexutil.Uint64)(&tx.Gas)
@@ -203,7 +203,7 @@ func (t *Transaction) UnmarshalJSON(input []byte) error {
 		if dec.SegmentID == nil {
 			return errors.New("missing required field 'segmentId' in transaction")
 		}
-		itx.SegmentID = (*big.Int)(dec.SegmentID)
+		itx.SegmentID = *dec.SegmentID
 		if dec.To != nil {
 			itx.To = dec.To
 		}

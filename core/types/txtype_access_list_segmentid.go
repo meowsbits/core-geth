@@ -27,7 +27,7 @@ import (
 // including a segment ID field.
 type AccessListSegmentIDTx struct {
 	ChainID    *big.Int        // destination chain ID
-	SegmentID  *big.Int        // destination segment ID
+	SegmentID  []byte          // destination segment ID
 	Nonce      uint64          // nonce of sender account
 	GasPrice   *big.Int        // wei per gas
 	Gas        uint64          // gas limit
@@ -49,7 +49,7 @@ func (tx *AccessListSegmentIDTx) copy() TxData {
 		AccessList: make(AccessList, len(tx.AccessList)),
 		Value:      new(big.Int),
 		ChainID:    new(big.Int),
-		SegmentID:  new(big.Int),
+		SegmentID:  common.CopyBytes(tx.SegmentID),
 		GasPrice:   new(big.Int),
 		V:          new(big.Int),
 		R:          new(big.Int),
@@ -61,9 +61,6 @@ func (tx *AccessListSegmentIDTx) copy() TxData {
 	}
 	if tx.ChainID != nil {
 		cpy.ChainID.Set(tx.ChainID)
-	}
-	if tx.SegmentID != nil {
-		cpy.SegmentID.Set(tx.SegmentID)
 	}
 	if tx.GasPrice != nil {
 		cpy.GasPrice.Set(tx.GasPrice)
@@ -84,7 +81,7 @@ func (tx *AccessListSegmentIDTx) copy() TxData {
 
 func (tx *AccessListSegmentIDTx) txType() byte           { return AccessListSegmentIDTxType }
 func (tx *AccessListSegmentIDTx) chainID() *big.Int      { return tx.ChainID }
-func (tx *AccessListSegmentIDTx) segmentID() *big.Int    { return tx.SegmentID }
+func (tx *AccessListSegmentIDTx) segmentID() []byte      { return tx.SegmentID }
 func (tx *AccessListSegmentIDTx) protected() bool        { return true }
 func (tx *AccessListSegmentIDTx) accessList() AccessList { return tx.AccessList }
 func (tx *AccessListSegmentIDTx) data() []byte           { return tx.Data }

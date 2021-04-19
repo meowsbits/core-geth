@@ -97,7 +97,7 @@ func (tx *AccessListTx) copy() TxData {
 
 func (tx *AccessListTx) txType() byte           { return AccessListTxType }
 func (tx *AccessListTx) chainID() *big.Int      { return tx.ChainID }
-func (tx *AccessListTx) segmentID() *big.Int    { return nil }
+func (tx *AccessListTx) segmentID() []byte      { return nil }
 func (tx *AccessListTx) protected() bool        { return true }
 func (tx *AccessListTx) accessList() AccessList { return tx.AccessList }
 func (tx *AccessListTx) data() []byte           { return tx.Data }

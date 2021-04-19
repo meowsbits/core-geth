@@ -97,7 +97,7 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 	txContext := NewEVMTxContext(msg)
 	evm.Reset(txContext, statedb)
 
-	if bc != nil /* DEBUG */ && config.IsEnabled(config.GetIIP9999Transition, header.Number) && msg.SegmentID() != nil && msg.SegmentID().Sign() > 0 {
+	if bc != nil /* DEBUG */ && config.IsEnabled(config.GetIIP9999Transition, header.Number) && len(msg.SegmentID()) != 0 {
 
 		// DEVELOPMENT
 		/*
@@ -113,7 +113,7 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 
 			Anyways, this contemplation is for the spec to handle.
 		*/
-		wantHash := common.BigToHash(msg.SegmentID())
+		wantHash := common.BytesToHash(msg.SegmentID())
 		if found := bc.GetHeaderByHash(wantHash); found == nil {
 			return nil, fmt.Errorf("%w: want hash: %v", types.ErrInvalidSegmentId, wantHash.Hex())
 		}

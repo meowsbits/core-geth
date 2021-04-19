@@ -72,7 +72,7 @@ type TxData interface {
 	copy() TxData // creates a deep copy and initializes all fields
 
 	chainID() *big.Int
-	segmentID() *big.Int
+	segmentID() []byte
 	accessList() AccessList
 	data() []byte
 	gas() uint64
@@ -258,7 +258,7 @@ func (tx *Transaction) ChainId() *big.Int {
 // SegmentID retursn the IIP9999 segment ID of the transaction. The return value will always be
 // non-nil. For legacy transactions which are not replay-protected, the return value is
 // zero.
-func (tx *Transaction) SegmentID() *big.Int {
+func (tx *Transaction) SegmentID() []byte {
 	return tx.inner.segmentID()
 }
 
@@ -502,11 +502,11 @@ type Message struct {
 	gasPrice   *big.Int
 	data       []byte
 	accessList AccessList
-	segmentID  *big.Int
+	segmentID  []byte
 	checkNonce bool
 }
 
-func NewMessage(from common.Address, to *common.Address, nonce uint64, amount *big.Int, gasLimit uint64, gasPrice *big.Int, data []byte, accessList AccessList, segmentID *big.Int, checkNonce bool) Message {
+func NewMessage(from common.Address, to *common.Address, nonce uint64, amount *big.Int, gasLimit uint64, gasPrice *big.Int, data []byte, accessList AccessList, segmentID []byte, checkNonce bool) Message {
 	return Message{
 		from:       from,
 		to:         to,
@@ -548,5 +548,5 @@ func (m Message) Gas() uint64            { return m.gasLimit }
 func (m Message) Nonce() uint64          { return m.nonce }
 func (m Message) Data() []byte           { return m.data }
 func (m Message) AccessList() AccessList { return m.accessList }
-func (m Message) SegmentID() *big.Int    { return m.segmentID }
+func (m Message) SegmentID() []byte      { return m.segmentID }
 func (m Message) CheckNonce() bool       { return m.checkNonce }

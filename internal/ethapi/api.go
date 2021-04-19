@@ -757,7 +757,7 @@ type CallArgs struct {
 	Value      *hexutil.Big      `json:"value"`
 	Data       *hexutil.Bytes    `json:"data"`
 	AccessList *types.AccessList `json:"accessList"`
-	SegmentID  *hexutil.Big      `json:"segmentId"`
+	SegmentID  *hexutil.Bytes    `json:"segmentId"`
 }
 
 // ToMessage converts CallArgs to the Message type used by the core evm
@@ -796,9 +796,9 @@ func (args *CallArgs) ToMessage(globalGasCap uint64) types.Message {
 	if args.AccessList != nil {
 		accessList = *args.AccessList
 	}
-	segmentID := new(big.Int)
+	var segmentID []byte
 	if args.SegmentID != nil {
-		segmentID = args.SegmentID.ToInt()
+		segmentID = *args.SegmentID
 	}
 
 	msg := types.NewMessage(addr, args.To, 0, value, gas, gasPrice, data, accessList, segmentID, false)
@@ -1356,7 +1356,7 @@ type RPCTransaction struct {
 	Type             hexutil.Uint64    `json:"type"`
 	Accesses         *types.AccessList `json:"accessList,omitempty"`
 	ChainID          *hexutil.Big      `json:"chainId,omitempty"`
-	SegmentID        *hexutil.Big      `json:"segmentId,omitempty"`
+	SegmentID        hexutil.Bytes     `json:"segmentId,omitempty"`
 	V                *hexutil.Big      `json:"v"`
 	R                *hexutil.Big      `json:"r"`
 	S                *hexutil.Big      `json:"s"`
@@ -1405,7 +1405,7 @@ func newRPCTransaction(tx *types.Transaction, blockHash common.Hash, blockNumber
 		al := tx.AccessList()
 		result.Accesses = &al
 		result.ChainID = (*hexutil.Big)(tx.ChainId())
-		result.SegmentID = (*hexutil.Big)(tx.SegmentID())
+		result.SegmentID = hexutil.Bytes(tx.SegmentID())
 	}
 	return result
 }
@@ -1529,7 +1529,7 @@ func AccessList(ctx context.Context, b Backend, blockNrOrHash rpc.BlockNumberOrH
 		}
 		// Copy the original db so we don't modify it
 		statedb := db.Copy()
-		msg := types.NewMessage(args.From, args.To, uint64(*args.Nonce), args.Value.ToInt(), uint64(*args.Gas), args.GasPrice.ToInt(), input, accessList, args.SegmentID.ToInt(), false)
+		msg := types.NewMessage(args.From, args.To, uint64(*args.Nonce), args.Value.ToInt(), uint64(*args.Gas), args.GasPrice.ToInt(), input, accessList, *args.SegmentID, false)
 
 		// Apply the transaction with the access list tracer
 		tracer := vm.NewAccessListTracer(accessList, args.From, to, precompiles)
@@ -1749,7 +1749,7 @@ type SendTxArgs struct {
 	// For non-legacy transactions
 	AccessList *types.AccessList `json:"accessList,omitempty"`
 	ChainID    *hexutil.Big      `json:"chainId,omitempty"`
-	SegmentID  *hexutil.Big      `json:"segmentId,omitempty"`
+	SegmentID  *hexutil.Bytes    `json:"segmentId,omitempty"`
 }
 
 // setDefaults fills in default values for unspecified tx fields.
@@ -1814,9 +1814,10 @@ func (args *SendTxArgs) setDefaults(ctx context.Context, b Backend) error {
 		id := (*hexutil.Big)(b.ChainConfig().GetChainID())
 		args.ChainID = id
 	}
-	if args.SegmentID == nil {
-		args.SegmentID = (*hexutil.Big)(new(big.Int))
-	}
+	// PTAL(meowsbits): Is this an OK default?
+	// if args.SegmentID == nil {
+	// 	args.SegmentID = args.SegmentID
+	// }
 	return nil
 }
 

@@ -3201,7 +3201,7 @@ func TestIIP9999Transition(t *testing.T) {
 
 				// This will reference the genesis block. This is a noop, or equivalent with ChainID.
 				// But we want to make sure that a zero-value still works as expected.
-				SegmentID: big.NewInt(0),
+				SegmentID: nil,
 
 				Nonce:    0,
 				To:       &aa,
@@ -3222,7 +3222,7 @@ func TestIIP9999Transition(t *testing.T) {
 				ChainID: gspec.Config.GetChainID(),
 
 				// Reference the parent (block 4).
-				SegmentID: b.parent.Hash().Big(),
+				SegmentID: b.parent.Hash().Bytes(),
 
 				Nonce:      1,
 				To:         &to,
@@ -3334,7 +3334,7 @@ func TestIIP9999Transition_NegativeOutcome(t *testing.T) {
 			tx, _ := types.SignNewTx(key, signer, &types.AccessListSegmentIDTx{
 				ChainID: gspec.Config.GetChainID(),
 
-				SegmentID: common.HexToHash("0xbadface").Big(), // Expect invalid segment id.
+				SegmentID: []byte("0xbadface"), // Expect invalid segment id.
 
 				Nonce:      0,
 				To:         &to,
