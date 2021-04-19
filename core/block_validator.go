@@ -17,6 +17,7 @@
 package core
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 
@@ -142,16 +143,30 @@ func CalcGasLimit(parent *types.Block, gasFloor, gasCeil uint64) uint64 {
 	return limit
 }
 
-func GetSegmentID(number uint64, hash common.Hash) []byte {
-	out := [12]byte{}
-	binary.LittleEndian.PutUint64(out[0:8], number)
-	copy(out[8:], hash.Bytes()[:4])
-	return out[:]
+// SegmentIDHashPrefixLen is how many leading bytes of a block's hash will
+// remain after truncating for inclusion in a Segment ID.
+const SegmentIDHashPrefixLen = 4
+
+// EncodeSegmentID returns the IIP-9999 Segment ID value for a block's number and hash.
+// It returns the smallest-sized []byte value it can in order to save space crossing the wire.
+// The number is converted to a little endian byte slice, which is then truncated of 0's from the right.
+// The 4-byte prefix of the hash is appended.
+func EncodeSegmentID(number uint64, hash common.Hash) []byte {
+	out := bytes.NewBuffer([]byte{})
+	binary.Write(out, binary.LittleEndian, number)
+	return append(common.TrimRightZeroes(out.Bytes()), hash.Bytes()[:SegmentIDHashPrefixLen]...)
 }
 
-func SegmentIDToNumberAndHashPrefix(segmentID []byte) (n uint64, prefix []byte, err error) {
-	if len(segmentID) != 12 {
-		return 0, nil, fmt.Errorf("segment ID is invalid (want 12 bytes length, got: %d)", len(segmentID))
+// DecodeSegmentID decodes an IIP-9999 Segment ID into its composite number and hash-prefix values.
+// The minimum byte slice length of a Segment ID is 4 (ie. genesis block number=0 can be omitted).
+func DecodeSegmentID(segmentID []byte) (n uint64, prefix []byte, err error) {
+	if len(segmentID) < SegmentIDHashPrefixLen {
+		return 0, nil, fmt.Errorf("segment ID is invalid (want >= 4 bytes length, got: %d)", len(segmentID))
 	}
-	return binary.LittleEndian.Uint64(segmentID[:8]), segmentID[10:12], nil
+	if len(segmentID) == SegmentIDHashPrefixLen {
+		return 0, segmentID[:], nil
+	}
+	n = binary.LittleEndian.Uint64(common.RightPadBytes(segmentID[:len(segmentID)-SegmentIDHashPrefixLen], 10)) // 10 is byte cap of uint64
+	prefix = segmentID[len(segmentID)-SegmentIDHashPrefixLen:]
+	return n, prefix, nil
 }

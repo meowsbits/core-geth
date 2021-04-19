@@ -203,7 +203,10 @@ func testHeaderConcurrentAbortion(t *testing.T, threads int) {
 	}
 }
 
-func TestSegmentIDFromHeader(t *testing.T) {
+// TestEncodeDecodeSegmentID tests getting expected values from EncodeSegmentID function,
+// AS WELL AS testing the DecodeSegmentID being able to "read" the
+// value returned back into number and hex.
+func TestEncodeDecodeSegmentID(t *testing.T) {
 	mustDecodeHexString := func(str string) []byte {
 		out, err := hex.DecodeString(str)
 		if err != nil {
@@ -217,16 +220,20 @@ func TestSegmentIDFromHeader(t *testing.T) {
 		want   []byte
 	}{
 		{
+			number: 0, hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
+			want: mustDecodeHexString("e78b1ec3"),
+		},
+		{
 			number: 1, hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
-			want: mustDecodeHexString("0100000000000000e78b1ec3"),
+			want: mustDecodeHexString("01e78b1ec3"),
 		},
 		{
 			number: 15_000_000, hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
-			want: mustDecodeHexString("c0e1e40000000000e78b1ec3"),
+			want: mustDecodeHexString("c0e1e4e78b1ec3"),
 		},
 		{
 			number: 999_999_999_999, hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
-			want: mustDecodeHexString("ff0fa5d4e8000000e78b1ec3"),
+			want: mustDecodeHexString("ff0fa5d4e8e78b1ec3"),
 		},
 		{
 			number: math.MaxBig63.Uint64(), hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
@@ -235,9 +242,22 @@ func TestSegmentIDFromHeader(t *testing.T) {
 	}
 
 	for i, c := range cases {
-		got := GetSegmentID(c.number, c.hash)
+		// Test that the number and hash turn into our expected segment ID value.
+		got := EncodeSegmentID(c.number, c.hash)
 		if !bytes.Equal(got, c.want) {
-			t.Errorf("case: %d, got: %x, want: %x", i, got, c.want)
+			t.Errorf("EncodeSegmentID case: %d, got: %x, want: %x", i, got, c.want)
+			continue
+		}
+
+		// Test that the returned segment ID value can be converted back into
+		// the number and hex from whence it came.
+		gotN, gotP, err := DecodeSegmentID(got)
+		if err != nil {
+			t.Errorf("DecodeSegmentID case: %d, err: %v", i, err)
+		} else if gotN != c.number {
+			t.Errorf("DecodeSegmentID case: %d, got.n: %d, want: %d", i, gotN, c.number)
+		} else if !bytes.HasPrefix(c.hash.Bytes(), gotP) {
+			t.Errorf("DecodeSegmentID case: %d, got.n: %x, want: %x", i, gotP, c.hash)
 		}
 	}
 }

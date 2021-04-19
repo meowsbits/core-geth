@@ -116,7 +116,7 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 		*/
 
 		// This is the development iteration with block number + some truncated version of block hash.
-		wantNum, hashPrefix, err := SegmentIDToNumberAndHashPrefix(msg.SegmentID())
+		wantNum, hashPrefix, err := DecodeSegmentID(msg.SegmentID())
 		if err != nil {
 			return nil, err
 		}

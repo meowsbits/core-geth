@@ -3222,7 +3222,7 @@ func TestIIP9999Transition(t *testing.T) {
 				ChainID: gspec.Config.GetChainID(),
 
 				// Reference the parent (block 4).
-				SegmentID: GetSegmentID(b.parent.NumberU64(), b.parent.Hash()),
+				SegmentID: EncodeSegmentID(b.parent.NumberU64(), b.parent.Hash()),
 
 				Nonce:      1,
 				To:         &to,
