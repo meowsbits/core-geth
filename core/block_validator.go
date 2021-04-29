@@ -152,8 +152,8 @@ const SegmentIDHashPrefixLen = 4
 // The 4-byte prefix of the hash is appended.
 func EncodeSegmentID(number uint64, hash common.Hash) []byte {
 	out := make([]byte, 8)
-	binary.LittleEndian.PutUint64(out, number)
-	return append(common.TrimRightZeroes(out), hash.Bytes()[:SegmentIDHashPrefixLen]...)
+	binary.BigEndian.PutUint64(out, number)
+	return append(common.TrimLeftZeroes(out), hash.Bytes()[:SegmentIDHashPrefixLen]...)
 }
 
 // DecodeSegmentID decodes an IIP-9999 Segment ID into its composite number and hash-prefix values.
@@ -165,7 +165,7 @@ func DecodeSegmentID(segmentID []byte) (n uint64, prefix []byte, err error) {
 	if len(segmentID) == SegmentIDHashPrefixLen {
 		return 0, segmentID[:], nil
 	}
-	n = binary.LittleEndian.Uint64(common.RightPadBytes(segmentID[:len(segmentID)-SegmentIDHashPrefixLen], 8)) // 8 is byte cap of uint64
+	n = binary.BigEndian.Uint64(common.LeftPadBytes(segmentID[:len(segmentID)-SegmentIDHashPrefixLen], 8)) // 8 is byte cap of uint64
 	prefix = segmentID[len(segmentID)-SegmentIDHashPrefixLen:]
 	return n, prefix, nil
 }

@@ -229,15 +229,15 @@ func TestEncodeDecodeSegmentID(t *testing.T) {
 		},
 		{
 			number: 15_000_000, hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
-			want: mustDecodeHexString("c0e1e4e78b1ec3"),
+			want: mustDecodeHexString("e4e1c0e78b1ec3"),
 		},
 		{
 			number: 999_999_999_999, hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
-			want: mustDecodeHexString("ff0fa5d4e8e78b1ec3"),
+			want: mustDecodeHexString("e8d4a50fffe78b1ec3"),
 		},
 		{
 			number: math.MaxBig63.Uint64(), hash: common.HexToHash("0xe78b1ec31bcb535548ce4b6ef384deccad1e7dc599817b65ab5124eeaaee3e58"),
-			want: mustDecodeHexString("ffffffffffffff7fe78b1ec3"),
+			want: mustDecodeHexString("7fffffffffffffffe78b1ec3"),
 		},
 	}
 
