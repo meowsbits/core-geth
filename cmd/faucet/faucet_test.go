@@ -47,6 +47,9 @@ func TestMigrateFaucetDirectory(t *testing.T) {
 	})
 }
 
+// TestFacebook makes a live request to Facebook to retrieve and parse
+// an example post.
+// This test consistently fails on Travis CI (possibly because a blacklist either at Travis or Facebook).
 func TestFacebook(t *testing.T) {
 	for _, tt := range []struct {
 		url  string

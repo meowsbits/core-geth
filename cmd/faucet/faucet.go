@@ -1230,6 +1230,9 @@ func authFacebook(url string) (string, string, common.Address, error) {
 	if err != nil {
 		return "", "", common.Address{}, err
 	}
+	if res.StatusCode != 200 {
+		return "", "", common.Address{}, fmt.Errorf("request status: %d (%s); url=%s", res.StatusCode, res.Status, crawl)
+	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
