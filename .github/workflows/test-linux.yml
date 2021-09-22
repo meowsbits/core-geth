@@ -32,4 +32,4 @@ jobs:
       - name: Run tests
         run: |
           make all
-          make test
+          go test ./mobile/...
