@@ -14,9 +14,6 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
 
       - name: Set up Go 1.16
         id: go
@@ -24,11 +21,19 @@ jobs:
         with:
           go-version: ^1.16
 
-      - name: Run tests
+      - name: Get deps
         run: |
           echo $PATH
           go get -d -v golang.org/x/mobile/cmd/gomobile
           echo $PATH
-          which gomobile
+          which gomobile || true
           gomobile init
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Run tests
+        run: |
           go test ./mobile/...
+        
