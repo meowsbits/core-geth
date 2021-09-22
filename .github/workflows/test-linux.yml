@@ -18,11 +18,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Set up Go 1.17
+      - name: Set up Go 1.16
         id: go
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.17
+          go-version: ^1.16
 
       - name: Run tests
         run: |
