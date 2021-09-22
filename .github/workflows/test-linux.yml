@@ -24,12 +24,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Get dependencies
-        run: |
-          go get -v -t -d ./...
-          go install golang.org/x/mobile/cmd/gomobile
-          gomobile init
-
       - name: Run tests
         run: |
           make all
