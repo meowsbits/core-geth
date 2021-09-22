@@ -24,7 +24,8 @@ jobs:
       - name: Get deps
         run: |
           echo $PATH
-          go get -d -v golang.org/x/mobile/cmd/gomobile
+          go get -d -v golang.org/x/mobile/...
+          go install golang.org/x/mobile/cmd/gobind@latest
           go install golang.org/x/mobile/cmd/gomobile@latest
           echo $PATH
           which gomobile || true
