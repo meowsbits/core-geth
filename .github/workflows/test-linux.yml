@@ -22,7 +22,6 @@ jobs:
 
       - name: Get dependencies
         run: |
-          go get -v -t -d ./...
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
 
@@ -32,5 +31,6 @@ jobs:
 
       - name: Run tests
         run: |
+          go get -v -t -d ./...
           make all
           go test ./mobile/...
