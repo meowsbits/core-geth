@@ -24,6 +24,13 @@ jobs:
       - name: Get deps
         run: |
           echo $PATH
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Run tests
+        run: |
           echo go get -d -v golang.org/x/mobile/...
           go get -d -v golang.org/x/mobile/...
           echo go install golang.org/x/mobile/cmd/gobind@latest
@@ -33,12 +40,5 @@ jobs:
           echo $PATH
           which gomobile || true
           gomobile init
-
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-
-      - name: Run tests
-        run: |
           go test ./mobile/...
 
