@@ -23,7 +23,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
-	"time"
 
 	"github.com/cespare/cp"
 )
@@ -171,18 +170,21 @@ func TestAndroid(t *testing.T) {
 		}
 		os.Setenv("ANDROID_HOME", autopath)
 	}
-	if _, err := exec.Command("which", "gomobile").CombinedOutput(); err != nil {
-		t.Log("gomobile missing, installing it...")
-		if out, err := exec.Command("go", "get", "golang.org/x/mobile/cmd/gomobile").CombinedOutput(); err != nil {
-			t.Fatalf("install failed: %v\n%s", err, string(out))
-		}
-		t.Log("initializing gomobile...")
-		start := time.Now()
-		if _, err := exec.Command("gomobile", "init").CombinedOutput(); err != nil {
-			t.Fatalf("initialization failed: %v", err)
-		}
-		t.Logf("initialization took %v", time.Since(start))
-	}
+	// if _, err := exec.Command("which", "gomobile").CombinedOutput(); err != nil {
+	// 	t.Log("gomobile missing, installing it...")
+	// 	if out, err := exec.Command("go", "get", "-d", "golang.org/x/mobile/bind").CombinedOutput(); err != nil {
+	// 		t.Fatalf("install failed: %v\n%s", err, string(out))
+	// 	}
+	// 	if out, err := exec.Command("go", "get", "-d", "golang.org/x/mobile/cmd/gomobile").CombinedOutput(); err != nil {
+	// 		t.Fatalf("install failed: %v\n%s", err, string(out))
+	// 	}
+	// 	t.Log("initializing gomobile...")
+	// 	start := time.Now()
+	// 	if _, err := exec.Command("gomobile", "init").CombinedOutput(); err != nil {
+	// 		t.Fatalf("initialization failed: %v", err)
+	// 	}
+	// 	t.Logf("initialization took %v", time.Since(start))
+	// }
 	// Create and switch to a temporary workspace
 	workspace, err := ioutil.TempDir("", "geth-android-")
 	if err != nil {

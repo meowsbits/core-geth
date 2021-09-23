@@ -1,0 +1,31 @@
+name: Lint and Tests
+
+# Controls when the action will run.
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # Run build and tests against latest-1 Go version.
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go 1.16
+        id: go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Run tests
+        run: |
+          go test ./mobile/...
+
