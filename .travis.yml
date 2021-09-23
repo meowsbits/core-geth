@@ -1,0 +1,16 @@
+language: go
+go_import_path: github.com/ethereum/go-ethereum
+sudo: false
+jobs:
+  include:
+
+  # Run linter check. Only test code linters on latest version of Go.
+  - stage: debugtest
+    os: linux
+    dist: xenial
+    go: 1.16.x
+    git:
+      submodules: false
+    script:
+      - echo "ANDROID_HOME: $ANDROID_HOME"
+
