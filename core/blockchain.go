@@ -28,6 +28,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	llog "log"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/mclock"
 	"github.com/ethereum/go-ethereum/common/prque"
@@ -439,6 +441,7 @@ func (bc *BlockChain) loadLastState() error {
 	// Make sure the entire head block is available
 	currentBlock := bc.GetBlockByHash(head)
 	if currentBlock == nil {
+		// DEBUG(meowsbits)
 		// Corrupt or empty database, init from scratch
 		log.Warn("Head block missing, resetting chain", "hash", head)
 		return bc.Reset()
@@ -499,8 +502,10 @@ func (bc *BlockChain) SetHead(head uint64) error {
 //
 // The method returns the block number where the requested root cap was found.
 func (bc *BlockChain) SetHeadBeyondRoot(head uint64, root common.Hash) (uint64, error) {
-	bc.chainmu.Lock()
-	defer bc.chainmu.Unlock()
+	llog.Println("here-setHead-start0")
+	// bc.chainmu.Lock()
+	// defer bc.chainmu.Unlock()
+	llog.Println("here-setHead-start1")
 
 	// Track the block number of the requested root hash
 	var rootNumber uint64 // (no root == always 0)
@@ -508,7 +513,10 @@ func (bc *BlockChain) SetHeadBeyondRoot(head uint64, root common.Hash) (uint64, 
 	// Retrieve the last pivot block to short circuit rollbacks beyond it and the
 	// current freezer limit to start nuking id underflown
 	pivot := rawdb.ReadLastPivotNumber(bc.db)
+
+	llog.Println("here-setHead-start2")
 	frozen, _ := bc.db.Ancients()
+	llog.Println("here-setHead-start3")
 
 	updateFn := func(db ethdb.KeyValueWriter, header *types.Header) (uint64, bool) {
 		// Rewind the block chain, ensuring we don't end up with a stateless head
@@ -629,6 +637,8 @@ func (bc *BlockChain) SetHeadBeyondRoot(head uint64, root common.Hash) (uint64, 
 	bc.blockCache.Purge()
 	bc.txLookupCache.Purge()
 	bc.futureBlocks.Purge()
+
+	llog.Println("here-setHead-end")
 
 	return rootNumber, bc.loadLastState()
 }
