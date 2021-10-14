@@ -18,6 +18,7 @@ package core
 
 import (
 	"io/ioutil"
+	"log"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -183,26 +184,33 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 
 	ancientLimit := uint64(len(blocks) / 2)
 
+	log.Println("here1")
+
 	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Fatalf("failed to insert header %d: %v", n, err)
 	}
+	log.Println("here2")
 	if n, err := ancient.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
+	log.Println("here3")
 
 	// Test a rollback, causing the ancient store to use the TruncateAncient method.
 	if err := ancient.SetHead(0); err != nil {
 		t.Fatalf("set head err: %v", err)
 	}
+	log.Println("here4")
 
 	// Reinsert the rolled-back headers and receipts.
 	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Log(ancient.CurrentHeader().Number.Uint64())
 		t.Fatalf("failed to insert header %d (#%d): %v", n, headers[n].Number.Uint64(), err)
 	}
+	log.Println("here5")
 	if n, err := ancient.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
+	log.Println("here6")
 
 	// Explicitly call the HasAncient method.
 	// This method doesn't appear to be used in normal geth operation, and I'm not sure
