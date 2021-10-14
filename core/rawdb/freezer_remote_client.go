@@ -113,7 +113,7 @@ func (b *freezerBatchRemote) AppendRaw(kind string, num uint64, item []byte) err
 }
 
 // ModifyAncients runs the given write operation.
-func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOp) error) (int64, error) {
+func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOperator) error) (int64, error) {
 	// TODO (meowsbits | ziogaschr): do we support write operations?
 
 	return 0, errNotSupported
