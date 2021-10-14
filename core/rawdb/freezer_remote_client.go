@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/params/vars"
+	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -117,7 +118,11 @@ type freezerBatchRemote struct {
 
 func (b *freezerBatchRemote) Append(kind string, num uint64, item interface{}) error {
 	var res int64
-	err := b.client.Call(&res, FreezerMethodWriteAppend, kind, num, item)
+	bs, err := rlp.EncodeToBytes(item)
+	if err != nil {
+		return err
+	}
+	err = b.client.Call(&res, FreezerMethodWriteAppend, kind, num, string(bs))
 	if err != nil {
 		b.writeSize += res
 	}
