@@ -17,7 +17,6 @@
 package lib
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -119,34 +118,34 @@ func (f *MemFreezerRemoteServerAPI) AppendAncient(number uint64, hash, header, b
 }
 
 func (f *MemFreezerRemoteServerAPI) Append(kind string, num uint64, item interface{}) error {
-	if num < f.count || num > f.count+1 {
-		return errOutOfOrder
-	}
-	// Optimistically use the provided num value as the gauge for global state height tracking.
-	if num == f.count+1 {
-		f.count = num
-	}
+	// if num < f.count || num > f.count+1 {
+	// 	return errOutOfOrder
+	// }
+	// // Optimistically use the provided num value as the gauge for global state height tracking.
+	// if num == f.count+1 {
+	// 	f.count = num
+	// }
+	f.count = num + 1
 
-	bs, err := json.MarshalIndent(item, "", "    ")
-	if err != nil {
-		return err
-	}
+	str := item.(string)
 
 	f.mu.Lock()
-	f.store[f.storeKey(kind, num)] = bs
+	f.store[f.storeKey(kind, num)] = []byte(str)
 	f.mu.Unlock()
 
 	return nil
+
 }
 
 func (f *MemFreezerRemoteServerAPI) AppendRaw(kind string, num uint64, item []byte) error {
-	if num < f.count || num > f.count+1 {
-		return errOutOfOrder
-	}
-	// Optimistically use the provided num value as the gauge for global state height tracking.
-	if num == f.count+1 {
-		f.count = num
-	}
+	// if num < f.count || num > f.count+1 {
+	// 	return errOutOfOrder
+	// }
+	// // Optimistically use the provided num value as the gauge for global state height tracking.
+	// if num == f.count+1 {
+	// 	f.count = num
+	// }
+	f.count = num + 1
 
 	f.mu.Lock()
 	f.store[f.storeKey(kind, num)] = item
