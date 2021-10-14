@@ -38,8 +38,8 @@ const (
 
 	// FreezerMethodWriteAppend and FreezerMethodWriteAppendRaw are
 	// methods for re-written (get it?) freezer design with write batching.
-	FreezerMethodWriteAppend    = "freezer_wancient"
-	FreezerMethodWriteAppendRaw = "freezer_wancientraw"
+	FreezerMethodWriteAppend    = "freezer_append"
+	FreezerMethodWriteAppendRaw = "freezer_appendRaw"
 )
 
 // newFreezerRemoteClient constructs a rpc client to connect to a remote freezer
@@ -107,7 +107,11 @@ func (api *FreezerRemoteClient) AppendAncient(number uint64, hash, header, body,
 }
 
 type freezerBatchRemote struct {
-	client    *rpc.Client
+	client *rpc.Client
+
+	// writeSize is managed here (at the client, rather than the server)
+	// because the write-operations are granular, and the size written value
+	// is an aggregate at the ModifyAncients-level.
 	writeSize int64
 }
 
@@ -157,7 +161,7 @@ func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOperato
 		return 0, err
 	}
 
-	return api.writeBatch.writeSize, errNotSupported
+	return api.writeBatch.writeSize, nil
 }
 
 // TruncateAncients discards any recent data above the provided threshold number.
