@@ -1,6 +1,7 @@
 package rawdb
 
 import (
+	llog "log"
 	"sync"
 	"time"
 
@@ -76,6 +77,7 @@ func (api *FreezerRemoteClient) HasAncient(kind string, number uint64) (bool, er
 func (api *FreezerRemoteClient) Ancient(kind string, number uint64) ([]byte, error) {
 	res := []byte{}
 	if err := api.client.Call(&res, FreezerMethodAncient, kind, number); err != nil {
+		llog.Println("frc.Ancient", kind, number, string(res))
 		return nil, err
 	}
 	return res, nil
@@ -111,7 +113,7 @@ type freezerBatchRemote struct {
 	client *rpc.Client
 
 	// writeSize is managed here (at the client, rather than the server)
-	// because the write-operations are granular, and the size written value
+	// because the write-operations are granular (per header, receipt, hash, etcetera), and the size written value
 	// is an aggregate at the ModifyAncients-level.
 	writeSize int64
 }
@@ -154,6 +156,7 @@ func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOperato
 	// Roll back all tables to the starting position in case of error.
 	defer func() {
 		if err != nil {
+			log.Warn("Rolling back ancients", "target(previous)", prev)
 			if err := api.TruncateAncients(prev); err != nil {
 				log.Error("Freezer table roll-back failed", "index", prev, "err", err)
 			}
@@ -165,6 +168,9 @@ func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOperato
 	if err := fn(api.writeBatch); err != nil {
 		return 0, err
 	}
+
+	cur, _ := api.Ancients()
+	llog.Println("frc.ModifyAncient", cur)
 
 	return api.writeBatch.writeSize, nil
 }

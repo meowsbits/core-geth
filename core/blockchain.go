@@ -443,6 +443,7 @@ func (bc *BlockChain) loadLastState() error {
 	if currentBlock == nil {
 		// DEBUG(meowsbits)
 		// Corrupt or empty database, init from scratch
+		llog.Println("head block missing, reset")
 		log.Warn("Head block missing, resetting chain", "hash", head)
 		return bc.Reset()
 	}
@@ -597,13 +598,17 @@ func (bc *BlockChain) SetHeadBeyondRoot(head uint64, root common.Hash) (uint64, 
 		}
 		return head, wipe // Only force wipe if full synced
 	}
+
 	// Rewind the header chain, deleting all block bodies until then
 	delFn := func(db ethdb.KeyValueWriter, hash common.Hash, num uint64) {
 		// Ignore the error here since light client won't hit this path
 		frozen, _ := bc.db.Ancients()
+		llog.Println("here-setHead-start4.2", frozen, num)
+
 		if num+1 <= frozen {
 			// Truncate all relative data(header, total difficulty, body, receipt
 			// and canonical hash) from ancient store.
+			llog.Println("here-setHead-start5")
 			if err := bc.db.TruncateAncients(num); err != nil {
 				log.Crit("Failed to truncate ancient data", "number", num, "err", err)
 			}
@@ -726,6 +731,7 @@ func (bc *BlockChain) Reset() error {
 func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {
 	// Dump the entire block chain and purge the caches
 	if err := bc.SetHead(0); err != nil {
+		llog.Println("reset with genesis errored", err)
 		return err
 	}
 	bc.chainmu.Lock()
