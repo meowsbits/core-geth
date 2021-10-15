@@ -309,11 +309,8 @@ func ReadHeaderRLP(db ethdb.Reader, hash common.Hash, number uint64) rlp.RawValu
 	// comparison is necessary since ancient database only maintains
 	// the canonical data.
 	data, _ := db.Ancient(freezerHeaderTable, number)
-	if len(data) == 0 {
-		llog.Println("Missing header table data", number)
-	}
+
 	if len(data) > 0 && crypto.Keccak256Hash(data) == hash {
-		log.Crit("Mismatch header hash", "hash", hash.Hex(), "data.hash", crypto.Keccak256Hash(data).Hex())
 		return data
 	}
 	// Then try to look up the data in leveldb.

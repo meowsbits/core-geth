@@ -19,7 +19,6 @@ package lib
 import (
 	"errors"
 	"fmt"
-	llog "log"
 	"strconv"
 	"strings"
 	"sync"
@@ -76,10 +75,10 @@ func (f *MemFreezerRemoteServerAPI) Ancient(kind string, number uint64) ([]byte,
 	defer f.mu.Unlock()
 	v, ok := f.store[f.storeKey(kind, number)]
 	if !ok {
-		llog.Printf("memfreezer.Ancient-MISS: kind: %s, num: %d, item: %v", kind, number, string(v))
+		// llog.Printf("memfreezer.Ancient-MISS: kind: %s, num: %d, item: %v", kind, number, string(v))
 		return nil, errOutOfBounds
 	}
-	llog.Printf("memfreezer.Ancient: kind: %s, num: %d, item: %v", kind, number, string(v))
+	// llog.Printf("memfreezer.Ancient: kind: %s, num: %d, item: %v", kind, number, string(v))
 
 	return v, nil
 }
@@ -134,7 +133,7 @@ func (f *MemFreezerRemoteServerAPI) Append(kind string, num uint64, item interfa
 	f.count = num + 1
 
 	if num == 0 {
-		llog.Printf("memfreezer.Append: kind: %s, num: %d, item: %v", kind, num, item)
+		// llog.Printf("memfreezer.Append: kind: %s, num: %d, item: %v", kind, num, item)
 
 	}
 

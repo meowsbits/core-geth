@@ -266,8 +266,14 @@ func TestFreezerRemoteConcise(t *testing.T) {
 
 	block := ancient.GetBlockByHash(blocks[0].Hash())
 	if block == nil {
-		t.Fatalf("nil")
+		panic("i amnil")
+		t.Fatal("was nil")
 	}
+	block2 := ancient.GetBlockByNumber(blocks[0].NumberU64())
+	if block2.Hash() != block.Hash() {
+		t.Fatal("block 0 hash mismatch")
+	}
+	log.Println("here4")
 }
 
 // Tests that fast importing a block chain produces the same chain data as the
