@@ -1,7 +1,6 @@
 package rawdb
 
 import (
-	llog "log"
 	"sync"
 	"time"
 
@@ -77,7 +76,7 @@ func (api *FreezerRemoteClient) HasAncient(kind string, number uint64) (bool, er
 func (api *FreezerRemoteClient) Ancient(kind string, number uint64) ([]byte, error) {
 	res := []byte{}
 	if err := api.client.Call(&res, FreezerMethodAncient, kind, number); err != nil {
-		llog.Println("frc.Ancient", kind, number, string(res))
+		// llog.Println("frc.Ancient", kind, number, string(res))
 		return nil, err
 	}
 	return res, nil
@@ -169,8 +168,8 @@ func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOperato
 		return 0, err
 	}
 
-	cur, _ := api.Ancients()
-	llog.Println("frc.ModifyAncient", cur)
+	// cur, _ := api.Ancients()
+	// llog.Println("frc.ModifyAncient", cur)
 
 	return api.writeBatch.writeSize, nil
 }

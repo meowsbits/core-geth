@@ -89,6 +89,86 @@ func testRPCRemoteFreezer(t *testing.T) (rpcFreezerEndpoint string, server *rpc.
 	return rpcFreezerEndpoint, server, ancientDb
 }
 
+func TestFreezerConcise(t *testing.T) {
+	// Configure and generate a sample block chain
+	var (
+		gendb   = rawdb.NewMemoryDatabase()
+		key, _  = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")
+		address = crypto.PubkeyToAddress(key.PublicKey)
+		funds   = big.NewInt(1000000000000000)
+		gspec   = &genesisT.Genesis{
+			Config:  params.TestChainConfig,
+			Alloc:   genesisT.GenesisAlloc{address: {Balance: funds}},
+			BaseFee: big.NewInt(vars.InitialBaseFee),
+		}
+		genesis = MustCommitGenesis(gendb, gspec)
+		signer  = types.NewEIP155Signer(gspec.Config.GetChainID())
+	)
+	blocks, receipts := GenerateChain(gspec.Config, genesis, ethash.NewFaker(), gendb, 1024, func(i int, block *BlockGen) {
+		block.SetCoinbase(common.Address{0x00})
+
+		// If the block number is multiple of 3, send a few bonus transactions to the miner
+		if i%3 == 2 {
+			for j := 0; j < i%4+1; j++ {
+				tx, err := types.SignTx(types.NewTransaction(block.TxNonce(address), common.Address{0x00}, big.NewInt(1000), vars.TxGas, block.header.BaseFee, nil), signer, key)
+				if err != nil {
+					panic(err)
+				}
+				block.AddTx(tx)
+			}
+		}
+		// If the block number is a multiple of 5, add a few bonus uncles to the block
+		if i%5 == 5 {
+			block.AddUncle(&types.Header{ParentHash: block.PrevBlock(i - 1).Hash(), Number: big.NewInt(int64(i - 1))})
+		}
+	})
+	if receipts == nil {
+		// This is only to avoid unused variable while writing the test and running it
+		// intermittently.
+		t.Fatalf("receipts nil")
+	}
+
+	headers := make([]*types.Header, len(blocks))
+	for i, block := range blocks {
+		headers[i] = block.Header()
+	}
+	ancientLimit := uint64(len(blocks) / 2)
+
+	frdir, err := ioutil.TempDir("", "")
+	if err != nil {
+		t.Fatalf("failed to create temp freezer dir: %v", err)
+	}
+	defer os.Remove(frdir)
+	archiveDb, err := rawdb.NewDatabaseWithFreezer(rawdb.NewMemoryDatabase(), frdir, "", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	MustCommitGenesis(archiveDb, gspec)
+	archive, _ := NewBlockChain(archiveDb, nil, gspec.Config, ethash.NewFaker(), vm.Config{}, nil, nil)
+	defer archive.Stop()
+
+	if n, err := archive.InsertHeaderChain(headers, 1); err != nil {
+		t.Fatalf("failed to insert header %d: %v", n, err)
+	}
+	log.Println("here2")
+	if n, err := archive.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
+		t.Fatalf("failed to insert receipt %d: %v", n, err)
+	}
+	log.Println("here3")
+
+	// archive.InsertChain(blocks[:1])
+
+	// one := archive.GetBlockByNumber(1)
+	// if one == nil {
+	// 	t.Fatalf("nil")
+	// }
+
+	block := archive.GetBlockByHash(blocks[0].Hash())
+	if block == nil {
+		t.Fatalf("nil")
+	}
+}
+
 func TestFreezerRemoteConcise(t *testing.T) {
 	// Configure and generate a sample block chain
 	var (
@@ -156,6 +236,7 @@ func TestFreezerRemoteConcise(t *testing.T) {
 			t.Fatalf("deferred truncate ancients error: %v", err)
 		}
 	}()
+	// defer server.Stop()
 
 	MustCommitGenesis(ancientDb, gspec)
 	ancient, _ := NewBlockChain(ancientDb, nil, gspec.Config, ethash.NewFaker(), vm.Config{}, nil, nil)
@@ -167,11 +248,11 @@ func TestFreezerRemoteConcise(t *testing.T) {
 		t.Fatalf("ancient limit below 0")
 	}
 
-	if n, err := ancient.InsertHeaderChain(headers[:1], 1); err != nil {
+	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Fatalf("failed to insert header %d: %v", n, err)
 	}
 	log.Println("here2")
-	if n, err := ancient.InsertReceiptChain(blocks[:1], receipts[:1], ancientLimit); err != nil {
+	if n, err := ancient.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
 	log.Println("here3")
