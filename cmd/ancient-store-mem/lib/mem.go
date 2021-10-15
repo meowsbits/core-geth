@@ -19,9 +19,12 @@ package lib
 import (
 	"errors"
 	"fmt"
+	llog "log"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/ethereum/go-ethereum/common"
 )
 
 const (
@@ -73,9 +76,10 @@ func (f *MemFreezerRemoteServerAPI) Ancient(kind string, number uint64) ([]byte,
 	defer f.mu.Unlock()
 	v, ok := f.store[f.storeKey(kind, number)]
 	if !ok {
+		llog.Printf("memfreezer.Ancient-MISS: kind: %s, num: %d, item: %v", kind, number, string(v))
 		return nil, errOutOfBounds
 	}
-	// llog.Printf("memfreezer.Ancient: kind: %s, num: %d, item: %v", kind, number, string(v))
+	llog.Printf("memfreezer.Ancient: kind: %s, num: %d, item: %v", kind, number, string(v))
 
 	return v, nil
 }
@@ -129,12 +133,15 @@ func (f *MemFreezerRemoteServerAPI) Append(kind string, num uint64, item interfa
 	// }
 	f.count = num + 1
 
-	// llog.Printf("memfreezer.Append: kind: %s, num: %d, item: %v", kind, num, item)
+	if num == 0 {
+		llog.Printf("memfreezer.Append: kind: %s, num: %d, item: %v", kind, num, item)
+
+	}
 
 	str := item.(string)
 
 	f.mu.Lock()
-	f.store[f.storeKey(kind, num)] = []byte(str)
+	f.store[f.storeKey(kind, num)] = common.Hex2Bytes(str)
 	f.mu.Unlock()
 
 	return nil
@@ -149,6 +156,8 @@ func (f *MemFreezerRemoteServerAPI) AppendRaw(kind string, num uint64, item []by
 	// 	f.count = num
 	// }
 	f.count = num + 1
+
+	// llog.Printf("memfreezer.AppendRaw: kind: %s, num: %d, item: %v", kind, num, item)
 
 	f.mu.Lock()
 	f.store[f.storeKey(kind, num)] = item

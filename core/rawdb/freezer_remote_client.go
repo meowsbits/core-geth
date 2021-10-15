@@ -123,9 +123,10 @@ func (b *freezerBatchRemote) Append(kind string, num uint64, item interface{}) e
 	if err != nil {
 		return err
 	}
-	err = b.client.Call(&res, FreezerMethodWriteAppend, kind, num, string(bs))
+
+	err = b.client.Call(&res, FreezerMethodWriteAppend, kind, num, common.Bytes2Hex(bs))
 	if err != nil {
-		b.writeSize += res
+		b.writeSize += int64(len(bs))
 	}
 	return err
 }
