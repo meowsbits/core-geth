@@ -289,10 +289,10 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 		address = crypto.PubkeyToAddress(key.PublicKey)
 		funds   = big.NewInt(1000000000000000)
 		gspec   = &genesisT.Genesis{
-			Config:     params.TestChainConfig,
-			Alloc:      genesisT.GenesisAlloc{address: {Balance: funds}},
-			BaseFee:    big.NewInt(vars.InitialBaseFee),
-			Difficulty: vars.MinimumDifficulty,
+			Config:  params.TestChainConfig,
+			Alloc:   genesisT.GenesisAlloc{address: {Balance: funds}},
+			BaseFee: big.NewInt(vars.InitialBaseFee),
+			// Difficulty: vars.MinimumDifficulty,
 		}
 		genesis = MustCommitGenesis(gendb, gspec)
 		signer  = types.NewEIP155Signer(gspec.Config.GetChainID())
