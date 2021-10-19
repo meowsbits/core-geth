@@ -400,6 +400,9 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 	if err := ancient.SetHead(0); err != nil {
 		t.Fatalf("set head err: %v", err)
 	}
+	// if err := ancient.Reset(); err != nil {
+	// 	t.Fatalf("reset err: %v", err)
+	// }
 	log.Println("here4")
 
 	// // Reinsert the rolled-back headers and receipts.
@@ -429,6 +432,10 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 		}
 	}
 
+	if genesis := ancient.GetBlockByNumber(0); genesis == nil {
+		t.Fatalf("ancient genesis nil")
+	}
+
 	// Iterate over all chain data components, and cross reference
 	for i := 0; i < len(blocks); i++ {
 		num, hash := blocks[i].NumberU64(), blocks[i].Hash()
@@ -437,7 +444,11 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 			t.Errorf("block #%d [%x]: td mismatch: fastdb %v, archivedb %v", num, hash, ftd, atd)
 		}
 		if antd, artd := ancient.GetTdByHash(hash), archive.GetTdByHash(hash); antd.Cmp(artd) != 0 {
-			t.Errorf("block #%d [%x]: td mismatch: ancientdb %v, archivedb %v", num, hash, antd, artd)
+			t.Errorf("block #%d [%x]: td.byhash mismatch: ancientdb %v, archivedb %v", num, hash, antd, artd)
+			t.Logf("debug, block.difficulty: %v", blocks[i].Difficulty())
+		}
+		if antd, artd := ancient.GetTd(hash, num), archive.GetTd(hash, num); antd.Cmp(artd) != 0 {
+			t.Errorf("block #%d [%x]: td.byhashnum mismatch: ancientdb %v, archivedb %v", num, hash, antd, artd)
 		}
 		if fheader, aheader := fast.GetHeaderByHash(hash), archive.GetHeaderByHash(hash); fheader.Hash() != aheader.Hash() {
 			t.Errorf("block #%d [%x]: header mismatch: fastdb %v, archivedb %v", num, hash, fheader, aheader)
