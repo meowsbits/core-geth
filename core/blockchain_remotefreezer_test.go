@@ -18,7 +18,6 @@ package core
 
 import (
 	"io/ioutil"
-	"log"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -150,18 +149,9 @@ func TestFreezerConcise(t *testing.T) {
 	if n, err := archive.InsertHeaderChain(headers, 1); err != nil {
 		t.Fatalf("failed to insert header %d: %v", n, err)
 	}
-	log.Println("here2")
 	if n, err := archive.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
-	log.Println("here3")
-
-	// archive.InsertChain(blocks[:1])
-
-	// one := archive.GetBlockByNumber(1)
-	// if one == nil {
-	// 	t.Fatalf("nil")
-	// }
 
 	block := archive.GetBlockByHash(blocks[0].Hash())
 	if block == nil {
@@ -251,18 +241,9 @@ func TestFreezerRemoteConcise(t *testing.T) {
 	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Fatalf("failed to insert header %d: %v", n, err)
 	}
-	log.Println("here2")
 	if n, err := ancient.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
-	log.Println("here3")
-
-	// ancient.InsertChain(blocks[:1])
-
-	// one := ancient.GetBlockByNumber(1)
-	// if one == nil {
-	// 	t.Fatalf("nil")
-	// }
 
 	block := ancient.GetBlockByHash(blocks[0].Hash())
 	if block == nil {
@@ -273,7 +254,6 @@ func TestFreezerRemoteConcise(t *testing.T) {
 	if block2.Hash() != block.Hash() {
 		t.Fatal("block 0 hash mismatch")
 	}
-	log.Println("here4")
 }
 
 // Tests that fast importing a block chain produces the same chain data as the
@@ -381,8 +361,7 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 
 	randomAncientBlock := ancient.GetBlockByNumber(5)
 	if randomAncientBlock == nil {
-		log.Println("current block", ancient.CurrentBlock().Number())
-		panic("random ancient block nil")
+		t.Fatalf("random ancient block was nil")
 	}
 
 	// Test a rollback, causing the ancient store to use the TruncateAncient method.
