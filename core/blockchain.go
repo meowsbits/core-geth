@@ -507,7 +507,6 @@ func (bc *BlockChain) SetHeadBeyondRoot(head uint64, root common.Hash) (uint64, 
 	// Retrieve the last pivot block to short circuit rollbacks beyond it and the
 	// current freezer limit to start nuking id underflown
 	pivot := rawdb.ReadLastPivotNumber(bc.db)
-
 	frozen, _ := bc.db.Ancients()
 
 	updateFn := func(db ethdb.KeyValueWriter, header *types.Header) (uint64, bool) {
@@ -589,12 +588,10 @@ func (bc *BlockChain) SetHeadBeyondRoot(head uint64, root common.Hash) (uint64, 
 		}
 		return head, wipe // Only force wipe if full synced
 	}
-
 	// Rewind the header chain, deleting all block bodies until then
 	delFn := func(db ethdb.KeyValueWriter, hash common.Hash, num uint64) {
 		// Ignore the error here since light client won't hit this path
 		frozen, _ := bc.db.Ancients()
-
 		if num+1 <= frozen {
 			// Truncate all relative data(header, total difficulty, body, receipt
 			// and canonical hash) from ancient store.

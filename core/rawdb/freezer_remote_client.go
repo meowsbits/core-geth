@@ -169,9 +169,6 @@ func (api *FreezerRemoteClient) ModifyAncients(fn func(ethdb.AncientWriteOperato
 		return 0, err
 	}
 
-	// cur, _ := api.Ancients()
-	// llog.Println("frc.ModifyAncient", cur)
-
 	return api.writeBatch.writeSize, nil
 }
 
