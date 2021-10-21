@@ -372,23 +372,12 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 
 	ancientLimit := uint64(len(blocks) / 2)
 
-	log.Println("here1")
-
 	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Fatalf("failed to insert header %d: %v", n, err)
 	}
-	log.Println("here2")
 	if n, err := ancient.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
-	log.Println("here3")
-
-	// // HERE
-	// i, err := ancient.InsertChain(blocks)
-	// if err != nil {
-	// 	t.Fatalf("insert chain err: %v", err)
-	// }
-	// t.Logf("insertchain: %d", i)
 
 	randomAncientBlock := ancient.GetBlockByNumber(5)
 	if randomAncientBlock == nil {
@@ -400,27 +389,15 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 	if err := ancient.SetHead(0); err != nil {
 		t.Fatalf("set head err: %v", err)
 	}
-	// if err := ancient.Reset(); err != nil {
-	// 	t.Fatalf("reset err: %v", err)
-	// }
-	log.Println("here4")
 
-	// // Reinsert the rolled-back headers and receipts.
+	// Reinsert the rolled-back headers and receipts.
 	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Log(ancient.CurrentHeader().Number.Uint64())
 		t.Fatalf("failed to insert header %d (#%d): %v", n, headers[n].Number.Uint64(), err)
 	}
-	log.Println("here5")
 	if n, err := ancient.InsertReceiptChain(blocks, receipts, ancientLimit); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
-	// i, err = ancient.InsertChain(blocks)
-	// if err != nil {
-	// 	t.Fatalf("insert chain err: %v", err)
-	// }
-	// t.Logf("insertchain: %d", i)
-
-	log.Println("here6")
 
 	// Explicitly call the HasAncient method.
 	// This method doesn't appear to be used in normal geth operation, and I'm not sure

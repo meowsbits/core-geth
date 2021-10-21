@@ -75,10 +75,8 @@ func (f *MemFreezerRemoteServerAPI) Ancient(kind string, number uint64) ([]byte,
 	defer f.mu.Unlock()
 	v, ok := f.store[f.storeKey(kind, number)]
 	if !ok {
-		// llog.Printf("memfreezer.Ancient-MISS: kind: %s, num: %d, item: %v", kind, number, string(v))
 		return nil, errOutOfBounds
 	}
-	// llog.Printf("memfreezer.Ancient: kind: %s, num: %d, item: %v", kind, number, string(v))
 
 	return v, nil
 }
@@ -126,16 +124,8 @@ func (f *MemFreezerRemoteServerAPI) Append(kind string, num uint64, item interfa
 	// if num < f.count || num > f.count+1 {
 	// 	return errOutOfOrder
 	// }
-	// // Optimistically use the provided num value as the gauge for global state height tracking.
-	// if num == f.count+1 {
-	// 	f.count = num
-	// }
+	// Optimistically use the provided num value as the gauge for global state height tracking.
 	f.count = num + 1
-
-	if num == 0 {
-		// llog.Printf("memfreezer.Append: kind: %s, num: %d, item: %v", kind, num, item)
-
-	}
 
 	str := item.(string)
 
@@ -150,13 +140,8 @@ func (f *MemFreezerRemoteServerAPI) AppendRaw(kind string, num uint64, item []by
 	// if num < f.count || num > f.count+1 {
 	// 	return errOutOfOrder
 	// }
-	// // Optimistically use the provided num value as the gauge for global state height tracking.
-	// if num == f.count+1 {
-	// 	f.count = num
-	// }
+	// Optimistically use the provided num value as the gauge for global state height tracking.
 	f.count = num + 1
-
-	// llog.Printf("memfreezer.AppendRaw: kind: %s, num: %d, item: %v", kind, num, item)
 
 	f.mu.Lock()
 	f.store[f.storeKey(kind, num)] = item
