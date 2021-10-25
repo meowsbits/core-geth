@@ -1967,6 +1967,10 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		//
 		// PS. It should be obvious by situ, but TAB is calculated AFTER all the transactions
 		//     have been processed. So if Ether disappears during the block, its not included here. Edge case.
+		//
+		// PSS. It should also be noted that TAB should only be calculated for HFC transactions.
+		//      By the design of HFC (where only HFC-valid transactions will be, well, valid) this
+		//      demand will be assumed. (Since HFC-invalid transactions will not be included in any blocks).
 		tab := new(big.Int)
 		for _, addr := range statedb.AccessList() {
 			tab.Add(tab, statedb.GetBalance(addr))
