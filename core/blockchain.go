@@ -57,6 +57,8 @@ var (
 	accountUpdateTimer = metrics.NewRegisteredTimer("chain/account/updates", nil)
 	accountCommitTimer = metrics.NewRegisteredTimer("chain/account/commits", nil)
 
+	tabAccessListGauge = metrics.NewRegisteredGauge("chain/account/tab-accesslist", nil)
+
 	storageReadTimer   = metrics.NewRegisteredTimer("chain/storage/reads", nil)
 	storageHashTimer   = metrics.NewRegisteredTimer("chain/storage/hashes", nil)
 	storageUpdateTimer = metrics.NewRegisteredTimer("chain/storage/updates", nil)
@@ -1962,10 +1964,14 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		//   But at least it includes sender and receiver (if any).
 		//   From the potential for extension, we should consider the values returned by this implementation to
 		//   be generally LOW.
+		//
+		// PS. It should be obvious by situ, but TAB is calculated AFTER all the transactions
+		//     have been processed. So if Ether disappears during the block, its not included here. Edge case.
 		tab := new(big.Int)
 		for _, addr := range statedb.AccessList() {
 			tab.Add(tab, statedb.GetBalance(addr))
 		}
+		tabAccessListGauge.Update(tab.Int64())
 
 		// Validate the state using the default validator
 		substart = time.Now()
