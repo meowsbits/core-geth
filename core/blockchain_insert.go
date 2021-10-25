@@ -23,6 +23,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/mclock"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/ethereum/go-ethereum/params/vars"
 )
 
 // insertStats tracks and reports on block insertion.
@@ -60,7 +61,7 @@ func (st *insertStats) report(chain []*types.Block, index int, dirty common.Stor
 		context := []interface{}{
 			"blocks", st.processed, "txs", txs, "mgas", float64(st.usedGas) / 1000000,
 			"elapsed", common.PrettyDuration(elapsed), "mgasps", float64(st.usedGas) * 1000 / float64(elapsed),
-			"number", end.Number(), "hash", end.Hash(), "tab", st.totalActiveBalance,
+			"number", end.Number(), "hash", end.Hash(), "tab", st.totalActiveBalance / vars.Ether,
 		}
 		if timestamp := time.Unix(int64(end.Time()), 0); time.Since(timestamp) > time.Minute {
 			context = append(context, []interface{}{"age", common.PrettyAge(timestamp)}...)
