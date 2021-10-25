@@ -53,6 +53,7 @@ func NewStateProcessor(config ctypes.ChainConfigurator, bc *BlockChain, engine c
 // Process processes the state changes according to the Ethereum rules by running
 // the transaction messages using the statedb and applying any rewards to both
 // the processor (coinbase) and any included uncles.
+// It processes state one block at a time.
 //
 // Process returns the receipts and logs accumulated during the process and
 // returns the amount of gas that was used in the process. If any of the
@@ -106,6 +107,11 @@ func applyTransaction(msg types.Message, config ctypes.ChainConfigurator, bc Cha
 	if err != nil {
 		return nil, err
 	}
+
+	// Error was nil; transaction was processed without concrete EVM failure; (no ErrOutOfGas, etc.)
+	// This is the earliest we can get at this list outside of the weeds.
+	// TODO/ What if the Process method handled a metrics collection object?
+	// statedb.AccessList()
 
 	// Update the state with pending changes.
 	var root []byte

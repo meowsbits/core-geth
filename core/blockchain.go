@@ -1934,6 +1934,9 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			return it.index, err
 		}
 		// Update the metrics touched during block processing
+		// NOTE/ This is as far "down" as the metrics collection gets now.
+		// See comment in state_processor.go suggesting extending a metrics collection object
+		// through to the state process/transition scope.
 		accountReadTimer.Update(statedb.AccountReads)                 // Account reads are complete, we can mark them
 		storageReadTimer.Update(statedb.StorageReads)                 // Storage reads are complete, we can mark them
 		accountUpdateTimer.Update(statedb.AccountUpdates)             // Account updates are complete, we can mark them
@@ -1945,6 +1948,24 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		trieproc += statedb.SnapshotStorageReads + statedb.StorageReads + statedb.StorageUpdates
 
 		blockExecutionTimer.Update(time.Since(substart) - trieproc - triehash)
+
+		// Install developmental metrics for Total Active Balances (TAB).
+		// This is probably going to be a terrible way to 'actually' do it, but I want
+		// to at least get a proof of concept and get some data along the way to inform
+		// a decision to pursue the idea further or not.
+		// This could be better because:
+		// - the code is probably inefficient
+		// - TAB should probably account (get it?) for more than just what the coincidental AccessList (EIP-2930)
+		//   references.
+		//   This might be extended to include all accounts ACTUALLY TOUCHED, and not just the ones in an OPTIONAL
+		//   "access list."
+		//   But at least it includes sender and receiver (if any).
+		//   From the potential for extension, we should consider the values returned by this implementation to
+		//   be generally LOW.
+		tab := new(big.Int)
+		for _, addr := range statedb.AccessList() {
+			tab.Add(tab, statedb.GetBalance(addr))
+		}
 
 		// Validate the state using the default validator
 		substart = time.Now()
