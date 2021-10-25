@@ -1695,6 +1695,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			startTime: mclock.Now(),
 			artificialFinality: bc.IsArtificialFinalityEnabled() &&
 				bc.chainConfig.IsEnabled(bc.chainConfig.GetECBP1100Transition, bc.CurrentBlock().Number()),
+			totalActiveBalance: 0,
 		}
 		lastCanon *types.Block
 	)
@@ -2014,7 +2015,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Debug("Inserted new block", "number", block.Number(), "hash", block.Hash(),
 				"uncles", len(block.Uncles()), "txs", len(block.Transactions()), "gas", block.GasUsed(),
 				"elapsed", common.PrettyDuration(time.Since(start)),
-				"root", block.Root())
+				"root", block.Root(),
+				"tab", tab.Uint64())
 
 			lastCanon = block
 
@@ -2025,7 +2027,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Debug("Inserted forked block", "number", block.Number(), "hash", block.Hash(),
 				"diff", block.Difficulty(), "elapsed", common.PrettyDuration(time.Since(start)),
 				"txs", len(block.Transactions()), "gas", block.GasUsed(), "uncles", len(block.Uncles()),
-				"root", block.Root())
+				"root", block.Root(), "tab", tab.Uint64())
 
 		default:
 			// This in theory is impossible, but lets be nice to our future selves and leave
@@ -2033,10 +2035,11 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Warn("Inserted block with unknown status", "number", block.Number(), "hash", block.Hash(),
 				"diff", block.Difficulty(), "elapsed", common.PrettyDuration(time.Since(start)),
 				"txs", len(block.Transactions()), "gas", block.GasUsed(), "uncles", len(block.Uncles()),
-				"root", block.Root())
+				"root", block.Root(), "tab", tab.Uint64())
 		}
 		stats.processed++
 		stats.usedGas += usedGas
+		stats.totalActiveBalance += tab.Uint64()
 
 		dirty, _ := bc.stateCache.TrieDB().Size()
 		stats.report(chain, it.index, dirty)
