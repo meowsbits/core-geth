@@ -30,7 +30,7 @@ import (
 type insertStats struct {
 	queued, processed, ignored int
 	usedGas                    uint64
-	totalActiveBalance         uint64
+	totalActiveBalance         int64
 	lastIndex                  int
 	startTime                  mclock.AbsTime
 	artificialFinality         bool

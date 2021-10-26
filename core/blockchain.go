@@ -1979,7 +1979,9 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		}
 		// Include miner balance in TAB. This might tip the scales, if the honest miners hodl a little.
 		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
-		tabAccessListGauge.Update(new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64())
+		// Get a non-Big version: int64
+		tabEther := new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64()
+		tabAccessListGauge.Update(tabEther)
 
 		// Validate the state using the default validator
 		substart = time.Now()
@@ -2017,7 +2019,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 				"uncles", len(block.Uncles()), "txs", len(block.Transactions()), "gas", block.GasUsed(),
 				"elapsed", common.PrettyDuration(time.Since(start)),
 				"root", block.Root(),
-				"tab", tab.Uint64()/vars.Ether)
+				"tab", tabEther)
 
 			lastCanon = block
 
@@ -2028,7 +2030,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Debug("Inserted forked block", "number", block.Number(), "hash", block.Hash(),
 				"diff", block.Difficulty(), "elapsed", common.PrettyDuration(time.Since(start)),
 				"txs", len(block.Transactions()), "gas", block.GasUsed(), "uncles", len(block.Uncles()),
-				"root", block.Root(), "tab", tab.Uint64()/vars.Ether)
+				"root", block.Root(), "tab", tabEther)
 
 		default:
 			// This in theory is impossible, but lets be nice to our future selves and leave
@@ -2036,11 +2038,11 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Warn("Inserted block with unknown status", "number", block.Number(), "hash", block.Hash(),
 				"diff", block.Difficulty(), "elapsed", common.PrettyDuration(time.Since(start)),
 				"txs", len(block.Transactions()), "gas", block.GasUsed(), "uncles", len(block.Uncles()),
-				"root", block.Root(), "tab", tab.Uint64()/vars.Ether)
+				"root", block.Root(), "tab", tabEther)
 		}
 		stats.processed++
 		stats.usedGas += usedGas
-		stats.totalActiveBalance += tab.Uint64()
+		stats.totalActiveBalance += tabEther
 
 		dirty, _ := bc.stateCache.TrieDB().Size()
 		stats.report(chain, it.index, dirty)
