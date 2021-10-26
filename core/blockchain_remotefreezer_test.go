@@ -398,7 +398,7 @@ func TestFastVsFullChains_RemoteFreezer(t *testing.T) {
 		if ftd, atd := fast.GetTdByHash(hash), archive.GetTdByHash(hash); ftd.Cmp(atd) != 0 {
 			t.Errorf("block #%d [%x]: td mismatch: fastdb %v, archivedb %v", num, hash, ftd, atd)
 		}
-		if antd, artd := ancient.GetTdByHash(hash), archive.GetTdByHash(hash); antd.Cmp(artd) != 0 {
+		if antd, artd := ancient.GetTdByHash(hash), archive.GetTdByHash(hash); antd == nil || artd == nil || antd.Cmp(artd) != 0 {
 			t.Errorf("block #%d [%x]: td.byhash mismatch: ancientdb %v, archivedb %v", num, hash, antd, artd)
 			t.Logf("debug, block.difficulty: %v", blocks[i].Difficulty())
 		}
@@ -461,13 +461,13 @@ func TestTransactionIndices_RemoteFreezer(t *testing.T) {
 	check := func(tail *uint64, chain *BlockChain) {
 		stored := rawdb.ReadTxIndexTail(chain.db)
 		if tail == nil && stored != nil {
-			t.Fatalf("Oldest indexded block mismatch, want nil, have %d", *stored)
+			t.Fatalf("Oldest indexed block mismatch, want nil, have %d", *stored)
 		}
 		if tail != nil && stored == nil {
 			t.Fatalf("Oldest indexed block mismatch, want %d, have nil", tail)
 		}
 		if tail != nil && stored != nil && *stored != *tail {
-			t.Fatalf("Oldest indexded block mismatch, want %d, have %d", *tail, *stored)
+			t.Fatalf("Oldest indexed block mismatch, want %d, have %d", *tail, *stored)
 		}
 		if tail != nil {
 			for i := *tail; i <= chain.CurrentBlock().NumberU64(); i++ {
