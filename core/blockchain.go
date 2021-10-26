@@ -1979,7 +1979,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		}
 		// Include miner balance in TAB. This might tip the scales, if the honest miners hodl a little.
 		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
-		tabAccessListGauge.Update(tab.Int64() / vars.Ether)
+		tabAccessListGauge.Update(new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64())
 
 		// Validate the state using the default validator
 		substart = time.Now()
