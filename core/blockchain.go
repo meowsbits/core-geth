@@ -2031,6 +2031,12 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		- else if  raw_tab < parent_tab,  then tab = parent_tab - (parent_tab / 4096),
 		- else if  raw_tab == parent_tab, then tab = parent_tab
 
+		Note that this is the same effective pattern used by the CalcGasLimit function,
+		except that there are no bounding limits here.
+
+		Also noteworthy is that if the parent_tab is less than the divisor (here presumed 4096),
+		then there will be no change, and that that divisor value will act like a minimum.
+
 		A2:
 		- TODO
 
@@ -2038,15 +2044,18 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		var tabA1 int64
 		parentTab := bc.hc.GetTAB_A1(block.ParentHash()).Int64()
+		delta := parentTab / 4096
+
 		if tabEther > parentTab {
-			tabA1 = parentTab + (parentTab / 4096)
+			tabA1 = parentTab + delta
 		} else if tabEther < parentTab {
-			tabA1 = parentTab - (parentTab / 4096)
+			tabA1 = parentTab - delta
 		} else /* == */ {
 			tabA1 = parentTab
 		}
 
 		rawdb.WriteTABA1(bc.hc.chainDb, block.Hash(), big.NewInt(tabA1))
+		tabA1Gauge.Update(tabA1)
 
 		// Write the block to the chain and get the status.
 		substart = time.Now()
