@@ -1989,8 +1989,10 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		//      By the design of HFC (where only HFC-valid transactions will be, well, valid) this
 		//      demand will be assumed. (Since HFC-invalid transactions will not be included in any blocks).
 		tab := new(big.Int)
-		for _, addr := range statedb.AccessList() {
-			tab.Add(tab, statedb.GetBalance(addr))
+		for _, tx := range block.Transactions() {
+			// This error, if any, will have been caught by the state Processor
+			msg, _ := tx.AsMessage(types.MakeSigner(bc.chainConfig, block.Number()), block.BaseFee())
+			tab.Add(tab, statedb.GetBalance(msg.From()))
 		}
 		// Include miner balance in TAB. They are active, too.
 		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
