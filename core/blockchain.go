@@ -2033,6 +2033,18 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		*/
 
+		var tabA1 int64
+		parentTab := bc.hc.GetTAB_A1(block.ParentHash()).Int64()
+		if tabEther > parentTab {
+			tabA1 = parentTab + (parentTab / 4096)
+		} else if tabEther < parentTab {
+			tabA1 = parentTab - (parentTab / 4096)
+		} else /* == */ {
+			tabA1 = parentTab
+		}
+
+		rawdb.WriteTABA1(bc.hc.chainDb, block.Hash(), big.NewInt(tabA1))
+
 		// Write the block to the chain and get the status.
 		substart = time.Now()
 		status, err := bc.writeBlockWithState(block, receipts, logs, statedb, false)

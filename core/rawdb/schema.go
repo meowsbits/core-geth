@@ -93,6 +93,8 @@ var (
 	preimagePrefix = []byte("secure-key-")      // preimagePrefix + hash -> preimage
 	configPrefix   = []byte("ethereum-config-") // config prefix for the db
 
+	tabA1Prefix = []byte("taba1")
+
 	// Chain index prefixes (use `i` + single byte to avoid mixing data types).
 	BloomBitsIndexPrefix = []byte("iB") // BloomBitsIndexPrefix is the data table of a chain indexer to track its progress
 
@@ -186,6 +188,10 @@ func headerKey(number uint64, hash common.Hash) []byte {
 // headerTDKey = headerPrefix + num (uint64 big endian) + hash + headerTDSuffix
 func headerTDKey(number uint64, hash common.Hash) []byte {
 	return append(headerKey(number, hash), headerTDSuffix...)
+}
+
+func tabA1Key(hash common.Hash) []byte {
+	return append(tabA1Prefix, hash.Bytes()...)
 }
 
 // headerHashKey = headerPrefix + num (uint64 big endian) + headerHashSuffix

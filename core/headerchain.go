@@ -67,6 +67,7 @@ type HeaderChain struct {
 	headerCache *lru.Cache // Cache for the most recent block headers
 	tdCache     *lru.Cache // Cache for the most recent block total difficulties
 	numberCache *lru.Cache // Cache for the most recent block numbers
+	tabA1Cache  *lru.Cache // Cache for experimental TAB calculation A1
 
 	procInterrupt func() bool
 
@@ -480,6 +481,19 @@ func (hc *HeaderChain) GetTd(hash common.Hash, number uint64) *big.Int {
 	// Cache the found body for next time and return
 	hc.tdCache.Add(hash, td)
 	return td
+}
+
+func (hc *HeaderChain) GetTAB_A1(hash common.Hash) *big.Int {
+	if cached, ok := hc.tabA1Cache.Get(hash); ok {
+		return cached.(*big.Int)
+	}
+	tab := rawdb.ReadTAB_A1(hc.chainDb, hash)
+	if tab == nil {
+		return nil
+	}
+	// Cache the found body for next time and return
+	hc.tabA1Cache.Add(hash, tab)
+	return tab
 }
 
 // GetTdByHash retrieves a block's total difficulty in the canonical chain from the
