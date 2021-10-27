@@ -1977,11 +1977,46 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		for _, addr := range statedb.AccessList() {
 			tab.Add(tab, statedb.GetBalance(addr))
 		}
-		// Include miner balance in TAB. This might tip the scales, if the honest miners hodl a little.
+		// Include miner balance in TAB. They are active, too.
 		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
-		// Get a non-Big version: int64
+
+		// Get a non-Big version: int64, in human-readable (and meaningful) Ether.
 		tabEther := new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64()
 		tabAccessListGauge.Update(tabEther)
+
+		// EXPERIMENT:
+		// : Get a synthetic value representing TAB which adjusts deferentially to difficulty.
+		/* This is the latest difficulty algorithm.
+
+			// https://github.com/ethereum/EIPs/issues/100
+			// algorithm:
+			// diff = (parent_diff +
+			//         (parent_diff / 2048 * max((2 if len(parent.uncles) else 1) - ((timestamp - parent.timestamp) // 9), -99))
+
+		This yields:
+
+		max:     parent_diff + (2 * parent_diff / 2048 - 0)  [includes uncles, and fast]      ~> 1.001
+		pen_max: parent_diff + (parent_diff / 2048 - 0)      [no uncles, but fast]            ~> 1.0005
+
+		low:     parent_diff - (99 * parent_diff / 2048) ~> parent_diff - ( parent_diff / 20) ~> 0.95
+
+		So, in pursuing a deferential (milder, meeker) adjustment algorithm for TAB, we should
+		follow the shape of the curve, but reduce the steepness.
+
+		We have two variables known to us a priori:
+		- parent_tab
+		- raw_tab (this is the current, "raw" value, ie. as computed above.
+
+
+		A1:
+		- if       raw_tab > parent_tab,  then tab = parent_tab + (parent_tab / 4096),
+		- else if  raw_tab < parent_tab,  then tab = parent_tab - (parent_tab / 4096),
+		- else if  raw_tab == parent_tab, then tab = parent_tab
+
+		A2:
+		- TODO
+
+		*/
 
 		// Validate the state using the default validator
 		substart = time.Now()
