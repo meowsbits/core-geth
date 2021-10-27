@@ -2043,8 +2043,15 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		*/
 
 		var tabA1 int64
-		parentTab := bc.hc.GetTAB_A1(block.ParentHash()).Int64()
+		parentTab := int64(0)
+		parentTabBig := bc.hc.GetTAB_A1(block.ParentHash())
+		if parentTabBig != nil {
+			parentTab = parentTabBig.Int64()
+		}
 		delta := parentTab / 4096
+		if delta < 1 {
+			delta = 1
+		}
 
 		if tabEther > parentTab {
 			tabA1 = parentTab + delta
