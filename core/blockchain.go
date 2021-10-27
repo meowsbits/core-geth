@@ -58,8 +58,10 @@ var (
 	accountUpdateTimer = metrics.NewRegisteredTimer("chain/account/updates", nil)
 	accountCommitTimer = metrics.NewRegisteredTimer("chain/account/commits", nil)
 
-	tabFromPlusMinerGauge = metrics.NewRegisteredGauge("chain/account/tab-fromsplusminer", nil)
-	tabA1Gauge            = metrics.NewRegisteredGauge("chain/account/tab-a1", nil)
+	tabFromPlusMinerGauge       = metrics.NewRegisteredGauge("chain/account/tab-fromsplusminer", nil)
+	tabA1Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-a1", nil)
+	tabB1Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-b1", nil)
+	tabB1_ConsensusPoints_Gauge = metrics.NewRegisteredGauge("chain/account/tab-b1-cp", nil)
 
 	storageReadTimer   = metrics.NewRegisteredTimer("chain/storage/reads", nil)
 	storageHashTimer   = metrics.NewRegisteredTimer("chain/storage/hashes", nil)
@@ -1913,6 +1915,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		statedb.StartPrefetcher("chain")
 		activeState = statedb
 
+		// ------------------------------------------------- START TAB EXPERIMENTS
+
 		// Install developmental metrics for Total Active Balances (TAB).
 		// Note that the state balance measurements are taken BEFORE block transaction processing.
 		//
@@ -1953,6 +1957,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			seenSenders[msg.From()] = true
 			tab.Add(tab, statedb.GetBalance(msg.From()))
 		}
+
+		// ------------------------------------------------- END TAB EXPERIMENTS
 
 		// If we have a followup block, run that against the current state to pre-cache
 		// transactions and probabilistically some of the account/storage trie nodes.
@@ -2010,6 +2016,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		blockValidationTimer.Update(time.Since(substart) - (statedb.AccountHashes + statedb.StorageHashes - triehash))
 
+		// ------------------------------------------------- START TAB EXPERIMENTS
+
 		// Get a non-Big version: int64, in human-readable (and meaningful) Ether.
 		tabEther := new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64()
 		tabFromPlusMinerGauge.Update(tabEther)
@@ -2049,9 +2057,6 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		Also noteworthy is that if the parent_tab is less than the divisor (here presumed 4096),
 		then there will be no change, and that that divisor value will act like a minimum.
 
-		A2:
-		- TODO
-
 		*/
 
 		var tabA1 int64
@@ -2075,6 +2080,36 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		rawdb.WriteTABA1(bc.hc.chainDb, block.Hash(), big.NewInt(tabA1))
 		tabA1Gauge.Update(tabA1)
+
+		/*
+			B1:
+			This is the current protocol:
+			consensus_points = difficulty
+
+			This is the proposed protocol:
+			x = 1..2048 (TBD)
+											[----- tab accomodation ------------------]
+			consensus_points = difficulty + ((difficulty / x) - (difficulty / x / tab))
+			where tab is measured in Ether (1e18 wei)
+		*/
+
+		var tabB1 int64
+		x := common.Big1
+		// (difficulty / x)
+		tabBonus := new(big.Int).Div(block.Difficulty(), x)
+
+		// ((difficulty / x) - (difficulty / x / tab))
+		sub := new(big.Int).Set(tabBonus)
+		sub.Div(sub, big.NewInt(tabEther))
+		tabBonus.Sub(tabBonus, sub)
+
+		tabB1 = tabBonus.Int64()
+		tabB1Gauge.Update(tabB1)
+
+		consensusPoints := new(big.Int).Add(block.Difficulty(), tabBonus)
+		tabB1_ConsensusPoints_Gauge.Update(consensusPoints.Int64())
+
+		// ------------------------------------------------- END TAB EXPERIMENTS
 
 		// Write the block to the chain and get the status.
 		substart = time.Now()
