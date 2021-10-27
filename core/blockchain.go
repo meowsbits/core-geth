@@ -2091,7 +2091,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 			This is the proposed protocol:
 			x = 1..2048 (TBD)
-											[----- tab accomodation ------------------]
+											[- tab bonus -----------------------------]
 			consensus_points = difficulty + ((difficulty / x) - (difficulty / x / tab))
 			where tab is measured in Ether (1e18 wei)
 		*/
@@ -2103,7 +2103,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		// ((difficulty / x) - (difficulty / x / tab))
 		sub := new(big.Int).Set(tabBonus)
-		sub.Div(sub, big.NewInt(tabEther))
+		sub.Div(sub, big.NewInt(tabEther+1)) // +1 to avoid divide-by-zero errors
 		tabBonus.Sub(tabBonus, sub)
 
 		tabB1 = tabBonus.Int64()
