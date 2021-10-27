@@ -1913,6 +1913,47 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		statedb.StartPrefetcher("chain")
 		activeState = statedb
 
+		// Install developmental metrics for Total Active Balances (TAB).
+		// Note that the state balance measurements are taken BEFORE block transaction processing.
+		//
+		// This is probably going to be a terrible way to 'actually' do it, but I want
+		// to at least get a proof of concept and get some data along the way to inform
+		// a decision to pursue the idea further or not.
+		// This could be better because:
+		// - the code is probably inefficient
+		// - TAB should probably account (get it?) for more than just what the coincidental AccessList (EIP-2930)
+		//   references.
+		//   This might be extended to include all accounts ACTUALLY TOUCHED, and not just the ones in an OPTIONAL
+		//   "access list."
+		//   But at least it includes sender and receiver (if any).
+		//   From the potential for extension, we should consider the values returned by this implementation to
+		//   be generally LOW.
+		//
+		// PS. It should be obvious by situ, but TAB is calculated AFTER all the transactions
+		//     have been processed. So if Ether disappears during the block, its not included here. Edge case.
+		//
+		// PSS. It should also be noted that TAB should only be calculated for HFC transactions.
+		//      By the design of HFC (where only HFC-valid transactions will be, well, valid) this
+		//      demand will be assumed. (Since HFC-invalid transactions will not be included in any blocks).
+		tab := new(big.Int)
+		seenSenders := map[common.Address]bool{
+			block.Coinbase(): true,
+		}
+		// Include miner balance in TAB. They are active, too.
+		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
+
+		for _, tx := range block.Transactions() {
+			// This error, if any, will have been caught by the state Processor
+			msg, _ := tx.AsMessage(types.MakeSigner(bc.chainConfig, block.Number()), block.BaseFee())
+
+			// Only tally balances from unique senders.
+			if _, ok := seenSenders[msg.From()]; ok {
+				continue
+			}
+			seenSenders[msg.From()] = true
+			tab.Add(tab, statedb.GetBalance(msg.From()))
+		}
+
 		// If we have a followup block, run that against the current state to pre-cache
 		// transactions and probabilistically some of the account/storage trie nodes.
 		var followupInterrupt uint32
@@ -1968,45 +2009,6 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		storageHashTimer.Update(statedb.StorageHashes) // Storage hashes are complete, we can mark them
 
 		blockValidationTimer.Update(time.Since(substart) - (statedb.AccountHashes + statedb.StorageHashes - triehash))
-
-		// Install developmental metrics for Total Active Balances (TAB).
-		// This is probably going to be a terrible way to 'actually' do it, but I want
-		// to at least get a proof of concept and get some data along the way to inform
-		// a decision to pursue the idea further or not.
-		// This could be better because:
-		// - the code is probably inefficient
-		// - TAB should probably account (get it?) for more than just what the coincidental AccessList (EIP-2930)
-		//   references.
-		//   This might be extended to include all accounts ACTUALLY TOUCHED, and not just the ones in an OPTIONAL
-		//   "access list."
-		//   But at least it includes sender and receiver (if any).
-		//   From the potential for extension, we should consider the values returned by this implementation to
-		//   be generally LOW.
-		//
-		// PS. It should be obvious by situ, but TAB is calculated AFTER all the transactions
-		//     have been processed. So if Ether disappears during the block, its not included here. Edge case.
-		//
-		// PSS. It should also be noted that TAB should only be calculated for HFC transactions.
-		//      By the design of HFC (where only HFC-valid transactions will be, well, valid) this
-		//      demand will be assumed. (Since HFC-invalid transactions will not be included in any blocks).
-		tab := new(big.Int)
-		seenSenders := map[common.Address]bool{
-			block.Coinbase(): true,
-		}
-		// Include miner balance in TAB. They are active, too.
-		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
-
-		for _, tx := range block.Transactions() {
-			// This error, if any, will have been caught by the state Processor
-			msg, _ := tx.AsMessage(types.MakeSigner(bc.chainConfig, block.Number()), block.BaseFee())
-
-			// Only tally balances from unique senders.
-			if _, ok := seenSenders[msg.From()]; ok {
-				continue
-			}
-			seenSenders[msg.From()] = true
-			tab.Add(tab, statedb.GetBalance(msg.From()))
-		}
 
 		// Get a non-Big version: int64, in human-readable (and meaningful) Ether.
 		tabEther := new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64()
