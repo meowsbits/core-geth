@@ -159,7 +159,7 @@ func TestFreezerConcise(t *testing.T) {
 	}
 }
 
-func TestFreezerRemoteConcise(t *testing.T) {
+func TestFreezerRemote_Short(t *testing.T) {
 	// Configure and generate a sample block chain
 	var (
 		gendb   = rawdb.NewMemoryDatabase()
@@ -247,8 +247,7 @@ func TestFreezerRemoteConcise(t *testing.T) {
 
 	block := ancient.GetBlockByHash(blocks[0].Hash())
 	if block == nil {
-		panic("i amnil")
-		t.Fatal("was nil")
+		t.Fatal("first block was nil")
 	}
 	block2 := ancient.GetBlockByNumber(blocks[0].NumberU64())
 	if block2.Hash() != block.Hash() {
