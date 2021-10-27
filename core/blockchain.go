@@ -59,7 +59,7 @@ var (
 	accountCommitTimer = metrics.NewRegisteredTimer("chain/account/commits", nil)
 
 	tabFromPlusMinerGauge = metrics.NewRegisteredGauge("chain/account/tab-fromsplusminer", nil)
-	tabA1Gauge            = metrics.NewRegisteredGauge("chain/account/tab-accesslist", nil)
+	tabA1Gauge            = metrics.NewRegisteredGauge("chain/account/tab-a1", nil)
 
 	storageReadTimer   = metrics.NewRegisteredTimer("chain/storage/reads", nil)
 	storageHashTimer   = metrics.NewRegisteredTimer("chain/storage/hashes", nil)
