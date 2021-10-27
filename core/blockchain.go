@@ -58,7 +58,8 @@ var (
 	accountUpdateTimer = metrics.NewRegisteredTimer("chain/account/updates", nil)
 	accountCommitTimer = metrics.NewRegisteredTimer("chain/account/commits", nil)
 
-	tabAccessListGauge = metrics.NewRegisteredGauge("chain/account/tab-accesslist", nil)
+	tabFromPlusMinerGauge = metrics.NewRegisteredGauge("chain/account/tab-fromsplusminer", nil)
+	tabA1Gauge            = metrics.NewRegisteredGauge("chain/account/tab-accesslist", nil)
 
 	storageReadTimer   = metrics.NewRegisteredTimer("chain/storage/reads", nil)
 	storageHashTimer   = metrics.NewRegisteredTimer("chain/storage/hashes", nil)
@@ -1999,7 +2000,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		// Get a non-Big version: int64, in human-readable (and meaningful) Ether.
 		tabEther := new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64()
-		tabAccessListGauge.Update(tabEther)
+		tabFromPlusMinerGauge.Update(tabEther)
 
 		// EXPERIMENT:
 		// : Get a synthetic value representing TAB which adjusts deferentially to difficulty.
