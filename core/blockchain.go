@@ -49,9 +49,10 @@ import (
 )
 
 var (
-	headBlockGauge     = metrics.NewRegisteredGauge("chain/head/block", nil)
-	headHeaderGauge    = metrics.NewRegisteredGauge("chain/head/header", nil)
-	headFastBlockGauge = metrics.NewRegisteredGauge("chain/head/receipt", nil)
+	headBlockGauge      = metrics.NewRegisteredGauge("chain/head/block", nil)
+	headHeaderGauge     = metrics.NewRegisteredGauge("chain/head/header", nil)
+	headFastBlockGauge  = metrics.NewRegisteredGauge("chain/head/receipt", nil)
+	headDifficultyGauge = metrics.NewRegisteredGauge("chain/head/difficulty", nil)
 
 	accountReadTimer   = metrics.NewRegisteredTimer("chain/account/reads", nil)
 	accountHashTimer   = metrics.NewRegisteredTimer("chain/account/hashes", nil)
@@ -2058,6 +2059,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		then there will be no change, and that that divisor value will act like a minimum.
 
 		*/
+
+		headDifficultyGauge.Update(block.Difficulty().Int64())
 
 		var tabA1 int64
 		parentTab := int64(0)
