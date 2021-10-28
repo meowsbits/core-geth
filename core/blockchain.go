@@ -2046,17 +2046,19 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		- parent_tab
 		- raw_tab (this is the current, "raw" value, ie. as computed above.
 
+		*/
+		/*
 
-		A1:
-		- if       raw_tab > parent_tab,  then tab = parent_tab + (parent_tab / 4096),
-		- else if  raw_tab < parent_tab,  then tab = parent_tab - (parent_tab / 4096),
-		- else if  raw_tab == parent_tab, then tab = parent_tab
+			A1:
+			- if       raw_tab > parent_tab,  then tab = parent_tab + (parent_tab / 4096),
+			- else if  raw_tab < parent_tab,  then tab = parent_tab - (parent_tab / 4096),
+			- else if  raw_tab == parent_tab, then tab = parent_tab
 
-		Note that this is the same effective pattern used by the CalcGasLimit function,
-		except that there are no bounding limits here.
+			Note that this is the same effective pattern used by the CalcGasLimit function,
+			except that there are no bounding limits here.
 
-		Also noteworthy is that if the parent_tab is less than the divisor (here presumed 4096),
-		then there will be no change, and that that divisor value will act like a minimum.
+			Also noteworthy is that if the parent_tab is less than the divisor (here presumed 4096),
+			then there will be no change, and that that divisor value will act like a minimum.
 
 		*/
 
@@ -2064,7 +2066,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		var tabA1 int64
 		parentTab := int64(0)
-		parentTabBig := bc.hc.GetTAB_A1(block.ParentHash())
+		parentTabBig := bc.hc.GetTAB("a1", block.ParentHash())
 		if parentTabBig != nil {
 			parentTab = parentTabBig.Int64()
 		}
@@ -2081,7 +2083,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			tabA1 = parentTab
 		}
 
-		rawdb.WriteTABA1(bc.hc.chainDb, block.Hash(), big.NewInt(tabA1))
+		rawdb.WriteTAB(bc.hc.chainDb, "a1", block.Hash(), big.NewInt(tabA1))
 		tabA1Gauge.Update(tabA1)
 
 		/*
@@ -2111,6 +2113,20 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		consensusPoints := new(big.Int).Add(block.Difficulty(), tabBonus)
 		tabB1_ConsensusPoints_Gauge.Update(consensusPoints.Int64())
+
+		/*
+			A2:
+			This is an iteration of the basic principle in A1.
+			It modifies A1 by replacing a constant (1/4096) adjustment with a variable adjustment.
+			This variable adjustment maintains the deference to that of difficulty adjustments by scaling to 4096 (2*2048).
+
+			~~However, TAB adjustment is allowed between the numerators [99,-2], where difficulty uses [2,-99].
+			This allows difficulty to grow more quickly than fall, an "opinion" that is intended to exploit
+			the rare but regular existence of high-balance transactions.~~
+
+			A2 proposes to attempt to imitate the adjustment curve of difficulty: [2,-99].
+
+		*/
 
 		// ------------------------------------------------- END TAB EXPERIMENTS
 

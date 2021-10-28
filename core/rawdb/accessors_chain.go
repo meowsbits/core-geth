@@ -534,19 +534,19 @@ func ReadTd(db ethdb.Reader, hash common.Hash, number uint64) *big.Int {
 	return td
 }
 
-func ReadRLPTAB_A1(db ethdb.Reader, hash common.Hash) rlp.RawValue {
-	data, _ := db.Get(tabA1Key(hash))
+func ReadRLPTAB(db ethdb.Reader, version string, hash common.Hash) rlp.RawValue {
+	data, _ := db.Get(tabKey(version, hash))
 	return data
 }
 
-func ReadTAB_A1(db ethdb.Reader, hash common.Hash) *big.Int {
-	data := ReadRLPTAB_A1(db, hash)
+func ReadTAB(db ethdb.Reader, version string, hash common.Hash) *big.Int {
+	data := ReadRLPTAB(db, version, hash)
 	if len(data) == 0 {
 		return nil
 	}
 	tab := new(big.Int)
 	if err := rlp.Decode(bytes.NewReader(data), tab); err != nil {
-		log.Error("Invalid block TABA1 RLP", "hash", hash, "err", err)
+		log.Error("Invalid block TAB RLP", "version", version, "hash", hash, "err", err)
 		return nil
 	}
 	return tab
@@ -563,13 +563,13 @@ func WriteTd(db ethdb.KeyValueWriter, hash common.Hash, number uint64, td *big.I
 	}
 }
 
-func WriteTABA1(db ethdb.KeyValueWriter, hash common.Hash, tab *big.Int) {
+func WriteTAB(db ethdb.KeyValueWriter, version string, hash common.Hash, tab *big.Int) {
 	data, err := rlp.EncodeToBytes(tab)
 	if err != nil {
-		log.Crit("Failed to RLP encode TABA1", "error", err)
+		log.Crit("Failed to RLP encode TAB", "version", version, "error", err)
 	}
-	if err := db.Put(tabA1Key(hash), data); err != nil {
-		log.Crit("Failed to store block TABA1", "error", err)
+	if err := db.Put(tabKey(version, hash), data); err != nil {
+		log.Crit("Failed to store block TAB", "version", version, "error", err)
 	}
 }
 

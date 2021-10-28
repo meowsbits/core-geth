@@ -485,11 +485,11 @@ func (hc *HeaderChain) GetTd(hash common.Hash, number uint64) *big.Int {
 	return td
 }
 
-func (hc *HeaderChain) GetTAB_A1(hash common.Hash) *big.Int {
+func (hc *HeaderChain) GetTAB(version string, hash common.Hash) *big.Int {
 	if cached, ok := hc.tabA1Cache.Get(hash); ok {
 		return cached.(*big.Int)
 	}
-	tab := rawdb.ReadTAB_A1(hc.chainDb, hash)
+	tab := rawdb.ReadTAB(hc.chainDb, version, hash)
 	if tab == nil {
 		return nil
 	}
