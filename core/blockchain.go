@@ -2124,12 +2124,14 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			It modifies A1 by replacing a constant (1/4096) adjustment with a variable adjustment.
 			This variable adjustment maintains the deference to that of difficulty adjustments by scaling to 4096 (2*2048).
 
-			~~However, TAB adjustment is allowed between the numerators [99,-2], where difficulty uses [2,-99].
+			~~However, TAB adjustment is allowed between the numerators [99,-1], where difficulty uses [1,-99].
 			This allows difficulty to grow more quickly than fall, an "opinion" that is intended to exploit
 			the rare but regular existence of high-balance transactions.~~ <RETRACTED>
 
-			A2 proposes to attempt to imitate the adjustment curve of difficulty: [2,-99].
+			A2 proposes to attempt to imitate the adjustment curve of difficulty: [1,-99].
 		*/
+
+		a2Divisor := new(big.Int).Mul(vars.DifficultyBoundDivisor, common.Big2)
 
 		parentTabBigA2 := bc.hc.GetTAB("a2", block.ParentHash())
 		if parentTabBigA2 == nil {
@@ -2159,7 +2161,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		// TODO: Make this a variable/constant, and decide what its value should actually be.
 		// Consider the value relative to the parent difficulty bound divisor (=2048).
 		// Using vars.DifficultyBoundDivisor is only an in-code reminder of the provenance of this value.
-		a2.Div(parentTabBigA2, vars.DifficultyBoundDivisor)
+		a2.Div(parentTabBigA2, a2Divisor)
 
 		a2.Mul(a2, ratioPercentParent)
 
