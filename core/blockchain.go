@@ -29,6 +29,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/common/mclock"
 	"github.com/ethereum/go-ethereum/common/prque"
 	"github.com/ethereum/go-ethereum/consensus"
@@ -61,6 +62,8 @@ var (
 
 	tabFromPlusMinerGauge       = metrics.NewRegisteredGauge("chain/account/tab-fromsplusminer", nil)
 	tabA1Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-a1", nil)
+	tabA2Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-a2", nil)
+	tabA2_ConsensusPoints_Gauge = metrics.NewRegisteredGauge("chain/account/tab-a2-cp", nil)
 	tabB1Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-b1", nil)
 	tabB1_ConsensusPoints_Gauge = metrics.NewRegisteredGauge("chain/account/tab-b1-cp", nil)
 
@@ -2020,7 +2023,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		// ------------------------------------------------- START TAB EXPERIMENTS
 
 		// Get a non-Big version: int64, in human-readable (and meaningful) Ether.
-		tabEther := new(big.Int).Div(tab, big.NewInt(vars.Ether)).Int64()
+		tabEtherBig := new(big.Int).Div(tab, big.NewInt(vars.Ether))
+		tabEther := tabEtherBig.Int64()
 		tabFromPlusMinerGauge.Update(tabEther)
 
 		// EXPERIMENT:
@@ -2122,11 +2126,53 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 			~~However, TAB adjustment is allowed between the numerators [99,-2], where difficulty uses [2,-99].
 			This allows difficulty to grow more quickly than fall, an "opinion" that is intended to exploit
-			the rare but regular existence of high-balance transactions.~~
+			the rare but regular existence of high-balance transactions.~~ <RETRACTED>
 
 			A2 proposes to attempt to imitate the adjustment curve of difficulty: [2,-99].
-
 		*/
+
+		parentTabBigA2 := bc.hc.GetTAB("a2", block.ParentHash())
+		if parentTabBigA2 == nil {
+			// Network-wide (consensus layer) initialize TAB value by creating a 'fake' parent cloned from current TAB.
+			// This is an effectively arbitrary starting point for the network TAB synthesis.
+			parentTabBigA2 = new(big.Int).Set(tabEtherBig)
+		}
+		// Set floor of 1, in off change this initializes (or falls) to 0.
+		// Avoids divide-by-zero panic, too.
+		if parentTabBigA2.Cmp(common.Big1) <= 0 {
+			parentTabBigA2.Set(common.Big1)
+		}
+
+		// ptab + (n * ptab / 2048) where n <= 2 && n >= -99 and n represents percent over/under of tab/parent_tab ratio in percent (/100)
+
+		big100 := big.NewInt(100)
+		ratioPercentParent := new(big.Int).Mul(tabEtherBig, big100)
+		ratioPercentParent.Div(ratioPercentParent, parentTabBigA2) // TODO: Specify/document/note the Big div/mod logic here.
+
+		ratioPercentParent.Add(ratioPercentParent, big.NewInt(-100))
+
+		ratioPercentParent.Set(math.BigMin(ratioPercentParent, big.NewInt(2)))
+		ratioPercentParent.Set(math.BigMax(ratioPercentParent, big.NewInt(-99)))
+
+		a2 := new(big.Int)
+
+		// TODO: Make this a variable/constant, and decide what its value should actually be.
+		// Consider the value relative to the parent difficulty bound divisor (=2048).
+		// Using vars.DifficultyBoundDivisor is only an in-code reminder of the provenance of this value.
+		a2.Div(parentTabBigA2, vars.DifficultyBoundDivisor)
+
+		a2.Mul(a2, ratioPercentParent)
+
+		a2.Add(parentTabBigA2, a2)
+
+		rawdb.WriteTAB(bc.hc.chainDb, "a2", block.Hash(), a2)
+		tabA2Gauge.Update(a2.Int64())
+
+		// We can reuse this variable.
+		// Now, for the final consensus score, we multiply the Diffiulty by the synthesized A2 TAB value.
+		consensusPoints = new(big.Int).Mul(block.Difficulty(), a2)
+		// ... But we'll probably get a number that's too big for Int64. :(
+		tabA2_ConsensusPoints_Gauge.Update(consensusPoints.Int64() /* but we try anyway, at worst its just noise */)
 
 		// ------------------------------------------------- END TAB EXPERIMENTS
 
