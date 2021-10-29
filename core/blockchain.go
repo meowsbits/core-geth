@@ -2151,7 +2151,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		ratioPercentParent.Add(ratioPercentParent, big.NewInt(-100))
 
-		ratioPercentParent.Set(math.BigMin(ratioPercentParent, big.NewInt(2)))
+		ratioPercentParent.Set(math.BigMin(ratioPercentParent, big.NewInt(1)))
 		ratioPercentParent.Set(math.BigMax(ratioPercentParent, big.NewInt(-99)))
 
 		a2 := new(big.Int)
