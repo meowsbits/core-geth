@@ -88,7 +88,6 @@ func newTestHandlerWithBlocksWithOpts(blocks int, mode downloader.SyncMode, gen 
 }
 
 // Tests that fast sync is disabled after a successful sync cycle.
-func TestFastSyncDisabling65(t *testing.T) { testFastSyncDisabling(t, eth.ETH65) }
 func TestFastSyncDisabling66(t *testing.T) { testFastSyncDisabling(t, eth.ETH66) }
 
 // Tests that fast sync gets disabled as soon as a real block is successfully
@@ -174,8 +173,8 @@ func TestArtificialFinalityFeatureEnablingDisabling(t *testing.T) {
 	defer emptyPipe.Close()
 	defer fullPipe.Close()
 
-	fullPeer := eth.NewPeer(65, p2p.NewPeer(enode.ID{2}, "", nil), fullPipe, a.txpool)
-	emptyPeer := eth.NewPeer(65, p2p.NewPeer(enode.ID{1}, "", nil), emptyPipe, b.txpool)
+	fullPeer := eth.NewPeer(66, p2p.NewPeer(enode.ID{2}, "", nil), fullPipe, a.txpool)
+	emptyPeer := eth.NewPeer(66, p2p.NewPeer(enode.ID{1}, "", nil), emptyPipe, b.txpool)
 	defer emptyPeer.Close()
 	defer fullPeer.Close()
 
@@ -254,8 +253,8 @@ func TestArtificialFinalityFeatureEnablingDisabling_NoDisable(t *testing.T) {
 	defer emptyPipe.Close()
 	defer fullPipe.Close()
 
-	fullPeer := eth.NewPeer(65, p2p.NewPeer(enode.ID{2}, "", nil), fullPipe, a.txpool)
-	emptyPeer := eth.NewPeer(65, p2p.NewPeer(enode.ID{1}, "", nil), emptyPipe, b.txpool)
+	fullPeer := eth.NewPeer(66, p2p.NewPeer(enode.ID{2}, "", nil), fullPipe, a.txpool)
+	emptyPeer := eth.NewPeer(66, p2p.NewPeer(enode.ID{1}, "", nil), emptyPipe, b.txpool)
 	defer emptyPeer.Close()
 	defer fullPeer.Close()
 
@@ -334,8 +333,8 @@ func TestArtificialFinalityFeatureEnablingDisabling_StaleHead(t *testing.T) {
 	defer emptyPipe.Close()
 	defer fullPipe.Close()
 
-	fullPeer := eth.NewPeer(65, p2p.NewPeer(enode.ID{2}, "", nil), fullPipe, a.txpool)
-	emptyPeer := eth.NewPeer(65, p2p.NewPeer(enode.ID{1}, "", nil), emptyPipe, b.txpool)
+	fullPeer := eth.NewPeer(66, p2p.NewPeer(enode.ID{2}, "", nil), fullPipe, a.txpool)
+	emptyPeer := eth.NewPeer(66, p2p.NewPeer(enode.ID{1}, "", nil), emptyPipe, b.txpool)
 	defer emptyPeer.Close()
 	defer fullPeer.Close()
 

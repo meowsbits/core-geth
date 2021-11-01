@@ -67,6 +67,7 @@ type HeaderChain struct {
 	headerCache *lru.Cache // Cache for the most recent block headers
 	tdCache     *lru.Cache // Cache for the most recent block total difficulties
 	numberCache *lru.Cache // Cache for the most recent block numbers
+	tabA1Cache  *lru.Cache // Cache for experimental TAB calculation A1
 
 	procInterrupt func() bool
 
@@ -80,6 +81,7 @@ func NewHeaderChain(chainDb ethdb.Database, config ctypes.ChainConfigurator, eng
 	headerCache, _ := lru.New(headerCacheLimit)
 	tdCache, _ := lru.New(tdCacheLimit)
 	numberCache, _ := lru.New(numberCacheLimit)
+	tabA1Cache, _ := lru.New(tdCacheLimit)
 
 	// Seed a fast but crypto originating random generator
 	seed, err := crand.Int(crand.Reader, big.NewInt(math.MaxInt64))
@@ -93,6 +95,7 @@ func NewHeaderChain(chainDb ethdb.Database, config ctypes.ChainConfigurator, eng
 		headerCache:   headerCache,
 		tdCache:       tdCache,
 		numberCache:   numberCache,
+		tabA1Cache:    tabA1Cache,
 		procInterrupt: procInterrupt,
 		rand:          mrand.New(mrand.NewSource(seed.Int64())),
 		engine:        engine,
@@ -480,6 +483,19 @@ func (hc *HeaderChain) GetTd(hash common.Hash, number uint64) *big.Int {
 	// Cache the found body for next time and return
 	hc.tdCache.Add(hash, td)
 	return td
+}
+
+func (hc *HeaderChain) GetTAB(version string, hash common.Hash) *big.Int {
+	if cached, ok := hc.tabA1Cache.Get(hash); ok {
+		return cached.(*big.Int)
+	}
+	tab := rawdb.ReadTAB(hc.chainDb, version, hash)
+	if tab == nil {
+		return nil
+	}
+	// Cache the found body for next time and return
+	hc.tabA1Cache.Add(hash, tab)
+	return tab
 }
 
 // GetTdByHash retrieves a block's total difficulty in the canonical chain from the

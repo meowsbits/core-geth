@@ -17,6 +17,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 	"math/big"
 
@@ -222,7 +223,8 @@ func GenesisToBlock(g *genesisT.Genesis, db ethdb.Database) *types.Block {
 		head.GasLimit = vars.GenesisGasLimit
 	}
 	if g.Difficulty == nil {
-		head.Difficulty = vars.GenesisDifficulty
+		head.Difficulty = new(big.Int)
+		head.Difficulty.Set(vars.GenesisDifficulty)
 	}
 	if g.Config != nil && g.Config.IsEnabled(g.Config.GetEIP1559Transition, common.Big0) {
 		if g.BaseFee != nil {
@@ -242,13 +244,16 @@ func GenesisToBlock(g *genesisT.Genesis, db ethdb.Database) *types.Block {
 func CommitGenesis(g *genesisT.Genesis, db ethdb.Database) (*types.Block, error) {
 	block := GenesisToBlock(g, db)
 	if block.Number().Sign() != 0 {
-		return nil, fmt.Errorf("can't commit genesis block with number > 0")
+		return nil, errors.New("can't commit genesis block with number > 0")
 	}
 	config := g.Config
 	if config == nil {
 		config = params.AllEthashProtocolChanges
 	}
-	rawdb.WriteTd(db, block.Hash(), block.NumberU64(), g.Difficulty)
+	if config.GetConsensusEngineType().IsClique() && len(block.Extra()) == 0 {
+		return nil, errors.New("can't start clique chain without signers")
+	}
+	rawdb.WriteTd(db, block.Hash(), block.NumberU64(), block.Difficulty())
 	rawdb.WriteBlock(db, block)
 	rawdb.WriteReceipts(db, block.Hash(), block.NumberU64(), nil)
 	rawdb.WriteCanonicalHash(db, block.Hash(), block.NumberU64())

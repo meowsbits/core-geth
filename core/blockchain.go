@@ -29,6 +29,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/common/mclock"
 	"github.com/ethereum/go-ethereum/common/prque"
 	"github.com/ethereum/go-ethereum/consensus"
@@ -42,20 +43,29 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/params/types/ctypes"
+	"github.com/ethereum/go-ethereum/params/vars"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/trie"
 	lru "github.com/hashicorp/golang-lru"
 )
 
 var (
-	headBlockGauge     = metrics.NewRegisteredGauge("chain/head/block", nil)
-	headHeaderGauge    = metrics.NewRegisteredGauge("chain/head/header", nil)
-	headFastBlockGauge = metrics.NewRegisteredGauge("chain/head/receipt", nil)
+	headBlockGauge      = metrics.NewRegisteredGauge("chain/head/block", nil)
+	headHeaderGauge     = metrics.NewRegisteredGauge("chain/head/header", nil)
+	headFastBlockGauge  = metrics.NewRegisteredGauge("chain/head/receipt", nil)
+	headDifficultyGauge = metrics.NewRegisteredGauge("chain/head/difficulty", nil)
 
 	accountReadTimer   = metrics.NewRegisteredTimer("chain/account/reads", nil)
 	accountHashTimer   = metrics.NewRegisteredTimer("chain/account/hashes", nil)
 	accountUpdateTimer = metrics.NewRegisteredTimer("chain/account/updates", nil)
 	accountCommitTimer = metrics.NewRegisteredTimer("chain/account/commits", nil)
+
+	tabFromPlusMinerGauge       = metrics.NewRegisteredGauge("chain/account/tab-fromsplusminer", nil)
+	tabA1Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-a1", nil)
+	tabA2Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-a2", nil)
+	tabA2_ConsensusPoints_Gauge = metrics.NewRegisteredGauge("chain/account/tab-a2-cp", nil)
+	tabB1Gauge                  = metrics.NewRegisteredGauge("chain/account/tab-b1", nil)
+	tabB1_ConsensusPoints_Gauge = metrics.NewRegisteredGauge("chain/account/tab-b1-cp", nil)
 
 	storageReadTimer   = metrics.NewRegisteredTimer("chain/storage/reads", nil)
 	storageHashTimer   = metrics.NewRegisteredTimer("chain/storage/hashes", nil)
@@ -207,8 +217,7 @@ type BlockChain struct {
 	processor  Processor // Block transaction processor interface
 	vmConfig   vm.Config
 
-	shouldPreserve  func(*types.Block) bool        // Function used to determine whether should preserve the given block.
-	terminateInsert func(common.Hash, uint64) bool // Testing hook used to terminate ancient receipt chain insertion.
+	shouldPreserve func(*types.Block) bool // Function used to determine whether should preserve the given block.
 
 	artificialFinalityNoDisable     *int32 // manual override prevents disabling artificial finality feature activation
 	artificialFinalityEnabledStatus int32  // toggles artificial finality features; will be always 1 if artificialFinalityForce=1
@@ -1095,38 +1104,6 @@ const (
 	SideStatTy
 )
 
-// truncateAncient rewinds the blockchain to the specified header and deletes all
-// data in the ancient store that exceeds the specified header.
-func (bc *BlockChain) truncateAncient(head uint64) error {
-	frozen, err := bc.db.Ancients()
-	if err != nil {
-		return err
-	}
-	// Short circuit if there is no data to truncate in ancient store.
-	if frozen <= head+1 {
-		return nil
-	}
-	// Truncate all the data in the freezer beyond the specified head
-	if err := bc.db.TruncateAncients(head + 1); err != nil {
-		return err
-	}
-	// Clear out any stale content from the caches
-	bc.hc.headerCache.Purge()
-	bc.hc.tdCache.Purge()
-	bc.hc.numberCache.Purge()
-
-	// Clear out any stale content from the caches
-	bc.bodyCache.Purge()
-	bc.bodyRLPCache.Purge()
-	bc.receiptsCache.Purge()
-	bc.blockCache.Purge()
-	bc.txLookupCache.Purge()
-	bc.futureBlocks.Purge()
-
-	log.Info("Rewind ancient data", "number", head)
-	return nil
-}
-
 // numberHash is just a container for a number and a hash, to represent a block
 type numberHash struct {
 	number uint64
@@ -1165,12 +1142,14 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 	var (
 		stats = struct{ processed, ignored int32 }{}
 		start = time.Now()
-		size  = 0
+		size  = int64(0)
 	)
+
 	// updateHead updates the head fast sync block if the inserted blocks are better
 	// and returns an indicator whether the inserted blocks are canonical.
 	updateHead := func(head *types.Block) bool {
 		bc.chainmu.Lock()
+		defer bc.chainmu.Unlock()
 
 		// Rewind may have occurred, skip in that case.
 		if bc.CurrentHeader().Number.Cmp(head.Number()) >= 0 {
@@ -1179,68 +1158,63 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 				rawdb.WriteHeadFastBlockHash(bc.db, head.Hash())
 				bc.currentFastBlock.Store(head)
 				headFastBlockGauge.Update(int64(head.NumberU64()))
-				bc.chainmu.Unlock()
 				return true
 			}
 		}
-		bc.chainmu.Unlock()
 		return false
 	}
+
 	// writeAncient writes blockchain and corresponding receipt chain into ancient store.
 	//
 	// this function only accepts canonical chain data. All side chain will be reverted
 	// eventually.
 	writeAncient := func(blockChain types.Blocks, receiptChain []types.Receipts) (int, error) {
-		var (
-			previous = bc.CurrentFastBlock()
-			batch    = bc.db.NewBatch()
-		)
-		// If any error occurs before updating the head or we are inserting a side chain,
-		// all the data written this time wll be rolled back.
-		defer func() {
-			if previous != nil {
-				if err := bc.truncateAncient(previous.NumberU64()); err != nil {
-					log.Crit("Truncate ancient store failed", "err", err)
-				}
-			}
-		}()
-		var deleted []*numberHash
-		for i, block := range blockChain {
-			// Short circuit insertion if shutting down or processing failed
-			if bc.insertStopped() {
-				return 0, errInsertionInterrupted
-			}
-			// Short circuit insertion if it is required(used in testing only)
-			if bc.terminateInsert != nil && bc.terminateInsert(block.Hash(), block.NumberU64()) {
-				return i, errors.New("insertion is terminated for testing purpose")
-			}
-			// Short circuit if the owner header is unknown
-			if !bc.HasHeader(block.Hash(), block.NumberU64()) {
-				return i, fmt.Errorf("containing header #%d [%x..] unknown", block.Number(), block.Hash().Bytes()[:4])
-			}
-			if block.NumberU64() == 1 {
-				// Make sure to write the genesis into the freezer
-				if frozen, _ := bc.db.Ancients(); frozen == 0 {
-					h := rawdb.ReadCanonicalHash(bc.db, 0)
-					b := rawdb.ReadBlock(bc.db, h, 0)
-					size += rawdb.WriteAncientBlock(bc.db, b, rawdb.ReadReceipts(bc.db, h, 0, bc.chainConfig), rawdb.ReadTd(bc.db, h, 0))
-					log.Info("Wrote genesis to ancients")
-				}
-			}
-			// Flush data into ancient database.
-			size += rawdb.WriteAncientBlock(bc.db, block, receiptChain[i], bc.GetTd(block.Hash(), block.NumberU64()))
+		first := blockChain[0]
+		last := blockChain[len(blockChain)-1]
 
-			// Write tx indices if any condition is satisfied:
-			// * If user requires to reserve all tx indices(txlookuplimit=0)
-			// * If all ancient tx indices are required to be reserved(txlookuplimit is even higher than ancientlimit)
-			// * If block number is large enough to be regarded as a recent block
-			// It means blocks below the ancientLimit-txlookupLimit won't be indexed.
-			//
-			// But if the `TxIndexTail` is not nil, e.g. Geth is initialized with
-			// an external ancient database, during the setup, blockchain will start
-			// a background routine to re-indexed all indices in [ancients - txlookupLimit, ancients)
-			// range. In this case, all tx indices of newly imported blocks should be
-			// generated.
+		// Ensure genesis is in ancients.
+		if first.NumberU64() == 1 {
+			if frozen, _ := bc.db.Ancients(); frozen == 0 {
+				b := bc.genesisBlock
+				td := bc.genesisBlock.Difficulty()
+				writeSize, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{b}, []types.Receipts{nil}, td)
+				size += writeSize
+				if err != nil {
+					log.Error("Error writing genesis to ancients", "err", err)
+					return 0, err
+				}
+				log.Info("Wrote genesis to ancients")
+			}
+		}
+		// Before writing the blocks to the ancients, we need to ensure that
+		// they correspond to the what the headerchain 'expects'.
+		// We only check the last block/header, since it's a contiguous chain.
+		if !bc.HasHeader(last.Hash(), last.NumberU64()) {
+			return 0, fmt.Errorf("containing header #%d [%x..] unknown", last.Number(), last.Hash().Bytes()[:4])
+		}
+
+		// Write all chain data to ancients.
+		td := bc.GetTd(first.Hash(), first.NumberU64())
+		writeSize, err := rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain, td)
+		size += writeSize
+		if err != nil {
+			log.Error("Error importing chain data to ancients", "err", err)
+			return 0, err
+		}
+
+		// Write tx indices if any condition is satisfied:
+		// * If user requires to reserve all tx indices(txlookuplimit=0)
+		// * If all ancient tx indices are required to be reserved(txlookuplimit is even higher than ancientlimit)
+		// * If block number is large enough to be regarded as a recent block
+		// It means blocks below the ancientLimit-txlookupLimit won't be indexed.
+		//
+		// But if the `TxIndexTail` is not nil, e.g. Geth is initialized with
+		// an external ancient database, during the setup, blockchain will start
+		// a background routine to re-indexed all indices in [ancients - txlookupLimit, ancients)
+		// range. In this case, all tx indices of newly imported blocks should be
+		// generated.
+		var batch = bc.db.NewBatch()
+		for _, block := range blockChain {
 			if bc.txLookupLimit == 0 || ancientLimit <= bc.txLookupLimit || block.NumberU64() >= ancientLimit-bc.txLookupLimit {
 				rawdb.WriteTxLookupEntriesByBlock(batch, block)
 			} else if rawdb.ReadTxIndexTail(bc.db) != nil {
@@ -1248,51 +1222,50 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 			}
 			stats.processed++
 		}
+
 		// Flush all tx-lookup index data.
-		size += batch.ValueSize()
+		size += int64(batch.ValueSize())
 		if err := batch.Write(); err != nil {
+			// The tx index data could not be written.
+			// Roll back the ancient store update.
+			fastBlock := bc.CurrentFastBlock().NumberU64()
+			if err := bc.db.TruncateAncients(fastBlock + 1); err != nil {
+				log.Error("Can't truncate ancient store after failed insert", "err", err)
+			}
 			return 0, err
 		}
-		batch.Reset()
 
 		// Sync the ancient store explicitly to ensure all data has been flushed to disk.
 		if err := bc.db.Sync(); err != nil {
 			return 0, err
 		}
+
+		// Update the current fast block because all block data is now present in DB.
+		previousFastBlock := bc.CurrentFastBlock().NumberU64()
 		if !updateHead(blockChain[len(blockChain)-1]) {
-			return 0, errors.New("side blocks can't be accepted as the ancient chain data")
-		}
-		previous = nil // disable rollback explicitly
-
-		// Wipe out canonical block data.
-		for _, nh := range deleted {
-			rawdb.DeleteBlockWithoutNumber(batch, nh.hash, nh.number)
-			rawdb.DeleteCanonicalHash(batch, nh.number)
-		}
-		for _, block := range blockChain {
-			// Always keep genesis block in active database.
-			if block.NumberU64() != 0 {
-				rawdb.DeleteBlockWithoutNumber(batch, block.Hash(), block.NumberU64())
-				rawdb.DeleteCanonicalHash(batch, block.NumberU64())
+			// We end up here if the header chain has reorg'ed, and the blocks/receipts
+			// don't match the canonical chain.
+			if err := bc.db.TruncateAncients(previousFastBlock + 1); err != nil {
+				log.Error("Can't truncate ancient store after failed insert", "err", err)
 			}
+			return 0, errSideChainReceipts
 		}
-		if err := batch.Write(); err != nil {
-			return 0, err
-		}
+
+		// Delete block data from the main database.
 		batch.Reset()
-
-		// Wipe out side chain too.
-		for _, nh := range deleted {
-			for _, hash := range rawdb.ReadAllHashes(bc.db, nh.number) {
-				rawdb.DeleteBlock(batch, hash, nh.number)
-			}
-		}
+		canonHashes := make(map[common.Hash]struct{})
 		for _, block := range blockChain {
-			// Always keep genesis block in active database.
-			if block.NumberU64() != 0 {
-				for _, hash := range rawdb.ReadAllHashes(bc.db, block.NumberU64()) {
-					rawdb.DeleteBlock(batch, hash, block.NumberU64())
-				}
+			canonHashes[block.Hash()] = struct{}{}
+			if block.NumberU64() == 0 {
+				continue
+			}
+			rawdb.DeleteCanonicalHash(batch, block.NumberU64())
+			rawdb.DeleteBlockWithoutNumber(batch, block.Hash(), block.NumberU64())
+		}
+		// Delete side chain hash-to-number mappings.
+		for _, nh := range rawdb.ReadAllHashesInRange(bc.db, first.NumberU64(), last.NumberU64()) {
+			if _, canon := canonHashes[nh.Hash]; !canon {
+				rawdb.DeleteHeader(batch, nh.Hash, nh.Number)
 			}
 		}
 		if err := batch.Write(); err != nil {
@@ -1300,6 +1273,7 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 		}
 		return 0, nil
 	}
+
 	// writeLive writes blockchain and corresponding receipt chain into active store.
 	writeLive := func(blockChain types.Blocks, receiptChain []types.Receipts) (int, error) {
 		skipPresenceCheck := false
@@ -1337,7 +1311,7 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 				if err := batch.Write(); err != nil {
 					return 0, err
 				}
-				size += batch.ValueSize()
+				size += int64(batch.ValueSize())
 				batch.Reset()
 			}
 			stats.processed++
@@ -1346,7 +1320,7 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 		// we can ensure all components of body is completed(body, receipts,
 		// tx indexes)
 		if batch.ValueSize() > 0 {
-			size += batch.ValueSize()
+			size += int64(batch.ValueSize())
 			if err := batch.Write(); err != nil {
 				return 0, err
 			}
@@ -1354,6 +1328,7 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 		updateHead(blockChain[len(blockChain)-1])
 		return 0, nil
 	}
+
 	// Write downloaded chain data and corresponding receipt chain data
 	if len(ancientBlocks) > 0 {
 		if n, err := writeAncient(ancientBlocks, ancientReceipts); err != nil {
@@ -1728,6 +1703,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			startTime: mclock.Now(),
 			artificialFinality: bc.IsArtificialFinalityEnabled() &&
 				bc.chainConfig.IsEnabled(bc.chainConfig.GetECBP1100Transition, bc.CurrentBlock().Number()),
+			totalActiveBalance: 0,
 		}
 		lastCanon *types.Block
 	)
@@ -1943,6 +1919,51 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		statedb.StartPrefetcher("chain")
 		activeState = statedb
 
+		// ------------------------------------------------- START TAB EXPERIMENTS
+
+		// Install developmental metrics for Total Active Balances (TAB).
+		// Note that the state balance measurements are taken BEFORE block transaction processing.
+		//
+		// This is probably going to be a terrible way to 'actually' do it, but I want
+		// to at least get a proof of concept and get some data along the way to inform
+		// a decision to pursue the idea further or not.
+		// This could be better because:
+		// - the code is probably inefficient
+		// - TAB should probably account (get it?) for more than just what the coincidental AccessList (EIP-2930)
+		//   references.
+		//   This might be extended to include all accounts ACTUALLY TOUCHED, and not just the ones in an OPTIONAL
+		//   "access list."
+		//   But at least it includes sender and receiver (if any).
+		//   From the potential for extension, we should consider the values returned by this implementation to
+		//   be generally LOW.
+		//
+		// PS. It should be obvious by situ, but TAB is calculated AFTER all the transactions
+		//     have been processed. So if Ether disappears during the block, its not included here. Edge case.
+		//
+		// PSS. It should also be noted that TAB should only be calculated for HFC transactions.
+		//      By the design of HFC (where only HFC-valid transactions will be, well, valid) this
+		//      demand will be assumed. (Since HFC-invalid transactions will not be included in any blocks).
+		tab := new(big.Int)
+		seenSenders := map[common.Address]bool{
+			block.Coinbase(): true,
+		}
+		// Include miner balance in TAB. They are active, too.
+		tab.Add(tab, statedb.GetBalance(block.Coinbase()))
+
+		for _, tx := range block.Transactions() {
+			// This error, if any, will have been caught by the state Processor
+			msg, _ := tx.AsMessage(types.MakeSigner(bc.chainConfig, block.Number()), block.BaseFee())
+
+			// Only tally balances from unique senders.
+			if _, ok := seenSenders[msg.From()]; ok {
+				continue
+			}
+			seenSenders[msg.From()] = true
+			tab.Add(tab, statedb.GetBalance(msg.From()))
+		}
+
+		// ------------------------------------------------- END TAB EXPERIMENTS
+
 		// If we have a followup block, run that against the current state to pre-cache
 		// transactions and probabilistically some of the account/storage trie nodes.
 		var followupInterrupt uint32
@@ -1969,6 +1990,9 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			return it.index, err
 		}
 		// Update the metrics touched during block processing
+		// NOTE/ This is as far "down" as the metrics collection gets now.
+		// See comment in state_processor.go suggesting extending a metrics collection object
+		// through to the state process/transition scope.
 		accountReadTimer.Update(statedb.AccountReads)                 // Account reads are complete, we can mark them
 		storageReadTimer.Update(statedb.StorageReads)                 // Storage reads are complete, we can mark them
 		accountUpdateTimer.Update(statedb.AccountUpdates)             // Account updates are complete, we can mark them
@@ -1996,6 +2020,167 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 
 		blockValidationTimer.Update(time.Since(substart) - (statedb.AccountHashes + statedb.StorageHashes - triehash))
 
+		// ------------------------------------------------- START TAB EXPERIMENTS
+
+		// Get a non-Big version: int64, in human-readable (and meaningful) Ether.
+		tabEtherBig := new(big.Int).Div(tab, big.NewInt(vars.Ether))
+		tabEther := tabEtherBig.Int64()
+		tabFromPlusMinerGauge.Update(tabEther)
+
+		// EXPERIMENT:
+		// : Get a synthetic value representing TAB which adjusts deferentially to difficulty.
+		/* This is the latest difficulty algorithm.
+
+			// https://github.com/ethereum/EIPs/issues/100
+			// algorithm:
+			// diff = (parent_diff +
+			//         (parent_diff / 2048 * max((2 if len(parent.uncles) else 1) - ((timestamp - parent.timestamp) // 9), -99))
+
+		This yields:
+
+		max:     parent_diff + (2 * parent_diff / 2048 - 0)  [includes uncles, and fast]      ~> 1.001
+		pen_max: parent_diff + (parent_diff / 2048 - 0)      [no uncles, but fast]            ~> 1.0005
+
+		low:     parent_diff - (99 * parent_diff / 2048) ~> parent_diff - ( parent_diff / 20) ~> 0.95
+
+		So, in pursuing a deferential (milder, meeker) adjustment algorithm for TAB, we should
+		follow the shape of the curve, but reduce the steepness.
+
+		We have two variables known to us a priori:
+		- parent_tab
+		- raw_tab (this is the current, "raw" value, ie. as computed above.
+
+		*/
+		/*
+
+			A1:
+			- if       raw_tab > parent_tab,  then tab = parent_tab + (parent_tab / 4096),
+			- else if  raw_tab < parent_tab,  then tab = parent_tab - (parent_tab / 4096),
+			- else if  raw_tab == parent_tab, then tab = parent_tab
+
+			Note that this is the same effective pattern used by the CalcGasLimit function,
+			except that there are no bounding limits here.
+
+			Also noteworthy is that if the parent_tab is less than the divisor (here presumed 4096),
+			then there will be no change, and that that divisor value will act like a minimum.
+
+		*/
+
+		headDifficultyGauge.Update(block.Difficulty().Int64())
+
+		var tabA1 int64
+		parentTab := int64(0)
+		parentTabBig := bc.hc.GetTAB("a1", block.ParentHash())
+		if parentTabBig != nil {
+			parentTab = parentTabBig.Int64()
+		}
+		delta := parentTab / 4096
+		if delta < 1 {
+			delta = 1
+		}
+
+		if tabEther > parentTab {
+			tabA1 = parentTab + delta
+		} else if tabEther < parentTab {
+			tabA1 = parentTab - delta
+		} else /* == */ {
+			tabA1 = parentTab
+		}
+
+		rawdb.WriteTAB(bc.hc.chainDb, "a1", block.Hash(), big.NewInt(tabA1))
+		tabA1Gauge.Update(tabA1)
+
+		/*
+			B1:
+			This is the current protocol:
+			consensus_points = difficulty
+
+			This is the proposed protocol:
+			x = 1..2048 (TBD)
+											[- tab bonus -----------------------------]
+			consensus_points = difficulty + ((difficulty / x) - (difficulty / x / tab))
+			where tab is measured in Ether (1e18 wei)
+		*/
+
+		var tabB1 int64
+		x := common.Big1
+		// (difficulty / x)
+		tabBonus := new(big.Int).Div(block.Difficulty(), x)
+
+		// ((difficulty / x) - (difficulty / x / tab))
+		sub := new(big.Int).Set(tabBonus)
+		sub.Div(sub, big.NewInt(tabEther+1)) // +1 to avoid divide-by-zero errors
+		tabBonus.Sub(tabBonus, sub)
+
+		tabB1 = tabBonus.Int64()
+		tabB1Gauge.Update(tabB1)
+
+		consensusPoints := new(big.Int).Add(block.Difficulty(), tabBonus)
+		tabB1_ConsensusPoints_Gauge.Update(consensusPoints.Int64())
+
+		/*
+			A2:
+			This is an iteration of the basic principle in A1.
+			It modifies A1 by replacing a constant (1/4096) adjustment with a variable adjustment.
+			This variable adjustment maintains the deference to that of difficulty adjustments by scaling to 4096 (2*2048).
+
+			~~However, TAB adjustment is allowed between the numerators [99,-1], where difficulty uses [1,-99].
+			This allows difficulty to grow more quickly than fall, an "opinion" that is intended to exploit
+			the rare but regular existence of high-balance transactions.~~ <RETRACTED>
+
+			A2 proposes to attempt to imitate the adjustment curve of difficulty: [1,-99].
+		*/
+
+		// 2048 * 2 = 4096
+		// This causes the steps in TAB adjustment to be half the range of that of difficulty.
+		//
+		a2Divisor := new(big.Int).Mul(vars.DifficultyBoundDivisor, common.Big2)
+
+		parentTabBigA2 := bc.hc.GetTAB("a2", block.ParentHash())
+		if parentTabBigA2 == nil {
+			// Network-wide (consensus layer) initialize TAB value by creating a 'fake' parent cloned from current TAB.
+			// This is an effectively arbitrary starting point for the network TAB synthesis.
+			parentTabBigA2 = new(big.Int).Set(tabEtherBig)
+		}
+		// Set floor of 1, in off change this initializes (or falls) to 0.
+		// Avoids divide-by-zero panic, too.
+		if parentTabBigA2.Cmp(common.Big1) < 0 {
+			parentTabBigA2.Set(common.Big1)
+		}
+
+		// ptab + (n * ptab / 2048) where n <= 2 && n >= -99 and n represents percent over/under of tab/parent_tab ratio in percent (/100)
+
+		big100 := big.NewInt(100)
+		ratioPercentParent := new(big.Int).Mul(tabEtherBig, big100)
+		ratioPercentParent.Div(ratioPercentParent, parentTabBigA2) // TODO: Specify/document/note the Big div/mod logic here.
+
+		ratioPercentParent.Add(ratioPercentParent, big.NewInt(-100))
+
+		ratioPercentParent.Set(math.BigMin(ratioPercentParent, big.NewInt(1)))
+		ratioPercentParent.Set(math.BigMax(ratioPercentParent, big.NewInt(-99)))
+
+		a2 := new(big.Int)
+
+		// TODO: Make this a variable/constant, and decide what its value should actually be.
+		// Consider the value relative to the parent difficulty bound divisor (=2048).
+		// Using vars.DifficultyBoundDivisor is only an in-code reminder of the provenance of this value.
+		a2.Div(parentTabBigA2, a2Divisor)
+
+		a2.Mul(a2, ratioPercentParent)
+
+		a2.Add(parentTabBigA2, a2)
+
+		rawdb.WriteTAB(bc.hc.chainDb, "a2", block.Hash(), a2)
+		tabA2Gauge.Update(a2.Int64())
+
+		// We can reuse this variable.
+		// Now, for the final consensus score, we multiply the Diffiulty by the synthesized A2 TAB value.
+		consensusPoints = new(big.Int).Mul(block.Difficulty(), a2)
+		// ... But we'll probably get a number that's too big for Int64. :(
+		tabA2_ConsensusPoints_Gauge.Update(consensusPoints.Int64() /* but we try anyway, at worst its just noise */)
+
+		// ------------------------------------------------- END TAB EXPERIMENTS
+
 		// Write the block to the chain and get the status.
 		substart = time.Now()
 		status, err := bc.writeBlockWithState(block, receipts, logs, statedb, false)
@@ -2016,7 +2201,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Debug("Inserted new block", "number", block.Number(), "hash", block.Hash(),
 				"uncles", len(block.Uncles()), "txs", len(block.Transactions()), "gas", block.GasUsed(),
 				"elapsed", common.PrettyDuration(time.Since(start)),
-				"root", block.Root())
+				"root", block.Root(),
+				"tab", tabEther)
 
 			lastCanon = block
 
@@ -2027,7 +2213,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Debug("Inserted forked block", "number", block.Number(), "hash", block.Hash(),
 				"diff", block.Difficulty(), "elapsed", common.PrettyDuration(time.Since(start)),
 				"txs", len(block.Transactions()), "gas", block.GasUsed(), "uncles", len(block.Uncles()),
-				"root", block.Root())
+				"root", block.Root(), "tab", tabEther)
 
 		default:
 			// This in theory is impossible, but lets be nice to our future selves and leave
@@ -2035,10 +2221,11 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			log.Warn("Inserted block with unknown status", "number", block.Number(), "hash", block.Hash(),
 				"diff", block.Difficulty(), "elapsed", common.PrettyDuration(time.Since(start)),
 				"txs", len(block.Transactions()), "gas", block.GasUsed(), "uncles", len(block.Uncles()),
-				"root", block.Root())
+				"root", block.Root(), "tab", tabEther)
 		}
 		stats.processed++
 		stats.usedGas += usedGas
+		stats.totalActiveBalance += tabEther
 
 		dirty, _ := bc.stateCache.TrieDB().Size()
 		stats.report(chain, it.index, dirty)

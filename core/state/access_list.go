@@ -134,3 +134,11 @@ func (al *accessList) DeleteSlot(address common.Address, slot common.Hash) {
 func (al *accessList) DeleteAddress(address common.Address) {
 	delete(al.addresses, address)
 }
+
+func (al *accessList) List() []common.Address {
+	list := []common.Address{}
+	for k := range al.addresses {
+		list = append(list, k)
+	}
+	return list
+}

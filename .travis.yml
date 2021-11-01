@@ -2,7 +2,7 @@ language: go
 go_import_path: github.com/ethereum/go-ethereum
 sudo: false
 jobs:
-  include:
+include:
 
   # Run build and tests on ARM64 on Pull Requests.
   # These tests are divided in half because their aggregate typical runtime
