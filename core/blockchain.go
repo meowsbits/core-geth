@@ -2131,6 +2131,9 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 			A2 proposes to attempt to imitate the adjustment curve of difficulty: [1,-99].
 		*/
 
+		// 2048 * 2 = 4096
+		// This causes the steps in TAB adjustment to be half the range of that of difficulty.
+		//
 		a2Divisor := new(big.Int).Mul(vars.DifficultyBoundDivisor, common.Big2)
 
 		parentTabBigA2 := bc.hc.GetTAB("a2", block.ParentHash())
@@ -2141,7 +2144,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		}
 		// Set floor of 1, in off change this initializes (or falls) to 0.
 		// Avoids divide-by-zero panic, too.
-		if parentTabBigA2.Cmp(common.Big1) <= 0 {
+		if parentTabBigA2.Cmp(common.Big1) < 0 {
 			parentTabBigA2.Set(common.Big1)
 		}
 
