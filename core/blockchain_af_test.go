@@ -275,27 +275,30 @@ func TestPlot_ecbp1100PolynomialV(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	p.Title.Text = "ECBP1100 Polynomial Curve Function"
+	p.Title.Text = "ECBP1100 Polynomial (rel Total Difficulty)"
 	p.X.Label.Text = "X"
 	p.Y.Label.Text = "Y"
-
-	poly := plotter.NewFunction(func(f float64) float64 {
-		n := big.NewInt(int64(f))
-		y := ecbp1100PolynomialV(n)
-		ff, _ := new(big.Float).SetInt(y).Float64()
-		return ff
-	})
-	p.Add(poly)
 
 	p.X.Min = 0
 	p.X.Max = 30000
 	p.Y.Min = 0
-	p.Y.Max = 5000
+	p.Y.Max = 35
 
-	p.Y.Label.Text = "Antigravity imposition"
-	p.X.Label.Text = "Seconds difference between local head and proposed common ancestor"
+	poly := plotter.NewFunction(func(f float64) float64 {
+		n := big.NewInt(int64(f))
+		y := ecbp1100PolynomialV(n)
+		y.Div(y, ecbp1100PolynomialVCurveFunctionDenominator)
+		ff, _ := new(big.Float).SetInt(y).Float64()
+		return ff
+	})
+	poly.Samples = 10_000
+	poly.XMax = p.X.Max
+	p.Add(poly)
 
-	if err := p.Save(1000, 1000, "ecbp1100-polynomial.png"); err != nil {
+	p.Y.Label.Text = "Canon Prefence (TD)"
+	p.X.Label.Text = "Canonical chain span (seconds)"
+
+	if err := p.Save(500, 500, "ecbp1100-polynomial.png"); err != nil {
 		t.Fatal(err)
 	}
 }
