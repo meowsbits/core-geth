@@ -414,8 +414,11 @@ func (c *cache) generate(dir string, limit int, lock bool, test bool) {
 func (c *cache) finalizer() {
 	if c.mmap != nil {
 		c.mmap.Unmap()
+		c.mmap = nil
+	}
+	if c.dump != nil {
 		c.dump.Close()
-		c.mmap, c.dump = nil, nil
+		c.dump = nil
 	}
 }
 
@@ -519,8 +522,11 @@ func (d *dataset) generated() bool {
 func (d *dataset) finalizer() {
 	if d.mmap != nil {
 		d.mmap.Unmap()
+		d.mmap = nil
+	}
+	if d.dump != nil {
 		d.dump.Close()
-		d.mmap, d.dump = nil, nil
+		d.dump = nil
 	}
 }
 
