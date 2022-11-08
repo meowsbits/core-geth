@@ -24,9 +24,9 @@ jobs:
 
       - name: Install cmake
         run: |
-          curl -s https://github.com/Kitware/CMake/releases/download/v3.25.0-rc3/cmake-3.25.0-rc3-linux-x86_64.sh > cmake.sh
-          chmod +x cmake.sh
-          source cmake.sh
+          sudo apt-get update -y
+          sudo apt-get upgrade -y
+          sudo apt-get install cmake
           cmake --version
 
       - name: Get dependencies
