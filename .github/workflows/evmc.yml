@@ -24,7 +24,9 @@ jobs:
 
       - name: Install cmake
         run: |
-          sudo snap install cmake --classic
+          curl -s https://github.com/Kitware/CMake/releases/download/v3.25.0-rc3/cmake-3.25.0-rc3-linux-x86_64.sh
+          chmod +x cmake-3.25.0-rc3-linux-x86_64.sh
+          source cmake-3.25.0-rc3-linux-x86_64.sh
           cmake --version
 
       - name: Get dependencies
