@@ -34,6 +34,7 @@ jobs:
           go get -v -t -d ./...
           git config --global --add safe.directory /home/ia/go/src/github.com/ethereum/go-ethereum/tests/evm-benchmarks
           git config --global --add safe.directory /home/ia/go/src/github.com/ethereum/go-ethereum/tests/testdata
+          git config --global --add safe.directory /home/ia/go/src/github.com/ethereum/go-ethereum/tests/testdata/LegacyTests
           git submodule update --init --recursive
           export GOBIN=${HOME}/go/bin
           mkdir -p "${GOBIN}"
