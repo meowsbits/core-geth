@@ -1,0 +1,21 @@
+name: Build on Windows for Kevin
+on:
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+jobs:
+  build-all:
+    name: Build all executables
+    runs-on: windows-latest
+    steps:
+      - name: Checkout etclabscore/core-geth
+        uses: actions/checkout@v3
+      - name: Set up Go 1.18
+        id: go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.18
+      - name: Build all packages
+        id: build-packages
+        run: make all
