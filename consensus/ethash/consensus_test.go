@@ -108,7 +108,7 @@ func TestDifficultyCalculators(t *testing.T) {
 		if diffBig.Cmp(vars.MinimumDifficulty) < 0 {
 			diffBig.Set(vars.MinimumDifficulty)
 		}
-		//rand.Read(difficulty)
+		// rand.Read(difficulty)
 		header := &types.Header{
 			Difficulty: diffBig,
 			Number:     new(big.Int).SetUint64(rand.Uint64() % 50_000_000),
@@ -186,4 +186,42 @@ func BenchmarkDifficultyCalculator(b *testing.B) {
 			x2(1000014, h)
 		}
 	})
+}
+
+func TestEtchash_11700000(t *testing.T) {
+	canonStr := `{"jsonrpc":"2.0","id":3019187,"result":{"difficulty":"0x317df020bde4","extraData":"0x7374726174756d2d65752d31","gasLimit":"0x7a6d21","gasUsed":"0x0","hash":"0x3cdbd6d80f7fd983ac2a6b13230f56c61dc58cef3deeaeaffda36ca5efc6cb31","logsBloom":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","miner":"0xdf7d7e053933b5cc24372f878c90e62dadad5d42","mixHash":"0x5f688fe8043392fd60d661edd5744dcb3d557042d3e472e7a708294c34216fb8","nonce":"0x69710a743181b923","number":"0xb28720","parentHash":"0xadaa50fd7a72baa19df873163b563c7cfa5ad254ca8dcf3b019076499e219e2e","receiptsRoot":"0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421","sha3Uncles":"0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347","size":"0x211","stateRoot":"0x373bd9a0991eff6c03f5ead0f25a0466a2ae10cf80cb37bd51d144f68668af29","timestamp":"0x5fc2a999","totalDifficulty":"0x388236832f6f1333ed","transactions":[],"transactionsRoot":"0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421","uncles":[]}}`
+	canonOjb := struct {
+		Result types.Header
+	}{}
+	if err := json.Unmarshal([]byte(canonStr), &canonOjb); err != nil {
+		t.Fatal(err)
+	}
+	canon := canonOjb.Result
+	forkBlock := big.NewInt(11700000)
+	forkBlockU := forkBlock.Uint64()
+	if canon.Number.Cmp(forkBlock) != 0 {
+		t.Fatalf("wrong block number: %v", canon.Number)
+	}
+
+	ethashConfig := Config{
+		CacheDir:         "/tmp/ethash-cache",
+		CachesInMem:      2,
+		CachesOnDisk:     3,
+		CachesLockMmap:   false,
+		DatasetDir:       "/tmp/ethash-dataset",
+		DatasetsInMem:    1,
+		DatasetsOnDisk:   2,
+		DatasetsLockMmap: false,
+		ECIP1099Block:    &forkBlockU,
+	}
+	os.RemoveAll(ethashConfig.CacheDir)
+	os.RemoveAll(ethashConfig.DatasetDir)
+
+	// Create a new instance of *Ethash and use it to
+	// test that verifySeal confirms this is a valid header.
+	ethash := New(ethashConfig, nil, false)
+	defer ethash.Close()
+	if err := ethash.verifySeal(nil, &canon, true); err != nil {
+		t.Fatalf("verifySeal failed: %v", err)
+	}
 }
