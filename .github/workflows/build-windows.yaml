@@ -19,8 +19,15 @@ jobs:
       - name: Build all packages
         id: build-packages
         run: make all
+
+      - name: Compress and sign archives
+        run: ./build/archive-signing.sh
+        env:
+          BUILD_OS_NAME: win64
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: geth-alltools
-          path: build/bin/*
+          name: geth-alltools-win64
+          path: core-geth*.zip*
+
