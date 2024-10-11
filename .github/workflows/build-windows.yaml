@@ -1,0 +1,33 @@
+name: Build Geth for Windows
+on:
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+jobs:
+  build-all:
+    name: Build all executables
+    runs-on: windows-latest
+    steps:
+      - name: Checkout etclabscore/core-geth
+        uses: actions/checkout@v3
+      - name: Set up Go 1.21
+        id: go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.21
+      - name: Build all packages
+        id: build-packages
+        run: make all
+
+      - name: Compress and sign archives
+        run: ./build/archive-signing.sh
+        env:
+          BUILD_OS_NAME: win64
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: geth-alltools-win64
+          path: core-geth*.zip*
+

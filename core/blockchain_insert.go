@@ -40,7 +40,7 @@ const statsReportLimit = 8 * time.Second
 
 // report prints statistics if some number of blocks have been processed
 // or more than a few seconds have passed since the last message.
-func (st *insertStats) report(chain []*types.Block, index int, dirty common.StorageSize) {
+func (st *insertStats) report(chain []*types.Block, index int, dirty common.StorageSize, setHead bool) {
 	// Fetch the timings for the batch
 	var (
 		now     = mclock.Now()
@@ -57,9 +57,9 @@ func (st *insertStats) report(chain []*types.Block, index int, dirty common.Stor
 
 		// Assemble the log context and send it to the logger
 		context := []interface{}{
+			"number", end.Number(), "hash", end.Hash(),
 			"blocks", st.processed, "txs", txs, "mgas", float64(st.usedGas) / 1000000,
 			"elapsed", common.PrettyDuration(elapsed), "mgasps", float64(st.usedGas) * 1000 / float64(elapsed),
-			"number", end.Number(), "hash", end.Hash(),
 		}
 		if timestamp := time.Unix(int64(end.Time()), 0); time.Since(timestamp) > time.Minute {
 			context = append(context, []interface{}{"age", common.PrettyAge(timestamp)}...)
@@ -76,8 +76,11 @@ func (st *insertStats) report(chain []*types.Block, index int, dirty common.Stor
 			context = append(context, []interface{}{"af", st.artificialFinality}...)
 		}
 
-		log.Info("Imported new chain segment", context...)
-
+		if setHead {
+			log.Info("Imported new chain segment", context...)
+		} else {
+			log.Info("Imported new potential chain segment", context...)
+		}
 		// Bump the stats reported to the next section
 		*st = insertStats{startTime: now, lastIndex: index + 1}
 	}
@@ -153,6 +156,14 @@ func (it *insertIterator) previous() *types.Header {
 		return nil
 	}
 	return it.chain[it.index-1].Header()
+}
+
+// current returns the current header that is being processed, or nil.
+func (it *insertIterator) current() *types.Header {
+	if it.index == -1 || it.index >= len(it.chain) {
+		return nil
+	}
+	return it.chain[it.index].Header()
 }
 
 // first returns the first block in the it.

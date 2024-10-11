@@ -18,10 +18,10 @@ package rpc
 
 import (
 	"context"
+	"errors"
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -65,14 +65,14 @@ func TestWebsocketOriginCheck(t *testing.T) {
 		t.Fatal("no error for wrong origin")
 	}
 	wantErr := wsHandshakeError{websocket.ErrBadHandshake, "403 Forbidden"}
-	if !reflect.DeepEqual(err, wantErr) {
+	if !errors.Is(err, wantErr) {
 		t.Fatalf("wrong error for wrong origin: %q", err)
 	}
 
 	// Connections without origin header should work.
 	client, err = DialWebsocket(context.Background(), wsURL, "")
 	if err != nil {
-		t.Fatal("error for empty origin")
+		t.Fatalf("error for empty origin: %v", err)
 	}
 	client.Close()
 }
@@ -113,6 +113,41 @@ func TestWebsocketLargeCall(t *testing.T) {
 	}
 }
 
+func TestWebsocketPeerInfo(t *testing.T) {
+	var (
+		s     = newTestServer()
+		ts    = httptest.NewServer(s.WebsocketHandler([]string{"origin.example.com"}))
+		tsurl = "ws:" + strings.TrimPrefix(ts.URL, "http:")
+	)
+	defer s.Stop()
+	defer ts.Close()
+
+	ctx := context.Background()
+	c, err := DialWebsocket(ctx, tsurl, "origin.example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Request peer information.
+	var connInfo PeerInfo
+	if err := c.Call(&connInfo, "test_peerInfo"); err != nil {
+		t.Fatal(err)
+	}
+
+	if connInfo.RemoteAddr == "" {
+		t.Error("RemoteAddr not set")
+	}
+	if connInfo.Transport != "ws" {
+		t.Errorf("wrong Transport %q", connInfo.Transport)
+	}
+	if connInfo.HTTP.UserAgent != "Go-http-client/1.1" {
+		t.Errorf("wrong HTTP.UserAgent %q", connInfo.HTTP.UserAgent)
+	}
+	if connInfo.HTTP.Origin != "origin.example.com" {
+		t.Errorf("wrong HTTP.Origin %q", connInfo.HTTP.UserAgent)
+	}
+}
+
 // This test checks that client handles WebSocket ping frames correctly.
 func TestClientWebsocketPing(t *testing.T) {
 	t.Parallel()
@@ -129,11 +164,15 @@ func TestClientWebsocketPing(t *testing.T) {
 	if err != nil {
 		t.Fatalf("client dial error: %v", err)
 	}
+	defer client.Close()
+
 	resultChan := make(chan int)
 	sub, err := client.EthSubscribe(ctx, resultChan, "foo")
 	if err != nil {
 		t.Fatalf("client subscribe error: %v", err)
 	}
+	// Note: Unsubscribe is not called on this subscription because the mockup
+	// server can't handle the request.
 
 	// Wait for the context's deadline to be reached before proceeding.
 	// This is important for reproducing https://github.com/ethereum/go-ethereum/issues/19798
@@ -154,6 +193,33 @@ func TestClientWebsocketPing(t *testing.T) {
 			t.Error("didn't get any result within the test timeout")
 			return
 		}
+	}
+}
+
+// This checks that the websocket transport can deal with large messages.
+func TestClientWebsocketLargeMessage(t *testing.T) {
+	var (
+		srv     = NewServer()
+		httpsrv = httptest.NewServer(srv.WebsocketHandler(nil))
+		wsURL   = "ws:" + strings.TrimPrefix(httpsrv.URL, "http:")
+	)
+	defer srv.Stop()
+	defer httpsrv.Close()
+
+	respLength := wsMessageSizeLimit - 50
+	srv.RegisterName("test", largeRespService{respLength})
+
+	c, err := DialWebsocket(context.Background(), wsURL, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var r string
+	if err := c.Call(&r, "test_largeResp"); err != nil {
+		t.Fatal("call failed:", err)
+	}
+	if len(r) != respLength {
+		t.Fatalf("response has wrong length %d, want %d", len(r), respLength)
 	}
 }
 
